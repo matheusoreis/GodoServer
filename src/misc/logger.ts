@@ -1,4 +1,4 @@
-import { Singleton } from "./decorators/classes/Singleton";
+import { Singleton } from "./decorators/classes/singleton";
 
 const colorText = (text: string, colorCode: number) => `\x1b[${colorCode}m${text}\x1b[0m`;
 

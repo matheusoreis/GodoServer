@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { MinLength } from "../MinLength";
+import { MinLength } from "../min-length";
 
 class Test {
   @MinLength(3)

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { MaxLength } from "../MaxLength";
+import { MaxLength } from "../max-length";
 
 class Test {
   @MaxLength(5)

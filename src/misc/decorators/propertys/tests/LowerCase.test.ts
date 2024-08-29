@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { LowerCase } from "../LowerCase";
+import { LowerCase } from "../lower-case";
 
 class Test {
   @LowerCase()

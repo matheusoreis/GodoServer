@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { IsBoolean } from "../IsBoolean";
+import { IsBoolean } from "../is-boolean";
 
 class Test {
   @IsBoolean()

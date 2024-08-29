@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { MinMax } from "../MinMax";
+import { MinMax } from "../min-max";
 
 class Test {
   @MinMax(1, 10)

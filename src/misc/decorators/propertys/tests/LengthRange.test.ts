@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { LengthRange } from "../LengthRange";
+import { LengthRange } from "../length-range";
 
 class Test {
   @LengthRange(2, 5)

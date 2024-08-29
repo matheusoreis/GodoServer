@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { IsEmail } from "../IsEmail";
+import { IsEmail } from "../is-email";
 
 class Test {
   @IsEmail()

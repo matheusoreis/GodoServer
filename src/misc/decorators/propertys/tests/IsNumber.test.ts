@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { IsInteger } from "../IsNumber";
+import { IsInteger } from "../is-number";
 
 class Test {
   @IsInteger(8)

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { IsString } from "../IsString";
+import { IsString } from "../is-string";
 
 class Test {
   @IsString()

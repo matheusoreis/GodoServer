@@ -1,14 +1,14 @@
 import { describe, expect, it } from "bun:test";
 import { UpperCase } from "../UpperCase";
 
-class Upper {
+class Test {
   @UpperCase()
   public textValue?: string;
 }
 
 describe("UpperCase decorator", () => {
   it("should convert assigned value to uppercase", () => {
-    const testInstance = new Upper();
+    const testInstance = new Test();
 
     testInstance.textValue = "hello";
     expect(testInstance.textValue).toBe("HELLO");

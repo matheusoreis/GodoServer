@@ -11,6 +11,7 @@ export function IsEmail() {
         if (!emailPattern.test(value)) {
           throw new Error("Invalid email address");
         }
+
         this[privateKey] = value;
       },
       enumerable: true,

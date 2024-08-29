@@ -10,6 +10,7 @@ export function MinMax(min: number, max: number) {
         if (value < min || value > max) {
           throw new Error(`Value must be between ${min} and ${max}`);
         }
+
         this[privateKey] = value;
       },
       enumerable: true,

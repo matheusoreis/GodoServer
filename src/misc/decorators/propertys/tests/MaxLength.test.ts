@@ -1,15 +1,14 @@
 import { describe, expect, it } from "bun:test";
-import { LowerCase } from "../LowerCase";
 import { MaxLength } from "../MaxLength";
 
-class Max {
+class Test {
   @MaxLength(5)
   public textValue?: string;
 }
 
 describe("MaxLength decorator", () => {
   it("should throw error if value length exceeds specified maximum length", () => {
-    const testInstance = new Max();
+    const testInstance = new Test();
 
     expect(() => {
       testInstance.textValue = "TooLongValue";

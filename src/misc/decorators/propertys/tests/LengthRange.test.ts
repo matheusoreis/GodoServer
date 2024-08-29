@@ -1,14 +1,14 @@
 import { describe, expect, it } from "bun:test";
 import { LengthRange } from "../LengthRange";
 
-class TestClass {
+class Test {
   @LengthRange(2, 5)
   public stringValue?: string;
 }
 
 describe("LengthRange decorator", () => {
   it("should restrict values to a specific length range", () => {
-    const testInstance = new TestClass();
+    const testInstance = new Test();
 
     testInstance.stringValue = "test";
     expect(testInstance.stringValue).toBe("test");

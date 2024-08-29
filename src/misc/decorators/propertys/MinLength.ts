@@ -7,10 +7,6 @@ export function MinLength(length: number) {
         return this[privateKey];
       },
       set(value: string) {
-        if (typeof value !== "string") {
-          throw new Error(`${propertyKey} must be a string`);
-        }
-
         if (value.length < length) {
           throw new Error(`${propertyKey} must be at least ${length} characters long`);
         }

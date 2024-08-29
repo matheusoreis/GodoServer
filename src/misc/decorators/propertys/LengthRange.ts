@@ -10,6 +10,7 @@ export function LengthRange(min: number, max: number) {
         if (value.length < min || value.length > max) {
           throw new Error(`${propertyKey} must be between ${min} and ${max} characters long`);
         }
+
         this[privateKey] = value;
       },
       enumerable: true,

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { IsInteger } from "../IsNumber";
 
-class Number {
+class Test {
   @IsInteger(8)
   public intValue?: number;
 
@@ -14,7 +14,7 @@ class Number {
 
 describe("IsInteger decorator", () => {
   it("should restrict values to an 8-bit integer", () => {
-    const testInstance = new Number();
+    const testInstance = new Test();
 
     testInstance.intValue = 100;
     expect(testInstance.intValue).toBe(100);
@@ -29,7 +29,7 @@ describe("IsInteger decorator", () => {
   });
 
   it("should restrict values to a 16-bit integer", () => {
-    const testInstance = new Number();
+    const testInstance = new Test();
 
     testInstance.intValue16 = 2000;
     expect(testInstance.intValue16).toBe(2000);
@@ -44,7 +44,7 @@ describe("IsInteger decorator", () => {
   });
 
   it("should restrict values to a 32-bit integer", () => {
-    const testInstance = new Number();
+    const testInstance = new Test();
 
     testInstance.intValue32 = 2000000;
     expect(testInstance.intValue32).toBe(2000000);

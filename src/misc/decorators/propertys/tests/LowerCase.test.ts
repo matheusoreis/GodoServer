@@ -1,14 +1,14 @@
 import { describe, expect, it } from "bun:test";
 import { LowerCase } from "../LowerCase";
 
-class Lower {
+class Test {
   @LowerCase()
   public textValue?: string;
 }
 
 describe("LowerCase decorator", () => {
   it("should convert assigned value to lowercase", () => {
-    const testInstance = new Lower();
+    const testInstance = new Test();
 
     testInstance.textValue = "HELLO";
     expect(testInstance.textValue).toBe("hello");

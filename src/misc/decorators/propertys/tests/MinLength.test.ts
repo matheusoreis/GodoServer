@@ -1,14 +1,14 @@
 import { describe, expect, it } from "bun:test";
 import { MinLength } from "../MinLength";
 
-class TestClass {
+class Test {
   @MinLength(3)
   public textValue?: string;
 }
 
 describe("MinLength decorator", () => {
   it("should throw error if value length is less than specified minimum length", () => {
-    const testInstance = new TestClass();
+    const testInstance = new Test();
 
     expect(() => {
       testInstance.textValue = "Hi";

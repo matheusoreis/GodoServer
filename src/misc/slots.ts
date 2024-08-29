@@ -16,16 +16,6 @@ export class Slots<T> {
     return this._slots[index];
   }
 
-  public set(index: number, value: T | undefined): void {
-    this._checkIndex(index);
-    this._slots[index] = value;
-  }
-
-  public isSlotEmpty(index: number): boolean {
-    this._checkIndex(index);
-    return this._slots[index] === undefined;
-  }
-
   public *getFilledSlots(): Iterable<number> {
     for (let i = 0; i < this._slots.length; i++) {
       if (this._slots[i] !== undefined) {
@@ -60,34 +50,6 @@ export class Slots<T> {
   public getFirstEmptySlot(): number | undefined {
     const index = this._slots.indexOf(undefined);
     return index !== -1 ? index : undefined;
-  }
-
-  public *countEmptySlots(): Iterable<number> {
-    for (let i = 0; i < this._slots.length; i++) {
-      if (this._slots[i] === undefined) {
-        yield i;
-      }
-    }
-  }
-
-  public *countFilledSlots(): Iterable<number> {
-    for (let i = 0; i < this._slots.length; i++) {
-      if (this._slots[i] !== undefined) {
-        yield i;
-      }
-    }
-  }
-
-  public *find(element: T): Iterable<number> {
-    for (let i = 0; i < this._slots.length; i++) {
-      if (this._slots[i] === element) {
-        yield i;
-      }
-    }
-  }
-
-  public clear(): void {
-    this._slots.fill(undefined);
   }
 
   public update(index: number, value: T): void {

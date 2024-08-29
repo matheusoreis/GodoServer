@@ -2,7 +2,7 @@ import { describe, it, expect } from "bun:test";
 import { Singleton } from "../singleton";
 
 @Singleton()
-class TestClass {
+class Test {
   private data: number;
 
   constructor(data: number) {
@@ -16,8 +16,8 @@ class TestClass {
 
 describe("Singleton Decorator Test", () => {
   it("should create only one instance of the class", () => {
-    const instance1 = new TestClass(10);
-    const instance2 = new TestClass(20);
+    const instance1 = new Test(10);
+    const instance2 = new Test(20);
 
     expect(instance1).toEqual(instance2);
 

@@ -7,7 +7,7 @@ export class GetConnection {
     const memory = new Memory();
 
     for (const connection of memory.connections.getFilledSlotsAsList()) {
-      if (connection && connection.getWebsocket() === ws) {
+      if (connection && connection.ws === ws) {
         return connection;
       }
     }

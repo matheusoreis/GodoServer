@@ -5,7 +5,15 @@ import type { Slots } from "../misc/slots";
 import { Connection } from "./connection";
 import { GetConnection } from "../misc/get-connection";
 
+/**
+ * A classe `Manager` gerencia as conexões WebSocket ativas, lida com a abertura, fechamento,
+ * e mensagens de WebSocket, além de coordenar o armazenamento dessas conexões em slots de memória.
+ */
 export class Manager {
+  /**
+   * Cria uma instância da classe `Manager`.
+   * Inicializa o logger e a estrutura de armazenamento de conexões.
+   */
   constructor() {
     this.logger = new Logger();
     this.connections = new Memory().connections;
@@ -14,6 +22,11 @@ export class Manager {
   private logger: Logger;
   private connections: Slots<Connection>;
 
+  /**
+   * Manipulador chamado quando uma nova conexão WebSocket é aberta.
+   *
+   * @param {ServerWebSocket} ws - O WebSocket que foi conectado.
+   */
   public websocketOpen(ws: ServerWebSocket): void {
     const firstAvailableId: number | undefined = this.connections.getFirstEmptySlot();
 
@@ -27,15 +40,30 @@ export class Manager {
     this.connections.add(connectionModel);
   }
 
+  /**
+   * Manipulador chamado quando uma conexão WebSocket é fechada.
+   * Remove a conexão dos slots de memória.
+   *
+   * @param {ServerWebSocket} ws - O WebSocket que foi desconectado.
+   * @param {number} _code - Código de status de fechamento (não utilizado).
+   * @param {string} _message - Mensagem de fechamento (não utilizada).
+   */
   public websocketClose(ws: ServerWebSocket, _code: number, _message: string): void {
     this.cleanupConnection(ws);
   }
 
+  /**
+   * Manipulador chamado quando uma mensagem é recebida por um WebSocket.
+   * Envia a mensagem recebida para a conexão correspondente.
+   *
+   * @param {ServerWebSocket} ws - O WebSocket que enviou a mensagem.
+   * @param {Buffer} message - A mensagem recebida.
+   */
   public websocketMessage(ws: ServerWebSocket, message: Buffer): void {
     const connection: Connection | undefined = GetConnection.bySocket(ws);
 
     if (!connection) {
-      this.logger.error(`Conexão não encontrada para o WebSocket.`);
+      this.logger.error(`Connection not found for WebSocket.`);
       this.cleanupConnection(ws);
       return;
     }
@@ -43,17 +71,29 @@ export class Manager {
     connection.handleMessage(message);
   }
 
+  /**
+   * Manipula o caso em que o servidor está cheio e não pode aceitar novas conexões.
+   * Fecha o WebSocket do cliente que tentou se conectar.
+   *
+   * @param {ServerWebSocket} ws - O WebSocket que tentou se conectar.
+   */
   private handleFullServer(ws: ServerWebSocket): void {
-    this.logger.info(`O servidor está cheio, desconectando o cliente: ${ws.remoteAddress}`);
+    this.logger.info(`Server is full, disconnecting client: ${ws.remoteAddress}`);
     ws.close();
   }
 
+  /**
+   * Limpa a conexão de um WebSocket específico, removendo-o da lista de conexões
+   * e fechando a conexão.
+   *
+   * @param {ServerWebSocket} ws - O WebSocket que está sendo limpo.
+   */
   private cleanupConnection(ws: ServerWebSocket): void {
     const connection: Connection | undefined = GetConnection.bySocket(ws);
 
     if (connection) {
       this.connections.remove(connection.id);
-      this.logger.info(`Conexão removida, endereço: ${ws.remoteAddress}`);
+      this.logger.info(`Connection removed, address: ${ws.remoteAddress}`);
       connection.close();
     }
   }

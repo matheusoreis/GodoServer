@@ -94,8 +94,4 @@ export class Slots<T> {
     this._checkIndex(index);
     this._slots[index] = value;
   }
-
-  public getFilledSlotsAsList(): (T | undefined)[] {
-    return this._slots.filter((slot) => slot !== undefined);
-  }
 }

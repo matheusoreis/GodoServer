@@ -22,9 +22,8 @@ export abstract class Outgoing {
   }
 
   public dataToAll(message: ServerMessage): void {
-    const filledSlots: (Connection | undefined)[] = this.connection.getFilledSlotsAsList();
-
-    for (const connection of filledSlots) {
+    for (const index of this.connection.getFilledSlots()) {
+      const connection = this.connection.get(index);
       if (connection?.ws) {
         try {
           this.dataTo(connection, message);
@@ -36,9 +35,8 @@ export abstract class Outgoing {
   }
 
   public dataToAllExcept(exceptConnection: Connection, message: ServerMessage): void {
-    const filledSlots: (Connection | undefined)[] = this.connection.getFilledSlotsAsList();
-
-    for (const connection of filledSlots) {
+    for (const index of this.connection.getFilledSlots()) {
+      const connection = this.connection.get(index);
       if (connection?.ws && connection !== exceptConnection) {
         try {
           this.dataTo(connection, message);

@@ -44,9 +44,6 @@ export class Manager {
   }
 
   private handleFullServer(ws: ServerWebSocket): void {
-    //   const connection: Connection = new Connection(ws, -1);
-    //   new AlertMessage("O servidor está cheio, tente novamente mais tarde...").send(connection);
-
     this.logger.info(`O servidor está cheio, desconectando o cliente: ${ws.remoteAddress}`);
     ws.close();
   }

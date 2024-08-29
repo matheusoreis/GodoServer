@@ -8,23 +8,23 @@ export abstract class ServerMessage {
     this._buffer.putInt16(id);
   }
 
-  public putBytes(value: Buffer): void {
+  protected putBytes(value: Buffer): void {
     this._buffer.putBytes(value);
   }
 
-  public putInt8(value: number) {
+  protected putInt8(value: number) {
     this._buffer.putInt8(value);
   }
 
-  public putInt16(value: number) {
+  protected putInt16(value: number) {
     this._buffer.putInt16(value);
   }
 
-  public putInt32(value: number) {
+  protected putInt32(value: number) {
     this._buffer.putInt32(value);
   }
 
-  public putString(value: string) {
+  protected putString(value: string) {
     this._buffer.putString(value);
   }
 

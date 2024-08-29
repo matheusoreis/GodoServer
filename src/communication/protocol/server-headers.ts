@@ -1,3 +1,3 @@
 export enum ServerHeaders {
-  Ping,
+  Pong,
 }

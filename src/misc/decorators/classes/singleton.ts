@@ -1,4 +1,6 @@
-export function Singleton<T extends new (...args: any[]) => any>(config?: any): (ctr: T) => T {
+export function Singleton<T extends new (...args: any[]) => any>(
+  config?: any,
+): (ctr: T) => T {
   return (ctr: T) => {
     let instance: InstanceType<T> | null = null;
 

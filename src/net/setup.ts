@@ -94,7 +94,11 @@ export class Setup {
    * @param {number} code - Código de status de fechamento.
    * @param {string} message - Mensagem informativa sobre o fechamento.
    */
-  private websocketClose(ws: ServerWebSocket, code: number, message: string): void {
+  private websocketClose(
+    ws: ServerWebSocket,
+    code: number,
+    message: string,
+  ): void {
     this.logger.info("Connection closed, address: " + ws.remoteAddress);
     this.manager.websocketClose(ws, code, message);
   }

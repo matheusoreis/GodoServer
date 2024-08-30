@@ -8,7 +8,9 @@ export function LengthRange(min: number, max: number) {
       },
       set(value: string) {
         if (value.length < min || value.length > max) {
-          throw new Error(`${propertyKey} must be between ${min} and ${max} characters long`);
+          throw new Error(
+            `${propertyKey} must be between ${min} and ${max} characters long`,
+          );
         }
 
         this[privateKey] = value;

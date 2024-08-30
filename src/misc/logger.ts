@@ -7,7 +7,9 @@ import { Singleton } from "./decorators/classes/singleton";
  * @param {number} colorCode - O código de cor ANSI para a cor desejada.
  * @returns {string} O texto colorido.
  */
-const colorText = (text: string, colorCode: number) => `\x1b[${colorCode}m${text}\x1b[0m`;
+const colorText = function (text: string, colorCode: number): string {
+  return `\x1b[${colorCode}m${text}\x1b[0m`;
+};
 
 /** Códigos de cor ANSI para diferentes tipos de mensagens. */
 const GREEN = 32;
@@ -38,7 +40,9 @@ export class Logger {
    * @param {string} message - A mensagem a ser registrada.
    */
   public info(message: string): void {
-    console.log(`${colorText("[INFO]", GREEN)} ${this._getTimestamp()} - ${colorText(message, GREEN)}`);
+    console.log(
+      `${colorText("[INFO]", GREEN)} ${this._getTimestamp()} - ${colorText(message, GREEN)}`,
+    );
   }
 
   /**
@@ -47,7 +51,9 @@ export class Logger {
    * @param {string} message - A mensagem a ser registrada.
    */
   public warning(message: string): void {
-    console.log(`${colorText("[WARN]", YELLOW)} ${this._getTimestamp()} - ${colorText(message, YELLOW)}`);
+    console.log(
+      `${colorText("[WARN]", YELLOW)} ${this._getTimestamp()} - ${colorText(message, YELLOW)}`,
+    );
   }
 
   /**
@@ -56,7 +62,9 @@ export class Logger {
    * @param {string} message - A mensagem a ser registrada.
    */
   public player(message: string): void {
-    console.log(`${colorText("[PLAYER]", BLUE)} ${this._getTimestamp()} - ${colorText(message, BLUE)}`);
+    console.log(
+      `${colorText("[PLAYER]", BLUE)} ${this._getTimestamp()} - ${colorText(message, BLUE)}`,
+    );
   }
 
   /**
@@ -65,6 +73,8 @@ export class Logger {
    * @param {string} message - A mensagem a ser registrada.
    */
   public error(message: string): void {
-    console.log(`${colorText("[ERRO]", RED)} ${this._getTimestamp()} - ${colorText(message, RED)}`);
+    console.log(
+      `${colorText("[ERRO]", RED)} ${this._getTimestamp()} - ${colorText(message, RED)}`,
+    );
   }
 }

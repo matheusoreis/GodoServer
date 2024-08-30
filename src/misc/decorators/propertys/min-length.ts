@@ -8,7 +8,9 @@ export function MinLength(length: number) {
       },
       set(value: string) {
         if (value.length < length) {
-          throw new Error(`${propertyKey} must be at least ${length} characters long`);
+          throw new Error(
+            `${propertyKey} must be at least ${length} characters long`,
+          );
         }
 
         this[privateKey] = value;

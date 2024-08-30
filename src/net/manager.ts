@@ -28,7 +28,8 @@ export class Manager {
    * @param {ServerWebSocket} ws - O WebSocket que foi conectado.
    */
   public websocketOpen(ws: ServerWebSocket): void {
-    const firstAvailableId: number | undefined = this.connections.getFirstEmptySlot();
+    const firstAvailableId: number | undefined =
+      this.connections.getFirstEmptySlot();
 
     if (firstAvailableId == undefined) {
       this.handleFullServer(ws);
@@ -48,7 +49,11 @@ export class Manager {
    * @param {number} _code - Código de status de fechamento (não utilizado).
    * @param {string} _message - Mensagem de fechamento (não utilizada).
    */
-  public websocketClose(ws: ServerWebSocket, _code: number, _message: string): void {
+  public websocketClose(
+    ws: ServerWebSocket,
+    _code: number,
+    _message: string,
+  ): void {
     this.cleanupConnection(ws);
   }
 
@@ -78,7 +83,9 @@ export class Manager {
    * @param {ServerWebSocket} ws - O WebSocket que tentou se conectar.
    */
   private handleFullServer(ws: ServerWebSocket): void {
-    this.logger.info(`Server is full, disconnecting client: ${ws.remoteAddress}`);
+    this.logger.info(
+      `Server is full, disconnecting client: ${ws.remoteAddress}`,
+    );
     ws.close();
   }
 

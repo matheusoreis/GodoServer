@@ -8,7 +8,9 @@ export function MaxLength(length: number) {
       },
       set(value: string) {
         if (value.length > length) {
-          throw new Error(`${propertyKey} must be at most ${length} characters long`);
+          throw new Error(
+            `${propertyKey} must be at most ${length} characters long`,
+          );
         }
 
         this[privateKey] = value;

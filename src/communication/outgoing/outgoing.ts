@@ -47,7 +47,9 @@ export abstract class Outgoing {
         try {
           this.dataTo(connection, message);
         } catch (error) {
-          this.logger.error("Error sending data to the client! Error: " + error);
+          this.logger.error(
+            "Error sending data to the client! Error: " + error,
+          );
         }
       }
     }
@@ -59,14 +61,19 @@ export abstract class Outgoing {
    * @param {Connection} exceptConnection - A conexão do cliente que não deve receber a mensagem.
    * @param {ServerMessage} message - A mensagem a ser enviada a todos os clientes exceto o especificado.
    */
-  public dataToAllExcept(exceptConnection: Connection, message: ServerMessage): void {
+  public dataToAllExcept(
+    exceptConnection: Connection,
+    message: ServerMessage,
+  ): void {
     for (const index of this.connection.getFilledSlots()) {
       const connection = this.connection.get(index);
       if (connection?.ws && connection !== exceptConnection) {
         try {
           this.dataTo(connection, message);
         } catch (error) {
-          this.logger.error("Error sending data to the client! Error: " + error);
+          this.logger.error(
+            "Error sending data to the client! Error: " + error,
+          );
         }
       }
     }
@@ -76,7 +83,11 @@ export abstract class Outgoing {
     throw new Error("Method not implemented.");
   }
 
-  public dataToMapExcept(mapId: number, exceptConnection: Connection, message: ServerMessage): void {
+  public dataToMapExcept(
+    mapId: number,
+    exceptConnection: Connection,
+    message: ServerMessage,
+  ): void {
     throw new Error("Method not implemented.");
   }
 }

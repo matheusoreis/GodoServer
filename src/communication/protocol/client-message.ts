@@ -31,7 +31,9 @@ export class ClientMessage {
    * @returns {Buffer} - O buffer contendo o conteúdo da mensagem.
    */
   public getContent(): Buffer {
-    return this._buffer.getBytes(this._buffer.getBuffer().length - this._buffer.getOffset());
+    return this._buffer.getBytes(
+      this._buffer.getBuffer().length - this._buffer.getOffset(),
+    );
   }
 
   /**

@@ -13,7 +13,7 @@
   },
   "scripts": {
     "start": "bun index.ts",
-    "dev": "bun --hot index.ts",
+    "dev": "bun --watch index.ts",
     "build": "bun build index.ts --outdir ./build",
     "release": "bun build/index.js"
   },

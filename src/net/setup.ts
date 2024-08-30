@@ -74,7 +74,7 @@ export class Setup {
       }
     }
 
-    return new Response("Hello, world!", { status: 200 });
+    return new Response("HTTP access is not allowed", { status: 403 });
   }
 
   /**

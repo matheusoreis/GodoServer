@@ -6,4 +6,5 @@
  */
 export enum ServerHeaders {
   Pong,
+  Alert,
 }

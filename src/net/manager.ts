@@ -4,6 +4,11 @@ import { Logger } from "../misc/logger";
 import type { Slots } from "../misc/slots";
 import { Connection } from "./connection";
 import { GetConnection } from "../misc/get-connection";
+import {
+  AlertDispatcher,
+  AlertType,
+  type AlertData,
+} from "../communication/outgoing/dispatcher/alert-dispatcher";
 
 /**
  * A classe `Manager` gerencia as conexões WebSocket ativas, lida com a abertura, fechamento,
@@ -83,10 +88,19 @@ export class Manager {
    * @param {ServerWebSocket} ws - O WebSocket que tentou se conectar.
    */
   private handleFullServer(ws: ServerWebSocket): void {
+    const connection: Connection = new Connection(ws, -1);
+
+    const alertData: AlertData = {
+      type: AlertType.Error,
+      message: "Server is full! disconnecting...",
+    };
+
+    const alertDispatcher: AlertDispatcher = new AlertDispatcher(alertData);
+    alertDispatcher.sendTo(connection);
+
     this.logger.info(
       `Server is full, disconnecting client: ${ws.remoteAddress}`,
     );
-    ws.close();
   }
 
   /**

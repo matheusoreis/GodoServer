@@ -1,3 +1,5 @@
+import type { Connection } from "../../net/connection";
+import { Outgoing } from "../outgoing/outgoing";
 import { ByteBuffer } from "./byte-buffer";
 
 /**
@@ -5,7 +7,7 @@ import { ByteBuffer } from "./byte-buffer";
  * pelo servidor para os clientes. Ela gerencia o bytebuffer usado para armazenar e manipular
  * os dados da mensagem.
  */
-export abstract class ServerMessage {
+export abstract class ServerMessage extends Outgoing{
   private _buffer: ByteBuffer;
 
   /**
@@ -14,6 +16,7 @@ export abstract class ServerMessage {
    * @param {number} id - O identificador da mensagem.
    */
   constructor(id: number) {
+    super();
     this._buffer = new ByteBuffer();
     this._buffer.putInt16(id);
   }
@@ -70,5 +73,32 @@ export abstract class ServerMessage {
    */
   public getBuffer(): Buffer {
     return this._buffer.getBuffer();
+  }
+
+  /**
+   * Envia a mensagem para o cliente especificado.
+   *
+   * @param {Connection} connection - A conexão do cliente para o qual a mensagem será enviada.
+   */
+  public sendTo(connection: Connection): void {
+    this.dataTo(connection, this);
+  }
+
+  /**
+   * Envia a mensagem para todos os clientes conectados.
+   *
+   * O método `dataToAll` da classe `Outgoing` é usado para enviar a mensagem a todos os clientes conectados.
+   */
+  public sendToAll(): void {
+    this.dataToAll(this);
+  }
+
+  /**
+   * Envia a mensagem para todos os clientes conectados, exceto para o cliente especificado.
+   *
+   * @param {Connection} exceptConnection - A conexão do cliente que não deve receber a mensagem.
+   */
+  public sendToAllExcept(exceptConnection: Connection): void {
+    this.dataToAllExcept(exceptConnection, this);
   }
 }

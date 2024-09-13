@@ -2,7 +2,7 @@ import type { ServerWebSocket } from "bun";
 import { Memory } from "../core/memory";
 import { Logger } from "../misc/logger";
 import type { Slots } from "../misc/slots";
-import { Connection } from "./connection";
+import { Connection } from "../core/connection";
 import { GetConnection } from "../misc/get-connection";
 import {
   AlertDispatcher,

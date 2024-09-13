@@ -1,4 +1,4 @@
-import type { Connection } from "../../net/connection";
+import type { Connection } from "../../core/connection";
 import { Outgoing } from "../outgoing/outgoing";
 import { ByteBuffer } from "./byte-buffer";
 

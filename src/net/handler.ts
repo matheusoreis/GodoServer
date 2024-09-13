@@ -1,7 +1,7 @@
 import type { Incoming } from "../communication/incoming/incoming";
 import type { ClientHeaders } from "../communication/protocol/client-headers";
 import type { ClientMessage } from "../communication/protocol/client-message";
-import type { Connection } from "./connection";
+import type { Connection } from "../core/connection";
 
 /**
  * A classe `Handler` é responsável por gerenciar e despachar mensagens recebidas

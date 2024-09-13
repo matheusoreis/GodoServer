@@ -1,6 +1,6 @@
 import type { ServerWebSocket } from "bun";
-import { Handler } from "./handler";
-import { Memory } from "../core/memory";
+import { Handler } from "../net/handler";
+import { Memory } from "./memory";
 import { ClientMessage } from "../communication/protocol/client-message";
 
 /**

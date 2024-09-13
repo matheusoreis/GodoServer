@@ -1,4 +1,4 @@
-import type { Connection } from "../../../net/connection";
+import type { Connection } from "../../../core/connection";
 import { PingDispatcher } from "../../outgoing/dispatcher/ping-dispatcher";
 import type { ClientMessage } from "../../protocol/client-message";
 import type { Incoming } from "../incoming";

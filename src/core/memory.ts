@@ -1,7 +1,7 @@
 import { MAX_PLAYERS } from "../misc/constants";
 import { Singleton } from "../misc/decorators/classes/singleton";
 import { Slots } from "../misc/slots";
-import type { Connection } from "../net/connection";
+import type { Connection } from "./connection";
 
 /**
  * A classe `Memory` gerencia a memória do servidor

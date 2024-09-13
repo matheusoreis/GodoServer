@@ -1,7 +1,7 @@
 import { Memory } from "../../core/memory";
 import { Logger } from "../../misc/logger";
 import type { Slots } from "../../misc/slots";
-import type { Connection } from "../../net/connection";
+import type { Connection } from "../../core/connection";
 import type { ServerMessage } from "../protocol/server-message";
 
 /**

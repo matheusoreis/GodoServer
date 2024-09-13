@@ -1,4 +1,4 @@
-import type { Connection } from "../../net/connection";
+import type { Connection } from "../../core/connection";
 import type { ClientMessage } from "../protocol/client-message";
 
 /**

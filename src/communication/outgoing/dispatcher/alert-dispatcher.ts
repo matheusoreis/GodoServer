@@ -1,4 +1,4 @@
-import type { Connection } from "../../../net/connection";
+import type { Connection } from "../../../core/connection";
 import { ServerHeaders } from "../../protocol/server-headers";
 import { ServerMessage } from "../../protocol/server-message";
 

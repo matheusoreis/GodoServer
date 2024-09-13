@@ -4,11 +4,8 @@ import { Logger } from "../misc/logger";
 import type { Slots } from "../misc/slots";
 import { Connection } from "../core/connection";
 import { GetConnection } from "../misc/get-connection";
-import {
-  AlertDispatcher,
-  AlertType,
-  type AlertData,
-} from "../communication/outgoing/dispatcher/alert-dispatcher";
+import { AlertDispatcher, AlertType, type AlertData } from "../communication/outgoing/dispatcher/alert-dispatcher";
+import { serviceLocator } from "../misc/service-locator";
 
 /**
  * A classe `Manager` gerencia as conexões WebSocket ativas, lida com a abertura, fechamento,
@@ -20,12 +17,12 @@ export class Manager {
    * Inicializa o logger e a estrutura de armazenamento de conexões.
    */
   constructor() {
-    this.logger = new Logger();
-    this.connections = new Memory().connections;
+    this.logger = serviceLocator.get<Logger>(Logger);
+    this.memory = serviceLocator.get<Memory>(Memory);
   }
 
   private logger: Logger;
-  private connections: Slots<Connection>;
+  private memory: Memory;
 
   /**
    * Manipulador chamado quando uma nova conexão WebSocket é aberta.
@@ -33,8 +30,7 @@ export class Manager {
    * @param {ServerWebSocket} ws - O WebSocket que foi conectado.
    */
   public websocketOpen(ws: ServerWebSocket): void {
-    const firstAvailableId: number | undefined =
-      this.connections.getFirstEmptySlot();
+    const firstAvailableId: number | undefined = this.memory.connections.getFirstEmptySlot();
 
     if (firstAvailableId == undefined) {
       this.handleFullServer(ws);
@@ -43,7 +39,7 @@ export class Manager {
     }
 
     const connectionModel: Connection = new Connection(ws, firstAvailableId);
-    this.connections.add(connectionModel);
+    this.memory.connections.add(connectionModel);
   }
 
   /**
@@ -54,11 +50,7 @@ export class Manager {
    * @param {number} _code - Código de status de fechamento (não utilizado).
    * @param {string} _message - Mensagem de fechamento (não utilizada).
    */
-  public websocketClose(
-    ws: ServerWebSocket,
-    _code: number,
-    _message: string,
-  ): void {
+  public websocketClose(ws: ServerWebSocket, _code: number, _message: string): void {
     this.cleanupConnection(ws);
   }
 
@@ -70,7 +62,7 @@ export class Manager {
    * @param {Buffer} message - A mensagem recebida.
    */
   public websocketMessage(ws: ServerWebSocket, message: Buffer): void {
-    const connection: Connection | undefined = GetConnection.bySocket(ws);
+    const connection: Connection | undefined = GetConnection.bySocket(ws, this.memory);
 
     if (!connection) {
       this.logger.error(`Connection not found for WebSocket.`);
@@ -98,9 +90,7 @@ export class Manager {
     const alertDispatcher: AlertDispatcher = new AlertDispatcher(alertData);
     alertDispatcher.sendTo(connection);
 
-    this.logger.info(
-      `Server is full, disconnecting client: ${ws.remoteAddress}`,
-    );
+    this.logger.info(`Server is full, disconnecting client: ${ws.remoteAddress}`);
   }
 
   /**
@@ -110,10 +100,10 @@ export class Manager {
    * @param {ServerWebSocket} ws - O WebSocket que está sendo limpo.
    */
   private cleanupConnection(ws: ServerWebSocket): void {
-    const connection: Connection | undefined = GetConnection.bySocket(ws);
+    const connection: Connection | undefined = GetConnection.bySocket(ws, this.memory);
 
     if (connection) {
-      this.connections.remove(connection.id);
+      this.memory.connections.remove(connection.id);
       this.logger.info(`Connection removed, address: ${ws.remoteAddress}`);
       connection.close();
     }

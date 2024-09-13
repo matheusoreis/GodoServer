@@ -3,8 +3,8 @@
  * a leitura e escrita de dados de diferentes tipos.
  */
 export class ByteBuffer {
-  private _buffer: Buffer;
-  private _offset: number;
+  private byteBuffer: Buffer;
+  private offset: number;
 
   /**
    * Cria uma nova instância de `ByteBuffer`.
@@ -12,8 +12,8 @@ export class ByteBuffer {
    * @param {Buffer} [initialBuffer=Buffer.alloc(0)] - O buffer inicial a ser usado. Se não fornecido, será um buffer vazio.
    */
   constructor(initialBuffer: Buffer = Buffer.alloc(0)) {
-    this._buffer = initialBuffer;
-    this._offset = 0;
+    this.byteBuffer = initialBuffer;
+    this.offset = 0;
   }
 
   /**
@@ -22,11 +22,11 @@ export class ByteBuffer {
    * @param {Buffer} bytes - O buffer de bytes a ser adicionado.
    */
   public putBytes(bytes: Buffer): void {
-    const newSize = this._buffer.length + bytes.length;
+    const newSize = this.byteBuffer.length + bytes.length;
     const newBuffer = Buffer.alloc(newSize);
-    this._buffer.copy(newBuffer);
-    bytes.copy(newBuffer, this._buffer.length);
-    this._buffer = newBuffer;
+    this.byteBuffer.copy(newBuffer);
+    bytes.copy(newBuffer, this.byteBuffer.length);
+    this.byteBuffer = newBuffer;
   }
 
   /**
@@ -79,8 +79,8 @@ export class ByteBuffer {
    * @returns {number} - O valor de 8 bits lido.
    */
   public getInt8(): number {
-    const value = this._buffer.readInt8(this._offset);
-    this._offset += 1;
+    const value = this.byteBuffer.readInt8(this.offset);
+    this.offset += 1;
     return value;
   }
 
@@ -90,8 +90,8 @@ export class ByteBuffer {
    * @returns {number} - O valor de 16 bits lido.
    */
   public getInt16(): number {
-    const value = this._buffer.readInt16LE(this._offset);
-    this._offset += 2;
+    const value = this.byteBuffer.readInt16LE(this.offset);
+    this.offset += 2;
     return value;
   }
 
@@ -101,8 +101,8 @@ export class ByteBuffer {
    * @returns {number} - O valor de 32 bits lido.
    */
   public getInt32(): number {
-    const value = this._buffer.readInt32LE(this._offset);
-    this._offset += 4;
+    const value = this.byteBuffer.readInt32LE(this.offset);
+    this.offset += 4;
     return value;
   }
 
@@ -113,8 +113,8 @@ export class ByteBuffer {
    */
   public getString(): string {
     const length = this.getInt32();
-    const value = this._buffer.subarray(this._offset, this._offset + length);
-    this._offset += length;
+    const value = this.byteBuffer.subarray(this.offset, this.offset + length);
+    this.offset += length;
     return value.toString("utf8");
   }
 
@@ -125,8 +125,8 @@ export class ByteBuffer {
    * @returns {Buffer} - O buffer contendo os bytes lidos.
    */
   public getBytes(length: number): Buffer {
-    const value = this._buffer.subarray(this._offset, this._offset + length);
-    this._offset += length;
+    const value = this.byteBuffer.subarray(this.offset, this.offset + length);
+    this.offset += length;
     return value;
   }
 
@@ -136,7 +136,7 @@ export class ByteBuffer {
    * @returns {Buffer} - O buffer interno.
    */
   public getBuffer(): Buffer {
-    return this._buffer;
+    return this.byteBuffer;
   }
 
   /**
@@ -145,7 +145,7 @@ export class ByteBuffer {
    * @returns {number} - O offset atual.
    */
   public getOffset(): number {
-    return this._offset;
+    return this.offset;
   }
 
   /**
@@ -154,6 +154,6 @@ export class ByteBuffer {
    * @param {number} offset - O novo índice de offset.
    */
   public setOffset(offset: number): void {
-    this._offset = offset;
+    this.offset = offset;
   }
 }

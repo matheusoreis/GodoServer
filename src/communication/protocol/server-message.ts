@@ -1,4 +1,5 @@
 import type { Connection } from "../../core/connection";
+import { serviceLocator } from "../../misc/service-locator";
 import { Outgoing } from "../outgoing/outgoing";
 import { ByteBuffer } from "./byte-buffer";
 
@@ -7,9 +8,7 @@ import { ByteBuffer } from "./byte-buffer";
  * pelo servidor para os clientes. Ela gerencia o bytebuffer usado para armazenar e manipular
  * os dados da mensagem.
  */
-export abstract class ServerMessage extends Outgoing{
-  private _buffer: ByteBuffer;
-
+export abstract class ServerMessage extends Outgoing {
   /**
    * Cria uma nova instância de `ServerMessage` com um identificador.
    *
@@ -17,9 +16,11 @@ export abstract class ServerMessage extends Outgoing{
    */
   constructor(id: number) {
     super();
-    this._buffer = new ByteBuffer();
-    this._buffer.putInt16(id);
+    this.byteBuffer = serviceLocator.get<ByteBuffer>(ByteBuffer);
+    this.byteBuffer.putInt16(id);
   }
+
+  private byteBuffer: ByteBuffer;
 
   /**
    * Adiciona uma sequência de bytes ao buffer da mensagem.
@@ -27,7 +28,7 @@ export abstract class ServerMessage extends Outgoing{
    * @param {Buffer} value - O buffer contendo os bytes a serem adicionados.
    */
   protected putBytes(value: Buffer): void {
-    this._buffer.putBytes(value);
+    this.byteBuffer.putBytes(value);
   }
 
   /**
@@ -36,7 +37,7 @@ export abstract class ServerMessage extends Outgoing{
    * @param {number} value - O valor de 8 bits a ser adicionado.
    */
   protected putInt8(value: number) {
-    this._buffer.putInt8(value);
+    this.byteBuffer.putInt8(value);
   }
 
   /**
@@ -45,7 +46,7 @@ export abstract class ServerMessage extends Outgoing{
    * @param {number} value - O valor de 16 bits a ser adicionado.
    */
   protected putInt16(value: number) {
-    this._buffer.putInt16(value);
+    this.byteBuffer.putInt16(value);
   }
 
   /**
@@ -54,7 +55,7 @@ export abstract class ServerMessage extends Outgoing{
    * @param {number} value - O valor de 32 bits a ser adicionado.
    */
   protected putInt32(value: number): void {
-    this._buffer.putInt32(value);
+    this.byteBuffer.putInt32(value);
   }
 
   /**
@@ -63,7 +64,7 @@ export abstract class ServerMessage extends Outgoing{
    * @param {string} value - A string a ser adicionada ao buffer.
    */
   protected putString(value: string): void {
-    this._buffer.putString(value);
+    this.byteBuffer.putString(value);
   }
 
   /**
@@ -72,7 +73,7 @@ export abstract class ServerMessage extends Outgoing{
    * @returns {Buffer} - O buffer que contém todos os dados da mensagem.
    */
   public getBuffer(): Buffer {
-    return this._buffer.getBuffer();
+    return this.byteBuffer.getBuffer();
   }
 
   /**

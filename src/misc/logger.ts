@@ -1,5 +1,3 @@
-import { Singleton } from "./decorators/classes/singleton";
-
 /**
  * Retorna o texto formatado com o código de cor especificado para saída no console.
  *
@@ -20,10 +18,7 @@ const RED = 31;
 /**
  * A classe `Logger` fornece métodos para registrar mensagens com diferentes níveis de severidade,
  * com suporte para colorização do texto no console.
- *
- * A classe contém o decorator `@Singleton()`, garantindo que apenas uma instância seja criada.
  */
-@Singleton()
 export class Logger {
   /**
    * Retorna o timestamp atual formatado como uma string.
@@ -40,9 +35,7 @@ export class Logger {
    * @param {string} message - A mensagem a ser registrada.
    */
   public info(message: string): void {
-    console.log(
-      `${colorText("[INFO]", GREEN)} ${this._getTimestamp()} - ${colorText(message, GREEN)}`,
-    );
+    console.log(`${colorText("[INFO]", GREEN)} ${this._getTimestamp()} - ${colorText(message, GREEN)}`);
   }
 
   /**
@@ -51,9 +44,7 @@ export class Logger {
    * @param {string} message - A mensagem a ser registrada.
    */
   public warning(message: string): void {
-    console.log(
-      `${colorText("[WARN]", YELLOW)} ${this._getTimestamp()} - ${colorText(message, YELLOW)}`,
-    );
+    console.log(`${colorText("[WARN]", YELLOW)} ${this._getTimestamp()} - ${colorText(message, YELLOW)}`);
   }
 
   /**
@@ -62,9 +53,7 @@ export class Logger {
    * @param {string} message - A mensagem a ser registrada.
    */
   public player(message: string): void {
-    console.log(
-      `${colorText("[PLAYER]", BLUE)} ${this._getTimestamp()} - ${colorText(message, BLUE)}`,
-    );
+    console.log(`${colorText("[PLAYER]", BLUE)} ${this._getTimestamp()} - ${colorText(message, BLUE)}`);
   }
 
   /**
@@ -73,8 +62,6 @@ export class Logger {
    * @param {string} message - A mensagem a ser registrada.
    */
   public error(message: string): void {
-    console.log(
-      `${colorText("[ERRO]", RED)} ${this._getTimestamp()} - ${colorText(message, RED)}`,
-    );
+    console.log(`${colorText("[ERRO]", RED)} ${this._getTimestamp()} - ${colorText(message, RED)}`);
   }
 }

@@ -1,3 +1,5 @@
+import { Dependency } from "./src/misc/dependency";
+import { serviceLocator } from "./src/misc/service-locator";
 import { Setup } from "./src/net/setup";
 
 /**
@@ -5,7 +7,11 @@ import { Setup } from "./src/net/setup";
  * Cria uma instância da classe `Setup` e inicia o processo de inicialização.
  */
 async function main() {
-  await new Setup().start();
+  const dependency: Dependency = new Dependency();
+  dependency.setup();
+
+  const setup: Setup = serviceLocator.get<Setup>(Setup);
+  await setup.start();
 }
 
 main();

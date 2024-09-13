@@ -1,7 +1,9 @@
 import type { Incoming } from "../communication/incoming/incoming";
-import type { ClientHeaders } from "../communication/protocol/client-headers";
+import { PingRequest } from "../communication/incoming/requests/PingRequest";
+import { ClientHeaders } from "../communication/protocol/client-headers";
 import type { ClientMessage } from "../communication/protocol/client-message";
 import type { Connection } from "../core/connection";
+import { serviceLocator } from "../misc/service-locator";
 
 /**
  * A classe `Handler` é responsável por gerenciar e despachar mensagens recebidas
@@ -52,5 +54,7 @@ export class Handler {
    * Registra os handlers de requests associando os cabeçalhos de cliente a suas implementações específicas.
    * Este método é responsável por preencher o mapeamento `requestHandlers`.
    */
-  private registerRequests() {}
+  private registerRequests() {
+    this.requestHandlers[ClientHeaders.Ping] = serviceLocator.get<PingRequest>(PingRequest);
+  }
 }

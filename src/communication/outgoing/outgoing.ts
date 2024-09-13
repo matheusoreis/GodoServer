@@ -1,8 +1,8 @@
 import { Memory } from "../../core/memory";
 import { Logger } from "../../misc/logger";
-import type { Slots } from "../../misc/slots";
 import type { Connection } from "../../core/connection";
 import type { ServerMessage } from "../protocol/server-message";
+import { serviceLocator } from "../../misc/service-locator";
 
 /**
  * A classe abstrata `Outgoing` gerencia o envio de mensagens para clientes conectados.
@@ -14,12 +14,12 @@ export abstract class Outgoing {
    * Cria uma nova instância de `Outgoing`, inicializando o logger e a lista de conexões.
    */
   constructor() {
-    this.logger = new Logger();
-    this.connection = new Memory().connections;
+    this.logger = serviceLocator.get<Logger>(Logger);
+    this.memory = serviceLocator.get<Memory>(Memory);
   }
 
   private logger: Logger;
-  private connection: Slots<Connection>;
+  private memory: Memory;
 
   /**
    * Envia uma mensagem para um cliente específico.
@@ -41,15 +41,13 @@ export abstract class Outgoing {
    * @param {ServerMessage} message - A mensagem a ser enviada a todos os clientes.
    */
   public dataToAll(message: ServerMessage): void {
-    for (const index of this.connection.getFilledSlots()) {
-      const connection = this.connection.get(index);
+    for (const index of this.memory.connections.getFilledSlots()) {
+      const connection = this.memory.connections.get(index);
       if (connection?.ws) {
         try {
           this.dataTo(connection, message);
         } catch (error) {
-          this.logger.error(
-            "Error sending data to the client! Error: " + error,
-          );
+          this.logger.error("Error sending data to the client! Error: " + error);
         }
       }
     }
@@ -61,19 +59,14 @@ export abstract class Outgoing {
    * @param {Connection} exceptConnection - A conexão do cliente que não deve receber a mensagem.
    * @param {ServerMessage} message - A mensagem a ser enviada a todos os clientes exceto o especificado.
    */
-  public dataToAllExcept(
-    exceptConnection: Connection,
-    message: ServerMessage,
-  ): void {
-    for (const index of this.connection.getFilledSlots()) {
-      const connection = this.connection.get(index);
+  public dataToAllExcept(exceptConnection: Connection, message: ServerMessage): void {
+    for (const index of this.memory.connections.getFilledSlots()) {
+      const connection = this.memory.connections.get(index);
       if (connection?.ws && connection !== exceptConnection) {
         try {
           this.dataTo(connection, message);
         } catch (error) {
-          this.logger.error(
-            "Error sending data to the client! Error: " + error,
-          );
+          this.logger.error("Error sending data to the client! Error: " + error);
         }
       }
     }
@@ -83,11 +76,7 @@ export abstract class Outgoing {
     throw new Error("Method not implemented.");
   }
 
-  public dataToMapExcept(
-    mapId: number,
-    exceptConnection: Connection,
-    message: ServerMessage,
-  ): void {
+  public dataToMapExcept(mapId: number, exceptConnection: Connection, message: ServerMessage): void {
     throw new Error("Method not implemented.");
   }
 }

@@ -2,6 +2,7 @@ import type { ServerWebSocket } from "bun";
 import { Handler } from "../net/handler";
 import { Memory } from "./memory";
 import { ClientMessage } from "../communication/protocol/client-message";
+import { serviceLocator } from "../misc/service-locator";
 
 /**
  * A classe `Connection` gerencia uma conexão WebSocket, incluindo o fechamento
@@ -18,20 +19,26 @@ export class Connection {
     this.ws = ws;
     this.id = id;
     this.active = true;
-    this.handler = new Handler();
+
+    this.handler = serviceLocator.get<Handler>(Handler);
+    this.memory = serviceLocator.get<Memory>(Memory);
+    this.clientMessage = serviceLocator.get<ClientMessage>(ClientMessage);
   }
 
   public readonly ws: ServerWebSocket;
   public readonly id: number;
   private active: boolean;
+
   private handler: Handler;
+  private memory: Memory;
+  private clientMessage: ClientMessage;
 
   /**
    * Fecha a conexão, remove-a da memória e define seu status como inativa.
    */
   public close(): void {
     if (this.active) {
-      const connections = new Memory().connections;
+      const connections = this.memory.connections;
 
       const connection = connections.get(this.id);
       if (connection) {
@@ -50,7 +57,7 @@ export class Connection {
    * @param {Buffer} message - A mensagem recebida do WebSocket.
    */
   public handleMessage(message: Buffer): void {
-    const clientMessage: ClientMessage = new ClientMessage(message);
-    this.handler.handleMessage(this, clientMessage);
+    this.clientMessage.setBuffer(message);
+    this.handler.handleMessage(this, this.clientMessage);
   }
 }

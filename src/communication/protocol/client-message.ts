@@ -1,3 +1,4 @@
+import { serviceLocator } from "../../misc/service-locator";
 import { ByteBuffer } from "./byte-buffer";
 
 /**
@@ -5,15 +6,23 @@ import { ByteBuffer } from "./byte-buffer";
  * fornecendo métodos para acessar e interpretar os dados da mensagem.
  */
 export class ClientMessage {
-  private _buffer: ByteBuffer;
+  private byteBuffer: ByteBuffer;
 
   /**
    * Cria uma nova instância de `ClientMessage`.
+   * Se um buffer for passado posteriormente, ele pode ser configurado usando `setBuffer`.
+   */
+  constructor() {
+    this.byteBuffer = serviceLocator.get<ByteBuffer>(ByteBuffer);
+  }
+
+  /**
+   * Configura o buffer para a instância de `ClientMessage`.
    *
    * @param {Buffer} buffer - O buffer que contém a mensagem do cliente.
    */
-  constructor(buffer: Buffer) {
-    this._buffer = new ByteBuffer(buffer);
+  public setBuffer(buffer: Buffer): void {
+    this.byteBuffer = new ByteBuffer(buffer);
   }
 
   /**
@@ -22,7 +31,7 @@ export class ClientMessage {
    * @returns {number} - O identificador da mensagem.
    */
   public getId(): number {
-    return this._buffer.getInt16();
+    return this.byteBuffer.getInt16();
   }
 
   /**
@@ -31,9 +40,7 @@ export class ClientMessage {
    * @returns {Buffer} - O buffer contendo o conteúdo da mensagem.
    */
   public getContent(): Buffer {
-    return this._buffer.getBytes(
-      this._buffer.getBuffer().length - this._buffer.getOffset(),
-    );
+    return this.byteBuffer.getBytes(this.byteBuffer.getBuffer().length - this.byteBuffer.getOffset());
   }
 
   /**
@@ -42,7 +49,7 @@ export class ClientMessage {
    * @returns {number} - O valor de 8 bits lido.
    */
   public getInt8(): number {
-    return this._buffer.getInt8();
+    return this.byteBuffer.getInt8();
   }
 
   /**
@@ -51,7 +58,7 @@ export class ClientMessage {
    * @returns {number} - O valor de 16 bits lido.
    */
   public getInt16(): number {
-    return this._buffer.getInt16();
+    return this.byteBuffer.getInt16();
   }
 
   /**
@@ -60,7 +67,7 @@ export class ClientMessage {
    * @returns {number} - O valor de 32 bits lido.
    */
   public getInt32(): number {
-    return this._buffer.getInt32();
+    return this.byteBuffer.getInt32();
   }
 
   /**
@@ -69,7 +76,7 @@ export class ClientMessage {
    * @returns {string} - A string lida do buffer.
    */
   public getString(): string {
-    return this._buffer.getString();
+    return this.byteBuffer.getString();
   }
 
   /**
@@ -79,6 +86,6 @@ export class ClientMessage {
    * @returns {Buffer} - O buffer contendo os bytes lidos.
    */
   public getBytes(length: number): Buffer {
-    return this._buffer.getBytes(length);
+    return this.byteBuffer.getBytes(length);
   }
 }

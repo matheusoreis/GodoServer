@@ -2,6 +2,7 @@ import type { Server, ServerWebSocket } from "bun";
 import { Logger } from "../misc/logger";
 import { Manager } from "./manager";
 import { SERVER_HOST, SERVER_PORT } from "../misc/constants";
+import { serviceLocator } from "../misc/service-locator";
 
 /**
  * A classe `Setup` é responsável por iniciar e configurar o servidor, gerenciar conexões WebSocket
@@ -13,8 +14,8 @@ export class Setup {
    * Inicializa o logger, o manager e define os manipuladores de WebSocket.
    */
   constructor() {
-    this.logger = new Logger();
-    this.manager = new Manager();
+    this.logger = serviceLocator.get<Logger>(Logger);
+    this.manager = serviceLocator.get<Manager>(Manager);
 
     this.websocketHandlers = {
       open: this.websocketOpen.bind(this),
@@ -94,11 +95,7 @@ export class Setup {
    * @param {number} code - Código de status de fechamento.
    * @param {string} message - Mensagem informativa sobre o fechamento.
    */
-  private websocketClose(
-    ws: ServerWebSocket,
-    code: number,
-    message: string,
-  ): void {
+  private websocketClose(ws: ServerWebSocket, code: number, message: string): void {
     this.logger.info("Connection closed, address: " + ws.remoteAddress);
     this.manager.websocketClose(ws, code, message);
   }

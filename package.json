@@ -4,9 +4,10 @@
   "type": "module",
   "devDependencies": {
     "@types/bun": "latest",
-    "prettier": "latest",
     "eslint": "latest",
-    "eslint-config-prettier": "latest"
+    "eslint-config-prettier": "latest",
+    "prettier": "latest",
+    "prisma": "^5.19.1"
   },
   "peerDependencies": {
     "typescript": "latest"
@@ -17,5 +18,5 @@
     "build": "bun build index.ts --outdir ./build",
     "release": "bun build/index.js"
   },
-  "dependencies": {}
+  "dependencies": { "@prisma/client": "^5.19.1" }
 }

@@ -1,4 +1,3 @@
-import type { Connection } from "../../../core/connection";
 import { ServerHeaders } from "../../protocol/server-headers";
 import { ServerMessage } from "../../protocol/server-message";
 
@@ -8,15 +7,11 @@ export enum AlertType {
   Error,
 }
 
-export interface AlertData {
-  type: AlertType;
-  message: string;
-}
-
 export class AlertDispatcher extends ServerMessage {
-  constructor(data: AlertData) {
+  constructor(type: AlertType, message: string, disconnect: boolean) {
     super(ServerHeaders.Alert);
-    this.putInt8(data.type);
-    this.putString(data.message);
+    this.putInt8(type);
+    this.putString(message);
+    this.putInt8(disconnect ? 1 : 0);
   }
 }

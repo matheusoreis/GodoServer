@@ -28,7 +28,7 @@ export class Connection {
 
   public readonly ws: ServerWebSocket;
   public readonly id: number;
-  private dbId?: number;
+  private databaseId?: number;
 
   private active: boolean;
 
@@ -74,7 +74,7 @@ export class Connection {
   /**
    * Adiciona o id do banco de dados a connection.
    */
-  public addDbId(dbId: number): void {
-    this.dbId = this.id;
+  public addDatabaseId(databaseId: number): void {
+    this.databaseId = databaseId;
   }
 }

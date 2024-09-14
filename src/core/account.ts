@@ -1,3 +1,4 @@
+import { AccessAccountSuccess } from "../communication/outgoing/dispatcher/access-account-success";
 import { VersionChecker } from "../misc/check-version";
 import type { Connection } from "./connection";
 
@@ -22,6 +23,11 @@ export class Account {
     if (!VersionChecker.checkAndAlert(this.major, this.minor, this.revision, this.connection)) {
       return;
     }
+
+    this.connection.addDatabaseId(1);
+
+    const dispatcher: AccessAccountSuccess = new AccessAccountSuccess(this.connection);
+    dispatcher.sendTo(this.connection);
   }
 
   public async createAccount() {

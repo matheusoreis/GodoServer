@@ -5,6 +5,7 @@ import { ClientMessage } from "../communication/protocol/client-message";
 import { serviceLocator } from "../misc/service-locator";
 import type { Account } from "./account";
 import type { Character } from "./character";
+import { AlertDispatcher, AlertType } from "../communication/outgoing/dispatcher/alert";
 
 /**
  * A classe `Connection` gerencia uma conexão WebSocket, incluindo o fechamento
@@ -29,7 +30,7 @@ export class Connection {
 
   public readonly ws: ServerWebSocket;
   public readonly id: number;
-  private databaseId?: number;
+  private connectionDatabaseId?: number;
   private chars?: Character[];
   private charInUse?: Character;
 
@@ -78,7 +79,23 @@ export class Connection {
    * Adiciona o id do banco de dados a connection.
    */
   public addDatabaseId(databaseId: number): void {
-    this.databaseId = databaseId;
+    this.connectionDatabaseId = databaseId;
+  }
+
+  public getDatabaseId(): number | undefined {
+    if (this.connectionDatabaseId == undefined) {
+      const alertDispatcher: AlertDispatcher = new AlertDispatcher(
+        AlertType.Error,
+        "The client version is out of date, please update to continue playing.",
+        true,
+      );
+
+      alertDispatcher.sendTo(this);
+
+      return undefined;
+    }
+
+    return this.connectionDatabaseId!;
   }
 
   /**

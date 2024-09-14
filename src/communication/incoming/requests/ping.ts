@@ -20,7 +20,7 @@ export class PingRequest implements Incoming {
    * @param {ClientMessage} _message - A mensagem recebida do cliente (não utilizada neste método).
    */
   handle(connection: Connection, _message: ClientMessage): void {
-    const ping: PingDispatcher = serviceLocator.get<PingDispatcher>(PingDispatcher);
+    const ping: PingDispatcher = new PingDispatcher();
 
     ping.sendTo(connection);
   }

@@ -27,7 +27,7 @@ export abstract class Outgoing {
    * @param {Connection} connection - A conexão do cliente para o qual a mensagem será enviada.
    * @param {ServerMessage} message - A mensagem a ser enviada.
    */
-  public dataTo(connection: Connection, message: ServerMessage): void {
+  protected dataTo(connection: Connection, message: ServerMessage): void {
     try {
       connection.ws.send(message.getBuffer());
     } catch (error) {
@@ -40,7 +40,7 @@ export abstract class Outgoing {
    *
    * @param {ServerMessage} message - A mensagem a ser enviada a todos os clientes.
    */
-  public dataToAll(message: ServerMessage): void {
+  protected dataToAll(message: ServerMessage): void {
     for (const index of this.memory.connections.getFilledSlots()) {
       const connection = this.memory.connections.get(index);
       if (connection?.ws) {
@@ -59,7 +59,7 @@ export abstract class Outgoing {
    * @param {Connection} exceptConnection - A conexão do cliente que não deve receber a mensagem.
    * @param {ServerMessage} message - A mensagem a ser enviada a todos os clientes exceto o especificado.
    */
-  public dataToAllExcept(exceptConnection: Connection, message: ServerMessage): void {
+  protected dataToAllExcept(exceptConnection: Connection, message: ServerMessage): void {
     for (const index of this.memory.connections.getFilledSlots()) {
       const connection = this.memory.connections.get(index);
       if (connection?.ws && connection !== exceptConnection) {

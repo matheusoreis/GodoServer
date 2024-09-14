@@ -1,7 +1,6 @@
 import type { ServerWebSocket } from "bun";
 import { Memory } from "../core/memory";
 import { Logger } from "../misc/logger";
-import type { Slots } from "../misc/slots";
 import { Connection } from "../core/connection";
 import { GetConnection } from "../misc/get-connection";
 import { AlertDispatcher, AlertType, type AlertData } from "../communication/outgoing/dispatcher/alert-dispatcher";
@@ -39,7 +38,7 @@ export class Manager {
     }
 
     const connectionModel: Connection = new Connection(ws, firstAvailableId);
-    this.memory.connections.add(connectionModel);
+    connectionModel.addToMemory();
   }
 
   /**

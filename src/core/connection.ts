@@ -3,6 +3,7 @@ import { Handler } from "../net/handler";
 import { Memory } from "./memory";
 import { ClientMessage } from "../communication/protocol/client-message";
 import { serviceLocator } from "../misc/service-locator";
+import type { Account } from "./account";
 
 /**
  * A classe `Connection` gerencia uma conexão WebSocket, incluindo o fechamento
@@ -27,6 +28,8 @@ export class Connection {
 
   public readonly ws: ServerWebSocket;
   public readonly id: number;
+  private dbId?: number;
+
   private active: boolean;
 
   private handler: Handler;
@@ -59,5 +62,19 @@ export class Connection {
   public handleMessage(message: Buffer): void {
     this.clientMessage.setBuffer(message);
     this.handler.handleMessage(this, this.clientMessage);
+  }
+
+  /**
+   * Adiciona a connection a memória do servidor.
+   */
+  public addToMemory(): void {
+    this.memory.connections.add(this);
+  }
+
+  /**
+   * Adiciona o id do banco de dados a connection.
+   */
+  public addDbId(dbId: number): void {
+    this.dbId = this.id;
   }
 }

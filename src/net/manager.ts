@@ -3,7 +3,7 @@ import { Memory } from "../core/memory";
 import { Logger } from "../misc/logger";
 import { Connection } from "../core/connection";
 import { GetConnection } from "../misc/get-connection";
-import { AlertDispatcher, AlertType, type AlertData } from "../communication/outgoing/dispatcher/alert-dispatcher";
+import { AlertDispatcher, AlertType } from "../communication/outgoing/dispatcher/alert-dispatcher";
 import { serviceLocator } from "../misc/service-locator";
 
 /**
@@ -81,12 +81,12 @@ export class Manager {
   private handleFullServer(ws: ServerWebSocket): void {
     const connection: Connection = new Connection(ws, -1);
 
-    const alertData: AlertData = {
-      type: AlertType.Error,
-      message: "Server is full! disconnecting...",
-    };
+    const alertDispatcher: AlertDispatcher = new AlertDispatcher(
+      AlertType.Error,
+      "Server is full! disconnecting...",
+      true,
+    );
 
-    const alertDispatcher: AlertDispatcher = new AlertDispatcher(alertData);
     alertDispatcher.sendTo(connection);
 
     this.logger.info(`Server is full, disconnecting client: ${ws.remoteAddress}`);

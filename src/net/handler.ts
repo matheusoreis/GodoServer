@@ -1,5 +1,5 @@
 import type { Incoming } from "../communication/incoming/incoming";
-import { PingRequest } from "../communication/incoming/requests/PingRequest";
+import { PingRequest } from "../communication/incoming/requests/ping";
 import { ClientHeaders } from "../communication/protocol/client-headers";
 import type { ClientMessage } from "../communication/protocol/client-message";
 import type { Connection } from "../core/connection";

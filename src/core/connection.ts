@@ -4,6 +4,7 @@ import { Memory } from "./memory";
 import { ClientMessage } from "../communication/protocol/client-message";
 import { serviceLocator } from "../misc/service-locator";
 import type { Account } from "./account";
+import type { Character } from "./character";
 
 /**
  * A classe `Connection` gerencia uma conexão WebSocket, incluindo o fechamento
@@ -29,6 +30,8 @@ export class Connection {
   public readonly ws: ServerWebSocket;
   public readonly id: number;
   private databaseId?: number;
+  private chars?: Character[];
+  private charInUse?: Character;
 
   private active: boolean;
 
@@ -77,4 +80,18 @@ export class Connection {
   public addDatabaseId(databaseId: number): void {
     this.databaseId = databaseId;
   }
+
+  /**
+   * Adiciona os personagens a connection
+   *
+   * @param {Character[]} chars - A lista de personagens da connection
+   */
+  public addCharacters(chars: Character[]): void {}
+
+  /**
+   * Adiciona o personagem ao personagem ativo no momento.
+   *
+   * @param {Character} char - O personagem escolhido.
+   */
+  public setCharacterInUse(char: Character): void {}
 }

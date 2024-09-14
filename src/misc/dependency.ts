@@ -1,5 +1,5 @@
-import { PingRequest } from "../communication/incoming/requests/PingRequest";
-import { PingDispatcher } from "../communication/outgoing/dispatcher/ping-dispatcher";
+import { PingRequest } from "../communication/incoming/requests/ping";
+import { PingDispatcher } from "../communication/outgoing/dispatcher/ping";
 import { ByteBuffer } from "../communication/protocol/byte-buffer";
 import { ClientMessage } from "../communication/protocol/client-message";
 import { Memory } from "../core/memory";

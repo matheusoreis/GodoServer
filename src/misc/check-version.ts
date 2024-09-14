@@ -1,4 +1,4 @@
-import { AlertDispatcher, AlertType } from "../communication/outgoing/dispatcher/alert-dispatcher";
+import { AlertDispatcher, AlertType } from "../communication/outgoing/dispatcher/alert";
 import type { Connection } from "../core/connection";
 import { MAJOR_VERSION, MINOR_VERSION, REVISION_VERSION } from "./constants";
 

@@ -1,6 +1,6 @@
 import type { Connection } from "../../../core/connection";
 import { serviceLocator } from "../../../misc/service-locator";
-import { PingDispatcher } from "../../outgoing/dispatcher/ping-dispatcher";
+import { PingDispatcher } from "../../outgoing/dispatcher/ping";
 import type { ClientMessage } from "../../protocol/client-message";
 import type { Incoming } from "../incoming";
 

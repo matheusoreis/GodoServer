@@ -7,4 +7,18 @@
 export enum ServerHeaders {
   Pong,
   Alert,
+  AccessAccountSuccess,
+  CreateAccountSuccess,
+  DeleteAccountSuccess,
+  RecoverAccountSuccess,
+  ChangePasswordSuccess,
+  CharList,
+  CharCreated,
+  CharDeleted,
+  CharSelected,
+  MapEntered,
+  NewCharEntered,
+  CharMoved,
+  CharDisconnected,
+  CharTeleported,
 }

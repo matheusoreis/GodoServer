@@ -6,4 +6,14 @@
  */
 export enum ClientHeaders {
   Ping,
+  AccessAccount,
+  CreateAccount,
+  DeleteAccount,
+  RecoverAccount,
+  ChangePassword,
+  CharList,
+  CreateChar,
+  DeleteChar,
+  SelectChar,
+  MoveChar,
 }

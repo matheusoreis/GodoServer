@@ -3,7 +3,7 @@ import { Memory } from "../core/memory";
 import { Logger } from "../misc/logger";
 import { Connection } from "../core/connection";
 import { GetConnection } from "../misc/get-connection";
-import { AlertDispatcher, AlertType } from "../communication/outgoing/dispatcher/alert-dispatcher";
+import { AlertDispatcher, AlertType } from "../communication/outgoing/dispatcher/alert";
 import { serviceLocator } from "../misc/service-locator";
 
 /**

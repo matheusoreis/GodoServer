@@ -82,17 +82,17 @@ export class Connection {
     this.connectionDatabaseId = databaseId;
   }
 
-  public getDatabaseId(): number | undefined {
+  public getDatabaseId(): number | void {
     if (this.connectionDatabaseId == undefined) {
       const alertDispatcher: AlertDispatcher = new AlertDispatcher(
         AlertType.Error,
-        "The client version is out of date, please update to continue playing.",
+        "An error occurred while retrieving your data. Please try again later.",
         true,
       );
 
       alertDispatcher.sendTo(this);
 
-      return undefined;
+      return;
     }
 
     return this.connectionDatabaseId!;

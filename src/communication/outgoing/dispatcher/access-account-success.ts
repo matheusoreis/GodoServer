@@ -7,12 +7,6 @@ export class AccessAccountSuccess extends ServerMessage {
     super(ServerHeaders.AccessAccountSuccess);
 
     this.putInt32(connection.id);
-
-    const connectionDatabaseId = connection.getDatabaseId();
-    if (connectionDatabaseId == undefined) {
-      return;
-    }
-
-    this.putInt32(connectionDatabaseId);
+    this.putInt32(connection.getDatabaseId()!);
   }
 }

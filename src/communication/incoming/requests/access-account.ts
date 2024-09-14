@@ -11,13 +11,7 @@ export class AccessAccountRequest implements Incoming {
     const minor: number = message.getInt16();
     const revision: number = message.getInt16();
 
-    console.log(email);
-    console.log(password);
-    console.log(major);
-    console.log(minor);
-    console.log(revision);
-
-    // const account: Account = new Account(connection, email, password, major, minor, revision);
-    // await account.accessAccount();
+    const account: Account = new Account(connection, email, password, major, minor, revision);
+    await account.accessAccount();
   }
 }

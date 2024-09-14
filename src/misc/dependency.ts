@@ -1,3 +1,4 @@
+import { PrismaClient } from "@prisma/client";
 import { AccessAccountRequest } from "../communication/incoming/requests/access-account";
 import { ChangePasswordRequest } from "../communication/incoming/requests/change-password";
 import { CharListRequest } from "../communication/incoming/requests/char-list";
@@ -29,6 +30,7 @@ export class Dependency {
     serviceLocator.registerFactory<Password>(Password, () => new Password());
     serviceLocator.registerFactory<ByteBuffer>(ByteBuffer, () => new ByteBuffer());
     serviceLocator.registerFactory<ClientMessage>(ClientMessage, () => new ClientMessage());
+    serviceLocator.registerFactory<PrismaClient>(PrismaClient, () => new PrismaClient());
 
     serviceLocator.registerFactory<PingRequest>(PingRequest, () => new PingRequest());
     serviceLocator.registerFactory<AccessAccountRequest>(AccessAccountRequest, () => new AccessAccountRequest());

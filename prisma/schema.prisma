@@ -30,10 +30,13 @@ model Roles {
 }
 
 model Characters {
-  id        Int    @id @default(autoincrement())
-  name      String @unique()
-  gendersId Int
-  accountId Int?
+  id           Int    @id @default(autoincrement())
+  name         String @unique()
+  gendersId    Int
+  accountId    Int?
+  currentMap   Int    @default(1)
+  mapPositionX Int    @default(1)
+  mapPositionY Int    @default(1)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
@@ -47,4 +50,11 @@ model Genders {
   name String
 
   Characters Characters[]
+}
+
+model GameMaps {
+  id    Int    @id @default(autoincrement())
+  name  String
+  sizeX Int    @default(50)
+  sizeY Int    @default(33)
 }

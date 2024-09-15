@@ -12,6 +12,9 @@ export class CharacterModel {
     name: string,
     gendersId: number,
     accountId: number | null,
+    currentMap: number,
+    mapPositionX: number,
+    mapPositionY: number,
     createdAt: Date,
     updatedAt: Date,
     gender: { id: number; name: string },
@@ -20,6 +23,9 @@ export class CharacterModel {
     this.name = name;
     this.gendersId = gendersId;
     this.accountId = accountId;
+    this.currentMap = currentMap;
+    this.mapPositionX = mapPositionX;
+    this.mapPositionY = mapPositionY;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.gender = gender;
@@ -29,6 +35,9 @@ export class CharacterModel {
   name: string;
   gendersId: number;
   accountId: number | null;
+  currentMap: number;
+  mapPositionX: number;
+  mapPositionY: number;
   createdAt: Date;
   updatedAt: Date;
   gender: {
@@ -220,6 +229,9 @@ export class Character {
       character.name,
       character.gendersId,
       character.accountId,
+      character.currentMap,
+      character.mapPositionX,
+      character.mapPositiony,
       character.createdAt,
       character.updatedAt,
       character.gender,

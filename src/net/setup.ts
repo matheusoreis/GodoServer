@@ -3,6 +3,9 @@ import { Logger } from "../misc/logger";
 import { Manager } from "./manager";
 import { SERVER_HOST, SERVER_PORT } from "../misc/constants";
 import { serviceLocator } from "../misc/service-locator";
+import { PrismaClient } from "@prisma/client";
+import { Memory } from "../core/memory";
+import { GameMap } from "../core/game-map";
 
 /**
  * A classe `Setup` é responsável por iniciar e configurar o servidor, gerenciar conexões WebSocket
@@ -16,6 +19,8 @@ export class Setup {
   constructor() {
     this.logger = serviceLocator.get<Logger>(Logger);
     this.manager = serviceLocator.get<Manager>(Manager);
+    this.prisma = serviceLocator.get<PrismaClient>(PrismaClient);
+    this.memory = serviceLocator.get<Memory>(Memory);
 
     this.websocketHandlers = {
       open: this.websocketOpen.bind(this),
@@ -26,6 +31,8 @@ export class Setup {
 
   private logger: Logger;
   private manager: Manager;
+  private prisma: PrismaClient;
+  private memory: Memory;
 
   /** Manipuladores de eventos WebSocket (abertura, fechamento, e mensagens). */
   private websocketHandlers: {
@@ -113,5 +120,27 @@ export class Setup {
   /**
    * Carrega a memória do servidor.
    */
-  private async loadMemory(): Promise<void> {}
+  private async loadMemory(): Promise<void> {
+    await this.loadMaps();
+  }
+
+  public async loadMaps(): Promise<void> {
+    try {
+      const maps = await this.prisma.gameMaps.findMany();
+
+      if (maps.length === 0) {
+        console.log("No maps found in the database.");
+        return;
+      }
+
+      for (const map of maps) {
+        const gameMap = new GameMap(map.id, map.name, map.sizeX, map.sizeY);
+        this.memory.maps.add(gameMap);
+      }
+
+      this.logger.info(`Loaded ${maps.length} maps into memory.`);
+    } catch (error) {
+      this.logger.error("Failed to load maps from database: " + error);
+    }
+  }
 }

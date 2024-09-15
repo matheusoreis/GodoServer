@@ -3,11 +3,11 @@ import { ServerHeaders } from "../../protocol/server-headers";
 import { ServerMessage } from "../../protocol/server-message";
 
 export class CharList extends ServerMessage {
-  constructor(chars: CharacterModel[]) {
+  constructor(chars: CharacterModel[], accountCharSize: number) {
     super(ServerHeaders.CharList);
 
     this.putInt8(chars.length);
-    this.putInt8(5);
+    this.putInt8(accountCharSize);
 
     for (const char of chars) {
       this.putInt32(char.id);

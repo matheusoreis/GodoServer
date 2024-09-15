@@ -7,17 +7,6 @@ import { CharCreated } from "../communication/outgoing/dispatcher/char-created";
 import { CharList } from "../communication/outgoing/dispatcher/char-list";
 
 export class CharacterModel {
-  id: number;
-  name: string;
-  gendersId: number;
-  accountId: number | null;
-  createdAt: Date;
-  updatedAt: Date;
-  gender: {
-    id: number;
-    name: string;
-  };
-
   constructor(
     id: number,
     name: string,
@@ -35,6 +24,17 @@ export class CharacterModel {
     this.updatedAt = updatedAt;
     this.gender = gender;
   }
+
+  id: number;
+  name: string;
+  gendersId: number;
+  accountId: number | null;
+  createdAt: Date;
+  updatedAt: Date;
+  gender: {
+    id: number;
+    name: string;
+  };
 }
 
 export class Character {
@@ -70,7 +70,7 @@ export class Character {
 
       this.connection.addCharacters(characterModelList);
 
-      const dispatcher: CharList = new CharList(characterModelList);
+      const dispatcher: CharList = new CharList(characterModelList, 5);
       dispatcher.sendTo(this.connection);
     } catch (error) {
       const alertDispatcher: AlertDispatcher = new AlertDispatcher(

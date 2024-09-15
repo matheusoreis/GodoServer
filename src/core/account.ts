@@ -35,7 +35,7 @@ export class Account {
 
     if (!this.email || !this.password) {
       const alertDispatcher: AlertDispatcher = new AlertDispatcher(
-        AlertType.Error,
+        AlertType.Warn,
         "Email and password are mandatory.",
         false,
       );
@@ -48,7 +48,7 @@ export class Account {
       });
 
       if (!account) {
-        const alertDispatcher: AlertDispatcher = new AlertDispatcher(AlertType.Error, "Account not found.", false);
+        const alertDispatcher: AlertDispatcher = new AlertDispatcher(AlertType.Warn, "Account not found.", false);
         alertDispatcher.sendTo(this.connection);
 
         return;
@@ -57,7 +57,7 @@ export class Account {
       const isPasswordValid = await this.passwordHash.verify(this.password, account!.password);
 
       if (!isPasswordValid) {
-        const alertDispatcher: AlertDispatcher = new AlertDispatcher(AlertType.Error, "Wrong password.", false);
+        const alertDispatcher: AlertDispatcher = new AlertDispatcher(AlertType.Warn, "Wrong password.", false);
         alertDispatcher.sendTo(this.connection);
 
         return;
@@ -65,7 +65,7 @@ export class Account {
 
       this.connection.addDatabaseId(account!.id);
 
-      const dispatcher: AccessAccountSuccess = new AccessAccountSuccess(this.connection);
+      const dispatcher: AccessAccountSuccess = new AccessAccountSuccess();
       dispatcher.sendTo(this.connection);
     } catch (error) {
       const alertDispatcher: AlertDispatcher = new AlertDispatcher(AlertType.Error, `Error: ${error}`, false);
@@ -80,7 +80,7 @@ export class Account {
 
     if (!this.email || !this.password) {
       const alertDispatcher: AlertDispatcher = new AlertDispatcher(
-        AlertType.Error,
+        AlertType.Warn,
         "Email and password are mandatory.",
         false,
       );
@@ -96,7 +96,7 @@ export class Account {
 
       if (existingAccount) {
         const alertDispatcher: AlertDispatcher = new AlertDispatcher(
-          AlertType.Error,
+          AlertType.Warn,
           "Account with this email already exists.",
           false,
         );
@@ -110,8 +110,19 @@ export class Account {
         data: {
           email: this.email,
           password: hashedPassword,
+          roles: {
+            connect: { id: 1 },
+          },
         },
       });
+
+      const alertDispatcher = new AlertDispatcher(
+        AlertType.Info,
+        "Your account has been successfully registered!",
+        false,
+      );
+
+      alertDispatcher.sendTo(this.connection);
 
       const dispatcher: CreateAccountSuccess = new CreateAccountSuccess(this.connection);
       dispatcher.sendTo(this.connection);

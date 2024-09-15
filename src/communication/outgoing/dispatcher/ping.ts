@@ -8,7 +8,7 @@ import { ServerMessage } from "../../protocol/server-message";
  *
  * @extends ServerMessage
  */
-export class PingDispatcher extends ServerMessage {
+export class Ping extends ServerMessage {
   /**
    * Cria uma nova instância de `PingDispatcher`.
    *

@@ -3,9 +3,8 @@ import { Handler } from "../net/handler";
 import { Memory } from "./memory";
 import { ClientMessage } from "../communication/protocol/client-message";
 import { serviceLocator } from "../misc/service-locator";
-import type { Account } from "./account";
-import type { Character } from "./character";
 import { AlertDispatcher, AlertType } from "../communication/outgoing/dispatcher/alert";
+import type { CharacterModel } from "./character";
 
 /**
  * A classe `Connection` gerencia uma conexão WebSocket, incluindo o fechamento
@@ -31,8 +30,8 @@ export class Connection {
   public readonly ws: ServerWebSocket;
   public readonly id: number;
   private connectionDatabaseId?: number;
-  private chars?: Character[];
-  private charInUse?: Character;
+  private chars?: CharacterModel[];
+  private charInUse?: CharacterModel;
 
   private active: boolean;
 
@@ -101,14 +100,47 @@ export class Connection {
   /**
    * Adiciona os personagens a connection
    *
-   * @param {Character[]} chars - A lista de personagens da connection
+   * @param {CharacterModel[]} chars - A lista de personagens da connection
    */
-  public addCharacters(chars: Character[]): void {}
+  public addCharacters(chars: CharacterModel[]): void {
+    this.chars = chars;
+  }
+
+  /**
+   * Adiciona um personagem à lista de personagens e define como personagem ativo.
+   *
+   * @param {CharacterModel} char - O personagem escolhido.
+   */
+  public addCharacter(char: CharacterModel): void {
+    const existingCharacter = this.chars?.find((c) => c.id === char.id);
+
+    if (existingCharacter) {
+      return;
+    }
+
+    this.chars?.push(char);
+    this.setCharacterInUse(char);
+  }
 
   /**
    * Adiciona o personagem ao personagem ativo no momento.
    *
-   * @param {Character} char - O personagem escolhido.
+   * @param {CharacterModel} char - O personagem escolhido.
    */
-  public setCharacterInUse(char: Character): void {}
+  public setCharacterInUse(char: CharacterModel): void {
+    this.charInUse = char;
+  }
+
+  /**
+   * Remove um personagem da lista de personagens.
+   *
+   * @param {number} characterId - O id do personagem a ser removido.
+   */
+  public removeCharacter(characterId: number): void {
+    this.chars = this.chars?.filter((c) => c.id !== characterId);
+
+    if (this.charInUse && this.charInUse.id === characterId) {
+      this.charInUse = undefined;
+    }
+  }
 }

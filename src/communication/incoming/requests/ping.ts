@@ -1,6 +1,6 @@
 import type { Connection } from "../../../core/connection";
 import { serviceLocator } from "../../../misc/service-locator";
-import { PingDispatcher } from "../../outgoing/dispatcher/ping";
+import { Ping } from "../../outgoing/dispatcher/ping";
 import type { ClientMessage } from "../../protocol/client-message";
 import type { Incoming } from "../incoming";
 
@@ -20,7 +20,7 @@ export class PingRequest implements Incoming {
    * @param {ClientMessage} _message - A mensagem recebida do cliente (não utilizada neste método).
    */
   handle(connection: Connection, _message: ClientMessage): void {
-    const ping: PingDispatcher = new PingDispatcher();
+    const ping: Ping = new Ping();
 
     ping.sendTo(connection);
   }

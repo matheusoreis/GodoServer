@@ -5,6 +5,9 @@ import { AlertDispatcher, AlertType } from "../communication/outgoing/dispatcher
 import { CharDeleted } from "../communication/outgoing/dispatcher/char-deleted";
 import { CharCreated } from "../communication/outgoing/dispatcher/char-created";
 import { CharList } from "../communication/outgoing/dispatcher/char-list";
+import { Logger } from "../misc/logger";
+import type { GameMap } from "./game-map";
+import { Memory } from "./memory";
 
 export class CharacterModel {
   constructor(
@@ -15,6 +18,7 @@ export class CharacterModel {
     currentMap: number,
     mapPositionX: number,
     mapPositionY: number,
+    direction: number,
     createdAt: Date,
     updatedAt: Date,
     gender: { id: number; name: string },
@@ -26,9 +30,14 @@ export class CharacterModel {
     this.currentMap = currentMap;
     this.mapPositionX = mapPositionX;
     this.mapPositionY = mapPositionY;
+    this.direction = direction;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.gender = gender;
+
+    this.prisma = serviceLocator.get<PrismaClient>(PrismaClient);
+    this.logger = serviceLocator.get<Logger>(Logger);
+    this.memory = serviceLocator.get<Memory>(Memory);
   }
 
   id: number;
@@ -38,22 +47,96 @@ export class CharacterModel {
   currentMap: number;
   mapPositionX: number;
   mapPositionY: number;
+  direction: number;
   createdAt: Date;
   updatedAt: Date;
   gender: {
     id: number;
     name: string;
   };
+
+  prisma: PrismaClient;
+  logger: Logger;
+  memory: Memory;
+
+  public async updateCharacter(characterModel: CharacterModel): Promise<void> {
+    try {
+      await this.prisma.characters.update({
+        where: { id: characterModel.id },
+        data: {
+          name: characterModel.name,
+          gendersId: characterModel.gendersId,
+          accountId: characterModel.accountId,
+          currentMap: characterModel.currentMap,
+          mapPositionX: characterModel.mapPositionX,
+          mapPositionY: characterModel.mapPositionY,
+          updatedAt: new Date(),
+        },
+      });
+
+      this.logger.info("Character successfully updated!" + characterModel);
+    } catch (error) {
+      this.logger.info(`Error updating character: ${error}`);
+    }
+  }
+
+  /**
+   * Encontra um mapa na memória baseado no ID fornecido.
+   * @param {number} mapId - ID do mapa fornecido.
+   * @returns {GameMap | undefined} - O mapa encontrado ou undefined se não encontrado.
+   */
+  public findMapById(mapId: number): GameMap | undefined {
+    let foundMap: GameMap | undefined;
+
+    for (const index of this.memory.maps.getFilledSlots()) {
+      const gameMap: GameMap | undefined = this.memory.maps.get(index);
+      if (gameMap && gameMap.id === mapId) {
+        foundMap = gameMap;
+        break;
+      }
+    }
+
+    return foundMap;
+  }
+
+  private updateIntervalId: Timer | null = null;
+
+  public async loop(): Promise<void> {
+    // Inicia o loop do personagem
+    this.updateIntervalId = setInterval(
+      async () => {
+        try {
+          await this.updateCharacter(this);
+        } catch (error) {
+          console.error("Error syncing character: ", error);
+        }
+      },
+      1 * 60 * 1000, // 1 minuto
+    );
+  }
+
+  public stopLoop(): void {
+    if (this.updateIntervalId !== null) {
+      clearInterval(this.updateIntervalId);
+      this.updateIntervalId = null;
+    }
+  }
+
+  public getCharInUse(connection: Connection): CharacterModel | void {
+    return connection.getCharInUse();
+  }
 }
 
 export class Character {
   constructor(connection: Connection) {
     this.connection = connection;
     this.prisma = serviceLocator.get<PrismaClient>(PrismaClient);
+    this.logger = serviceLocator.get<Logger>(Logger);
   }
 
   connection: Connection;
   prisma: PrismaClient;
+  logger: Logger;
 
   public async getListChars(): Promise<void> {
     const accountId = this.connection.getDatabaseId();
@@ -232,6 +315,7 @@ export class Character {
       character.currentMap,
       character.mapPositionX,
       character.mapPositiony,
+      character.direction,
       character.createdAt,
       character.updatedAt,
       character.gender,

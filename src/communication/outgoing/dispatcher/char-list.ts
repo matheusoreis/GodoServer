@@ -11,9 +11,12 @@ export class CharList extends ServerMessage {
 
     for (const char of chars) {
       this.putInt32(char.id);
-      this.putInt32(char.accountId!);
       this.putString(char.name);
       this.putString(char.gender.name);
+      this.putInt32(char.currentMap);
+      this.putInt32(char.mapPositionX);
+      this.putInt32(char.mapPositionY);
+      this.putInt32(char.direction);
     }
   }
 }

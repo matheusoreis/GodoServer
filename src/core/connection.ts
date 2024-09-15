@@ -119,16 +119,28 @@ export class Connection {
     }
 
     this.chars?.push(char);
-    this.setCharacterInUse(char);
   }
 
   /**
-   * Adiciona o personagem ao personagem ativo no momento.
+   * Define um personagem como o personagem ativo usando seu ID.
    *
-   * @param {CharacterModel} char - O personagem escolhido.
+   * @param {number} charId - O ID do personagem a ser definido como ativo.
    */
-  public setCharacterInUse(char: CharacterModel): void {
-    this.charInUse = char;
+  public setCharacterInUseById(charId: number): void {
+    // Verifica se a lista de personagens está definida
+    if (this.chars) {
+      // Encontra o personagem na lista de personagens usando o ID
+      const character = this.chars.find((c) => c.id === charId);
+
+      // Se o personagem for encontrado, define-o como o personagem ativo
+      if (character) {
+        this.charInUse = character;
+      } else {
+        throw new Error(`Character with ID ${charId} not found.`);
+      }
+    } else {
+      throw new Error("Character list is not initialized.");
+    }
   }
 
   /**
@@ -142,5 +154,9 @@ export class Connection {
     if (this.charInUse && this.charInUse.id === characterId) {
       this.charInUse = undefined;
     }
+  }
+
+  public getCharInUse(): CharacterModel | void {
+    return this.charInUse;
   }
 }

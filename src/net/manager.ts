@@ -5,6 +5,7 @@ import { Connection } from "../core/connection";
 import { GetConnection } from "../misc/get-connection";
 import { AlertDispatcher, AlertType } from "../communication/outgoing/dispatcher/alert";
 import { serviceLocator } from "../misc/service-locator";
+import type { CharacterModel } from "../core/character";
 
 /**
  * A classe `Manager` gerencia as conexões WebSocket ativas, lida com a abertura, fechamento,
@@ -43,14 +44,75 @@ export class Manager {
 
   /**
    * Manipulador chamado quando uma conexão WebSocket é fechada.
-   * Remove a conexão dos slots de memória.
+   * Remove a conexão dos slots de memória e atualiza o estado do personagem.
    *
    * @param {ServerWebSocket} ws - O WebSocket que foi desconectado.
    * @param {number} _code - Código de status de fechamento (não utilizado).
    * @param {string} _message - Mensagem de fechamento (não utilizada).
    */
-  public websocketClose(ws: ServerWebSocket, _code: number, _message: string): void {
-    this.cleanupConnection(ws);
+  public async websocketClose(ws: ServerWebSocket, _code: number, _message: string): Promise<void> {
+    const connection: Connection | undefined = GetConnection.bySocket(ws, this.memory);
+
+    if (!connection) {
+      this.logger.error(`Connection not found for WebSocket.`);
+      return;
+    }
+
+    try {
+      const charInUse: CharacterModel | void = connection.getCharInUse();
+
+      if (!charInUse) {
+        return;
+      }
+
+      // Atualize o personagem
+      await this.updateCharacterBeforeDisconnect(charInUse);
+
+      // Remova o personagem do mapa atual
+      await this.removeCharacterFromCurrentMap(charInUse);
+
+      charInUse.stopLoop();
+
+      this.logger.info(`Character for connection ${connection.id} updated before disconnect.`);
+    } catch (error) {
+      this.logger.error(`Failed to update character before disconnect: ${error}`);
+      console.error(error);
+    } finally {
+      this.cleanupConnection(ws);
+    }
+  }
+
+  /**
+   * Atualiza o personagem antes da desconexão.
+   *
+   * @param {CharacterModel} charInUse - O personagem que está sendo desconectado.
+   */
+  private async updateCharacterBeforeDisconnect(charInUse: CharacterModel): Promise<void> {
+    try {
+      await charInUse.updateCharacter(charInUse);
+    } catch (error) {
+      throw new Error(`Failed to update character: ${error}`);
+    }
+  }
+
+  /**
+   * Remove o personagem do mapa atual.
+   *
+   * @param {CharacterModel} charInUse - O personagem que está sendo desconectado.
+   */
+  private async removeCharacterFromCurrentMap(charInUse: CharacterModel): Promise<void> {
+    try {
+      const mapId = charInUse.currentMap;
+      const currentMap = charInUse.findMapById(mapId);
+
+      if (currentMap) {
+        currentMap.removePlayer(charInUse);
+      } else {
+        this.logger.warning(`Map with ID ${mapId} not found when removing character.`);
+      }
+    } catch (error) {
+      throw new Error(`Failed to remove character from map: ${error}`);
+    }
   }
 
   /**

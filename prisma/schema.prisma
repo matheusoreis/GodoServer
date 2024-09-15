@@ -37,6 +37,7 @@ model Characters {
   currentMap   Int    @default(1)
   mapPositionX Int    @default(1)
   mapPositionY Int    @default(1)
+  direction    Int    @default(4)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()

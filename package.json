@@ -14,9 +14,11 @@
   },
   "scripts": {
     "start": "bun index.ts",
-    "dev": "bun --hot index.ts",
+    "dev": "bun --watch index.ts",
     "build": "bun build index.ts --outdir ./build",
     "release": "bun build/index.js"
   },
-  "dependencies": { "@prisma/client": "^5.19.1" }
+  "dependencies": {
+    "@prisma/client": "^5.19.1"
+  }
 }

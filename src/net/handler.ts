@@ -7,7 +7,7 @@ import { CreateCharRequest } from "../communication/incoming/requests/create-cha
 import { DeleteAccountRequest } from "../communication/incoming/requests/delete-account";
 import { DeleteCharRequest } from "../communication/incoming/requests/delete-char";
 import { MoveCharRequest } from "../communication/incoming/requests/move-char";
-import { PingRequest } from "../communication/incoming/requests/ping";
+import { Pong } from "../communication/incoming/requests/ping";
 import { RecoverAccountRequest } from "../communication/incoming/requests/recover-account";
 import { SelectCharRequest } from "../communication/incoming/requests/select-char";
 import { ClientHeaders } from "../communication/protocol/client-headers";
@@ -65,7 +65,7 @@ export class Handler {
    * Este método é responsável por preencher o mapeamento `requestHandlers`.
    */
   private registerRequests() {
-    const pingRequest = serviceLocator.get<PingRequest>(PingRequest);
+    const pingRequest = serviceLocator.get<Pong>(Pong);
     const accessAccountRequest = serviceLocator.get<AccessAccountRequest>(AccessAccountRequest);
     const createAccountRequest = serviceLocator.get<CreateAccountRequest>(CreateAccountRequest);
     const deleteAccountRequest = serviceLocator.get<DeleteAccountRequest>(DeleteAccountRequest);

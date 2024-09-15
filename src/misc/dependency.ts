@@ -7,7 +7,7 @@ import { CreateCharRequest } from "../communication/incoming/requests/create-cha
 import { DeleteAccountRequest } from "../communication/incoming/requests/delete-account";
 import { DeleteCharRequest } from "../communication/incoming/requests/delete-char";
 import { MoveCharRequest } from "../communication/incoming/requests/move-char";
-import { PingRequest } from "../communication/incoming/requests/ping";
+import { Pong } from "../communication/incoming/requests/ping";
 import { RecoverAccountRequest } from "../communication/incoming/requests/recover-account";
 import { SelectCharRequest } from "../communication/incoming/requests/select-char";
 import { ByteBuffer } from "../communication/protocol/byte-buffer";
@@ -32,7 +32,7 @@ export class Dependency {
     serviceLocator.registerFactory<ClientMessage>(ClientMessage, () => new ClientMessage());
     serviceLocator.registerFactory<PrismaClient>(PrismaClient, () => new PrismaClient());
 
-    serviceLocator.registerFactory<PingRequest>(PingRequest, () => new PingRequest());
+    serviceLocator.registerFactory<Pong>(Pong, () => new Pong());
     serviceLocator.registerFactory<AccessAccountRequest>(AccessAccountRequest, () => new AccessAccountRequest());
     serviceLocator.registerFactory<CreateAccountRequest>(CreateAccountRequest, () => new CreateAccountRequest());
     serviceLocator.registerFactory<DeleteAccountRequest>(DeleteAccountRequest, () => new DeleteAccountRequest());

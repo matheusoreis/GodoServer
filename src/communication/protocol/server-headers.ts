@@ -5,7 +5,7 @@
  * para os clientes, facilitando a identificação e o tratamento dessas mensagens no cliente.
  */
 export enum ServerHeaders {
-  Pong,
+  Ping,
   Alert,
   AccessAccountSuccess,
   CreateAccountSuccess,

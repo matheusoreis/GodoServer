@@ -72,6 +72,12 @@ export abstract class Outgoing {
     }
   }
 
+  /**
+   * Envia uma mensagem para todos os clientes no mapa especificado.
+   *
+   * @param {number} mapId - O ID do mapa.
+   * @param {ServerMessage} message - A mensagem a ser enviada aos clientes no mapa.
+   */
   public dataToMap(mapId: number, message: ServerMessage): void {
     for (const index of this.memory.connections.getFilledSlots()) {
       const connection = this.memory.connections.get(index);
@@ -85,7 +91,23 @@ export abstract class Outgoing {
     }
   }
 
+  /**
+   * Envia uma mensagem para todos os clientes no mapa especificado, exceto um cliente específico.
+   *
+   * @param {number} mapId - O ID do mapa.
+   * @param {Connection} exceptConnection - A conexão do cliente que não deve receber a mensagem.
+   * @param {ServerMessage} message - A mensagem a ser enviada aos clientes no mapa.
+   */
   public dataToMapExcept(mapId: number, exceptConnection: Connection, message: ServerMessage): void {
-    throw new Error("Method not implemented.");
+    for (const index of this.memory.connections.getFilledSlots()) {
+      const connection = this.memory.connections.get(index);
+      if (connection?.ws && connection !== exceptConnection && connection.getCharInUse()?.currentMap === mapId) {
+        try {
+          this.dataTo(connection, message);
+        } catch (error) {
+          this.logger.error("Error sending data to the map clients! Error: " + error);
+        }
+      }
+    }
   }
 }

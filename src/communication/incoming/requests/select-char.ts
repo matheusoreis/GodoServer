@@ -1,4 +1,3 @@
-import type { CharacterModel } from "../../../core/character";
 import type { Connection } from "../../../core/connection";
 import { AlertDispatcher, AlertType } from "../../outgoing/dispatcher/alert";
 import type { ClientMessage } from "../../protocol/client-message";
@@ -12,36 +11,27 @@ export class SelectCharRequest implements Incoming {
     try {
       connection.setCharacterInUseById(charId);
     } catch (error) {
-      const alertDispatcher: AlertDispatcher = new AlertDispatcher(
-        AlertType.Error,
-        "Character not found or could not be set as active!",
-        false,
-      );
-      alertDispatcher.sendTo(connection);
-
+      this.sendAlert(connection, AlertType.Error, "Character not found or could not be set as active!", true);
       return;
     }
 
-    const charInUse: void | CharacterModel = connection.getCharInUse();
-
+    const charInUse = connection.getCharInUse();
     if (!charInUse) {
-      const alertDispatcher: AlertDispatcher = new AlertDispatcher(
-        AlertType.Error,
-        "Character not found or could not be set as active!",
-        false,
-      );
-      alertDispatcher.sendTo(connection);
-
+      this.sendAlert(connection, AlertType.Error, "Character not found or could not be set as active!", false);
       return;
     }
 
-    const foundMap = charInUse!.findMapById(mapId);
-
+    const foundMap = charInUse.findMapById(mapId);
     if (!foundMap) {
-      const alertDispatcher: AlertDispatcher = new AlertDispatcher(AlertType.Error, "Map not found!", false);
-      alertDispatcher.sendTo(connection);
+      this.sendAlert(connection, AlertType.Error, "Map not found!", false);
+      return;
     }
 
     foundMap?.enter(connection, charInUse);
+  }
+
+  private sendAlert(connection: Connection, type: AlertType, message: string, critical: boolean): void {
+    const alertDispatcher = new AlertDispatcher(type, message, critical);
+    alertDispatcher.sendTo(connection);
   }
 }

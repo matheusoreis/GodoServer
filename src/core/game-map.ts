@@ -27,7 +27,6 @@ export class GameMap {
   private chars: Map<number, CharacterModel> = new Map();
 
   public enter(connection: Connection, character: CharacterModel): void {
-    // Ativa o loop do personagem
     character.loop();
 
     if (character.currentMap !== this.id) {
@@ -36,16 +35,18 @@ export class GameMap {
     }
 
     // Notifica todos os personagens no mapa sobre a entrada do novo personagem
-    this.notifyPlayersEntry(character);
 
     // Notifica o novo personagem sobre todos os personagens já presentes no mapa
-    const othersChars = new OthersChars(this.id, Array.from(this.chars.values()));
-    othersChars.sendToMap(this.id);
+    // const receiveOthersChars = new OthersChars(this.id, Array.from(this.chars.values()));
+    // receiveOthersChars.sendTo(connection);
 
     // Adiciona o personagem ao mapa
     this.chars.set(character.id, character);
 
-    // Envia as informações do personagem para o jogador
+    const otherChars = Array.from(this.chars.values()).filter((char) => char.id !== character.id);
+    const sendToOthersChars = new OthersChars(this.id, [character]);
+    sendToOthersChars.sendToMapExcept(this.id, connection);
+
     const charSelected = new CharSelected(character);
     charSelected.sendTo(connection);
   }
@@ -69,9 +70,9 @@ export class GameMap {
     }
   }
 
-  // public getPlayer(characterId: number): CharacterModel | undefined {
-  //   return this.chars.get(characterId);
-  // }
+  public getPlayer(characterId: number): CharacterModel | undefined {
+    return this.chars.get(characterId);
+  }
 
   private notifyPlayersEntry(character: CharacterModel): void {
     // Notifica todos os jogadores no mapa que um novo personagem entrou

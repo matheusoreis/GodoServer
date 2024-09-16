@@ -1,3 +1,6 @@
+import { CharDeleted } from "../communication/outgoing/dispatcher/char-deleted";
+import { CharSelected } from "../communication/outgoing/dispatcher/char-selected";
+import { OthersChars } from "../communication/outgoing/dispatcher/others-chars";
 import { MAP_LOOP } from "../misc/constants";
 import { Logger } from "../misc/logger";
 import { serviceLocator } from "../misc/service-locator";
@@ -23,7 +26,7 @@ export class GameMap {
   sizeY: number;
   private chars: Map<number, CharacterModel> = new Map();
 
-  public enter(character: CharacterModel): void {
+  public enter(connection: Connection, character: CharacterModel): void {
     // Ativa o loop do personagem
     character.loop();
 
@@ -32,14 +35,19 @@ export class GameMap {
       return;
     }
 
+    // Notifica todos os personagens no mapa sobre a entrada do novo personagem
+    this.notifyPlayersEntry(character);
+
+    // Notifica o novo personagem sobre todos os personagens já presentes no mapa
+    const othersChars = new OthersChars(this.id, Array.from(this.chars.values()));
+    othersChars.sendToMap(this.id);
+
     // Adiciona o personagem ao mapa
     this.chars.set(character.id, character);
 
-    // Notifica todos os jogadores no mapa sobre a entrada do novo personagem
-    this.notifyPlayersEntry(character);
-
-    // Notifica o novo personagem sobre todos os jogadores já presentes no mapa
-    this.notifyCharacterAboutOtherPlayers(character);
+    // Envia as informações do personagem para o jogador
+    const charSelected = new CharSelected(character);
+    charSelected.sendTo(connection);
   }
 
   public movePlayer(character: CharacterModel, newPosition: { x: number; y: number }): void {
@@ -81,16 +89,6 @@ export class GameMap {
     // Notifica todos os jogadores que um personagem foi removido
     console.log(`Character ${characterId} has been removed from the map.`);
     // Aqui você deve implementar a lógica para enviar notificações reais aos jogadores
-  }
-
-  private notifyCharacterAboutOtherPlayers(character: CharacterModel): void {
-    // Notifica o novo personagem sobre todos os jogadores já presentes no mapa
-    this.chars.forEach((player) => {
-      if (player.id !== character.id) {
-        console.log(`Notifying ${character.id} about existing player ${player.id}.`);
-        // Implementar a lógica de notificação real
-      }
-    });
   }
 
   public async loop(): Promise<void> {

@@ -42,6 +42,6 @@ export class SelectCharRequest implements Incoming {
       alertDispatcher.sendTo(connection);
     }
 
-    foundMap?.enter(charInUse);
+    foundMap?.enter(connection, charInUse);
   }
 }

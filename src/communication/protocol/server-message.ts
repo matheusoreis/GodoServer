@@ -102,4 +102,8 @@ export abstract class ServerMessage extends Outgoing {
   public sendToAllExcept(exceptConnection: Connection): void {
     this.dataToAllExcept(exceptConnection, this);
   }
+
+  public sendToMap(mapId: number): void {
+    this.dataToMap(mapId, this);
+  }
 }

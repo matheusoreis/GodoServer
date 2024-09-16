@@ -73,7 +73,16 @@ export abstract class Outgoing {
   }
 
   public dataToMap(mapId: number, message: ServerMessage): void {
-    throw new Error("Method not implemented.");
+    for (const index of this.memory.connections.getFilledSlots()) {
+      const connection = this.memory.connections.get(index);
+      if (connection?.getCharInUse()?.currentMap === mapId) {
+        try {
+          this.dataTo(connection, message);
+        } catch (error) {
+          this.logger.error("Error sending data to the map clients! Error: " + error);
+        }
+      }
+    }
   }
 
   public dataToMapExcept(mapId: number, exceptConnection: Connection, message: ServerMessage): void {

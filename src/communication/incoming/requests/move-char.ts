@@ -22,6 +22,8 @@ export class MoveCharRequest implements Incoming {
       return;
     }
 
+    console.log(Date.now());
+
     foundMap.movePlayer(connection, charInUse, posX, posY, direction, animation);
   }
 

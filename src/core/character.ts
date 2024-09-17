@@ -160,6 +160,11 @@ export class Character {
 
       const characterModelList = characters.map(this.mapToCharacterModel);
 
+      characterModelList.forEach((element) => {
+        console.log("PosiçãoX do banco: ", element.mapPositionX);
+        console.log("PosiçãoY do banco: ", element.mapPositionY);
+      });
+
       this.connection.addCharacters(characterModelList);
 
       const dispatcher: CharList = new CharList(characterModelList, 5);
@@ -314,7 +319,7 @@ export class Character {
       character.accountId,
       character.currentMap,
       character.mapPositionX,
-      character.mapPositiony,
+      character.mapPositionY,
       character.direction,
       character.createdAt,
       character.updatedAt,

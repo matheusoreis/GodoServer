@@ -2,9 +2,9 @@ import type { CharacterModel } from "../../../core/character";
 import { ServerHeaders } from "../../protocol/server-headers";
 import { ServerMessage } from "../../protocol/server-message";
 
-export class CharSelected extends ServerMessage {
+export class NewCharToMap extends ServerMessage {
   constructor(char: CharacterModel) {
-    super(ServerHeaders.CharSelected);
+    super(ServerHeaders.NewCharToMap);
 
     this.putInt32(char.id);
     this.putString(char.name);

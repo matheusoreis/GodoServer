@@ -1,6 +1,8 @@
 import { CharDeleted } from "../communication/outgoing/dispatcher/char-deleted";
+import { CharMoved } from "../communication/outgoing/dispatcher/char-moved";
 import { CharSelected } from "../communication/outgoing/dispatcher/char-selected";
-import { OthersChars } from "../communication/outgoing/dispatcher/others-chars";
+import { MapCharsTo } from "../communication/outgoing/dispatcher/map-chars-to";
+import { NewCharToMap } from "../communication/outgoing/dispatcher/new-char-to-map";
 import { MAP_LOOP } from "../misc/constants";
 import { Logger } from "../misc/logger";
 import { serviceLocator } from "../misc/service-locator";
@@ -34,28 +36,36 @@ export class GameMap {
       return;
     }
 
-    // Notifica todos os personagens no mapa sobre a entrada do novo personagem
-
     // Notifica o novo personagem sobre todos os personagens já presentes no mapa
-    // const receiveOthersChars = new OthersChars(this.id, Array.from(this.chars.values()));
-    // receiveOthersChars.sendTo(connection);
+    const mapCharsTo = new MapCharsTo(Array.from(this.chars.values()));
+    mapCharsTo.sendTo(connection);
 
     // Adiciona o personagem ao mapa
     this.chars.set(character.id, character);
 
-    const otherChars = Array.from(this.chars.values()).filter((char) => char.id !== character.id);
-    const sendToOthersChars = new OthersChars(this.id, [character]);
-    sendToOthersChars.sendToMapExcept(this.id, connection);
+    // Notifica todos os personagens no mapa sobre a entrada do novo personagem
+    const newCharTo = new NewCharToMap(character);
+    newCharTo.sendToMapExcept(this.id, connection);
 
     const charSelected = new CharSelected(character);
     charSelected.sendTo(connection);
   }
 
-  public movePlayer(character: CharacterModel, newPosition: { x: number; y: number }): void {
+  public movePlayer(
+    connection: Connection,
+    character: CharacterModel,
+    x: number,
+    y: number,
+    direction: number,
+    animation: number,
+  ): void {
     if (this.chars.has(character.id)) {
-      // const updatedCharacter = { ...character, mapPositionX: newPosition.x, mapPositionY: newPosition.y };
-      // this.players.set(character.id, updatedCharacter);
-      // this.notifyPlayersMovement(updatedCharacter);
+      character.mapPositionX = x;
+      character.mapPositionY = y;
+      character.direction = direction;
+
+      const charMoved = new CharMoved(character, x, y, direction, animation);
+      charMoved.sendToMapExcept(this.id, connection);
     } else {
       console.error(`Character ${character.id} is not in this map.`);
     }
@@ -72,18 +82,6 @@ export class GameMap {
 
   public getPlayer(characterId: number): CharacterModel | undefined {
     return this.chars.get(characterId);
-  }
-
-  private notifyPlayersEntry(character: CharacterModel): void {
-    // Notifica todos os jogadores no mapa que um novo personagem entrou
-    console.log(`Character ${character.id} has entered the map.`);
-    // Aqui você deve implementar a lógica para enviar notificações reais aos jogadores
-  }
-
-  private notifyPlayersMovement(character: CharacterModel): void {
-    // Notifica todos os jogadores sobre a movimentação de um personagem
-    console.log(`Character ${character.id} moved to position (${character.mapPositionX}, ${character.mapPositionY}).`);
-    // Aqui você deve implementar a lógica para enviar notificações reais aos jogadores
   }
 
   private notifyPlayersRemoval(characterId: number): void {

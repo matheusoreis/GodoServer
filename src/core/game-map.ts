@@ -57,7 +57,7 @@ export class GameMap {
     x: number,
     y: number,
     direction: number,
-    animation: number,
+    animation: string,
   ): void {
     if (this.chars.has(character.id)) {
       character.mapPositionX = x;

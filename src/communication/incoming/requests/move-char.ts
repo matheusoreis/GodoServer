@@ -8,7 +8,7 @@ export class MoveCharRequest implements Incoming {
     const posX: number = message.getInt32();
     const posY: number = message.getInt32();
     const direction: number = message.getInt32();
-    const animation: number = message.getInt32();
+    const animation: string = message.getString();
 
     const charInUse = connection.getCharInUse();
     if (!charInUse) {

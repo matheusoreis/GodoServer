@@ -7,4 +7,4 @@ export const MINOR_VERSION: number = 0;
 export const REVISION_VERSION: number = 0;
 
 export const MAX_MAPS: number = 100;
-export const MAP_LOOP: number = 100; //10x por segundo
+export const MAP_LOOP: number = 100;

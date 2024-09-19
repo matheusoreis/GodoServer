@@ -1,4 +1,5 @@
 import { CharDeleted } from "../communication/outgoing/dispatcher/char-deleted";
+import { CharDisconnected } from "../communication/outgoing/dispatcher/char-disconnected";
 import { CharMoved } from "../communication/outgoing/dispatcher/char-moved";
 import { CharSelected } from "../communication/outgoing/dispatcher/char-selected";
 import { MapCharsTo } from "../communication/outgoing/dispatcher/map-chars-to";
@@ -74,7 +75,9 @@ export class GameMap {
   public removePlayer(char: CharacterModel): void {
     if (this.chars.has(char.id)) {
       this.chars.delete(char.id);
-      this.notifyPlayersRemoval(char.id);
+
+      const disconnect: CharDisconnected = new CharDisconnected(char);
+      disconnect.sendToMap(char.currentMap);
     } else {
       console.error(`Character ${char.id} is not in this map.`);
     }
@@ -82,12 +85,6 @@ export class GameMap {
 
   public getPlayer(characterId: number): CharacterModel | undefined {
     return this.chars.get(characterId);
-  }
-
-  private notifyPlayersRemoval(characterId: number): void {
-    // Notifica todos os jogadores que um personagem foi removido
-    console.log(`Character ${characterId} has been removed from the map.`);
-    // Aqui você deve implementar a lógica para enviar notificações reais aos jogadores
   }
 
   public async loop(): Promise<void> {

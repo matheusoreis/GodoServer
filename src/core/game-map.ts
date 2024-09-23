@@ -37,19 +37,20 @@ export class GameMap {
       return;
     }
 
+    // Notifica o novo personagem selecionado
+    const charSelected = new CharSelected(character);
+    charSelected.sendTo(connection);
+
+    // Notifica todos os personagens no mapa sobre a entrada do novo personagem
+    const newCharTo = new NewCharToMap(character);
+    newCharTo.sendToMapExcept(this.id, connection);
+
     // Notifica o novo personagem sobre todos os personagens já presentes no mapa
     const mapCharsTo = new MapCharsTo(Array.from(this.chars.values()));
     mapCharsTo.sendTo(connection);
 
     // Adiciona o personagem ao mapa
     this.chars.set(character.id, character);
-
-    // Notifica todos os personagens no mapa sobre a entrada do novo personagem
-    const newCharTo = new NewCharToMap(character);
-    newCharTo.sendToMapExcept(this.id, connection);
-
-    const charSelected = new CharSelected(character);
-    charSelected.sendTo(connection);
   }
 
   public movePlayer(
@@ -58,14 +59,14 @@ export class GameMap {
     x: number,
     y: number,
     direction: number,
-    animation: string,
+    isMoving: string,
   ): void {
     if (this.chars.has(character.id)) {
       character.mapPositionX = x;
       character.mapPositionY = y;
       character.direction = direction;
 
-      const charMoved = new CharMoved(character, x, y, direction, animation);
+      const charMoved = new CharMoved(character, x, y, direction, isMoving);
       charMoved.sendToMapExcept(this.id, connection);
     } else {
       console.error(`Character ${character.id} is not in this map.`);

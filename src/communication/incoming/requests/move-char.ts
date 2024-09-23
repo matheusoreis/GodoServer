@@ -8,7 +8,7 @@ export class MoveCharRequest implements Incoming {
     const posX: number = message.getInt32();
     const posY: number = message.getInt32();
     const direction: number = message.getInt32();
-    const animation: string = message.getString();
+    const isMoving: string = message.getString();
 
     const charInUse = connection.getCharInUse();
     if (!charInUse) {
@@ -22,9 +22,7 @@ export class MoveCharRequest implements Incoming {
       return;
     }
 
-    console.log(Date.now());
-
-    foundMap.movePlayer(connection, charInUse, posX, posY, direction, animation);
+    foundMap.movePlayer(connection, charInUse, posX, posY, direction, isMoving);
   }
 
   private sendAlert(connection: Connection, type: AlertType, message: string, critical: boolean): void {

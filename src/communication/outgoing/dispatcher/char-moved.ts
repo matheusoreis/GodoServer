@@ -3,7 +3,7 @@ import { ServerHeaders } from "../../protocol/server-headers";
 import { ServerMessage } from "../../protocol/server-message";
 
 export class CharMoved extends ServerMessage {
-  constructor(char: CharacterModel, x: number, y: number, direction: number, animation: string) {
+  constructor(char: CharacterModel, x: number, y: number, direction: number, isMoving: string) {
     super(ServerHeaders.CharMoved);
 
     this.putInt32(char.id);
@@ -11,6 +11,6 @@ export class CharMoved extends ServerMessage {
     this.putInt32(x);
     this.putInt32(y);
     this.putInt32(direction);
-    this.putString(animation);
+    this.putString(isMoving);
   }
 }

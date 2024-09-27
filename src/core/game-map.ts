@@ -2,7 +2,7 @@ import { AlertDispatcher, AlertType } from "../communication/outgoing/dispatcher
 import { CharacterDisconnected } from "../communication/outgoing/dispatcher/character-disconnected";
 import { CharacterMoved } from "../communication/outgoing/dispatcher/character-moved";
 import { CharacterSelected } from "../communication/outgoing/dispatcher/character-selected";
-import { NotifyExistingCharacters } from "../communication/outgoing/dispatcher/map-characters-to";
+import { NotifyExistingCharacters } from "../communication/outgoing/dispatcher/notify-existing-characters";
 import { OthersOfNewCharacter } from "../communication/outgoing/dispatcher/others-of-new-character";
 import { CHAR_VELOCITY_X_Y, MAP_LOOP, MAX_MAP_CHARACTERS } from "../misc/constants";
 import { Logger } from "../misc/logger";
@@ -41,29 +41,29 @@ export class GameMap {
     }
 
     // Notificar o novo personagem selecionado
-    this.notifyCharacterSelected(connection, character);
+    this.sendCharacterSelected(connection, character);
 
     // Notificar outros personagens sobre o novo personagem
-    this.notifyOthersOfNewCharacter(connection, character);
+    this.sendOthersOfNewCharacter(connection, character);
 
     // Notificar o novo personagem sobre os personagens já presentes
-    this.notifyExistingCharacters(connection);
+    this.sendExistingCharacters(connection);
 
     // Adicionar o personagem ao array de personagens
     this._characters.add(character);
   }
 
-  private notifyCharacterSelected(connection: Connection, character: CharacterModel): void {
+  private sendCharacterSelected(connection: Connection, character: CharacterModel): void {
     const charSelected = new CharacterSelected(character);
     charSelected.sendTo(connection);
   }
 
-  private notifyOthersOfNewCharacter(connection: Connection, character: CharacterModel): void {
+  private sendOthersOfNewCharacter(connection: Connection, character: CharacterModel): void {
     const newChar = new OthersOfNewCharacter(character);
     newChar.sendToMapExcept(this.id, connection);
   }
 
-  private notifyExistingCharacters(connection: Connection): void {
+  private sendExistingCharacters(connection: Connection): void {
     const charactersArray = this._characters.filter((c) => c !== undefined) as CharacterModel[];
     const mapCharsTo = new NotifyExistingCharacters(charactersArray);
     mapCharsTo.sendTo(connection);

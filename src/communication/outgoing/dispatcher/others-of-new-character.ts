@@ -4,7 +4,7 @@ import { ServerMessage } from "../../protocol/server-message";
 
 export class OthersOfNewCharacter extends ServerMessage {
   constructor(character: CharacterModel) {
-    super(ServerHeaders.NewCharToMap);
+    super(ServerHeaders.OthersOfNewCharacter);
 
     this.putInt32(character.id);
     this.putString(character.name);

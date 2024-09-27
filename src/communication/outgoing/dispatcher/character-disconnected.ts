@@ -4,7 +4,7 @@ import { ServerMessage } from "../../protocol/server-message";
 
 export class CharacterDisconnected extends ServerMessage {
   constructor(character: CharacterModel) {
-    super(ServerHeaders.CharDisconnected);
+    super(ServerHeaders.CharacterDisconnected);
 
     this.putInt32(character.id);
   }

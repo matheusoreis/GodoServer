@@ -12,7 +12,7 @@ export class CharacterMoved extends ServerMessage {
     velocityX: number,
     velocityY: number,
   ) {
-    super(ServerHeaders.CharMoved);
+    super(ServerHeaders.CharacterMoved);
 
     this.putInt32(character.id);
     this.putInt32(character.currentMap);

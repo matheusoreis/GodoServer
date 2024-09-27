@@ -4,7 +4,7 @@ import { ServerMessage } from "../../protocol/server-message";
 
 export class NotifyExistingCharacters extends ServerMessage {
   constructor(characters: CharacterModel[]) {
-    super(ServerHeaders.MapCharsTo);
+    super(ServerHeaders.NotifyExistingCharacters);
 
     this.putInt16(characters.length);
 

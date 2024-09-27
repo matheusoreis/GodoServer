@@ -4,7 +4,7 @@ import { ServerMessage } from "../../protocol/server-message";
 
 export class CharacterList extends ServerMessage {
   constructor(characters: CharacterModel[], accountCharSize: number) {
-    super(ServerHeaders.CharList);
+    super(ServerHeaders.CharacterList);
 
     this.putInt8(characters.length);
     this.putInt8(accountCharSize);

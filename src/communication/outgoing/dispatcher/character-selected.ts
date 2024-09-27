@@ -4,7 +4,7 @@ import { ServerMessage } from "../../protocol/server-message";
 
 export class CharacterSelected extends ServerMessage {
   constructor(character: CharacterModel) {
-    super(ServerHeaders.CharSelected);
+    super(ServerHeaders.CharacterSelected);
 
     this.putInt32(character.id);
     this.putString(character.name);

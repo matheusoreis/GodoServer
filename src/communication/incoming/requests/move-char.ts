@@ -5,10 +5,12 @@ import type { Incoming } from "../incoming";
 
 export class MoveCharRequest implements Incoming {
   public async handle(connection: Connection, message: ClientMessage): Promise<void> {
-    const posX: number = message.getInt32();
-    const posY: number = message.getInt32();
-    const direction: number = message.getInt32();
-    const isMoving: string = message.getString();
+    const action = message.getInt8();
+    const positionX = message.getInt32();
+    const positionY = message.getInt32();
+    const direction = message.getInt8();
+    const velocityX = message.getInt32();
+    const velocityY = message.getInt32();
 
     const charInUse = connection.getCharInUse();
     if (!charInUse) {
@@ -22,7 +24,7 @@ export class MoveCharRequest implements Incoming {
       return;
     }
 
-    foundMap.movePlayer(connection, charInUse, posX, posY, direction, isMoving);
+    foundMap.movePlayer(connection, charInUse, action, positionX, positionY, direction, velocityX, velocityY);
   }
 
   private sendAlert(connection: Connection, type: AlertType, message: string, critical: boolean): void {

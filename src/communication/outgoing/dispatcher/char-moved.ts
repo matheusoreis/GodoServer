@@ -3,14 +3,24 @@ import { ServerHeaders } from "../../protocol/server-headers";
 import { ServerMessage } from "../../protocol/server-message";
 
 export class CharMoved extends ServerMessage {
-  constructor(char: CharacterModel, x: number, y: number, direction: number, isMoving: string) {
+  constructor(
+    char: CharacterModel,
+    action: number,
+    positionX: number,
+    positionY: number,
+    direction: number,
+    velocityX: number,
+    velocityY: number,
+  ) {
     super(ServerHeaders.CharMoved);
 
     this.putInt32(char.id);
     this.putInt32(char.currentMap);
-    this.putInt32(x);
-    this.putInt32(y);
-    this.putInt32(direction);
-    this.putString(isMoving);
+    this.putInt8(action);
+    this.putInt32(positionX);
+    this.putInt32(positionY);
+    this.putInt8(direction);
+    this.putInt32(velocityX);
+    this.putInt32(velocityY);
   }
 }

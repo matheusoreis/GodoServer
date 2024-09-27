@@ -7,7 +7,7 @@
     "eslint": "latest",
     "eslint-config-prettier": "latest",
     "prettier": "latest",
-    "prisma": "^5.19.1"
+    "prisma": "^5.20.0"
   },
   "peerDependencies": {
     "typescript": "latest"
@@ -19,6 +19,6 @@
     "release": "bun build/index.js"
   },
   "dependencies": {
-    "@prisma/client": "^5.19.1"
+    "@prisma/client": "^5.20.0'"
   }
 }

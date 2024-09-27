@@ -56,17 +56,19 @@ export class GameMap {
   public movePlayer(
     connection: Connection,
     character: CharacterModel,
-    x: number,
-    y: number,
+    action: number,
+    positionX: number,
+    positionY: number,
     direction: number,
-    isMoving: string,
+    velocityX: number,
+    velocityY: number,
   ): void {
     if (this.chars.has(character.id)) {
-      character.mapPositionX = x;
-      character.mapPositionY = y;
+      character.mapPositionX = positionX;
+      character.mapPositionY = positionY;
       character.direction = direction;
 
-      const charMoved = new CharMoved(character, x, y, direction, isMoving);
+      const charMoved = new CharMoved(character, action, positionX, positionY, direction, velocityX, velocityY);
       charMoved.sendToMapExcept(this.id, connection);
     } else {
       console.error(`Character ${character.id} is not in this map.`);

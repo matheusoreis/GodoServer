@@ -1,10 +1,11 @@
+import { AlertDispatcher, AlertType } from "../communication/outgoing/dispatcher/alert";
 import { CharDeleted } from "../communication/outgoing/dispatcher/char-deleted";
 import { CharDisconnected } from "../communication/outgoing/dispatcher/char-disconnected";
 import { CharMoved } from "../communication/outgoing/dispatcher/char-moved";
 import { CharSelected } from "../communication/outgoing/dispatcher/char-selected";
 import { MapCharsTo } from "../communication/outgoing/dispatcher/map-chars-to";
 import { NewCharToMap } from "../communication/outgoing/dispatcher/new-char-to-map";
-import { MAP_LOOP } from "../misc/constants";
+import { CHAR_VELOCITY_X_Y, MAP_LOOP } from "../misc/constants";
 import { Logger } from "../misc/logger";
 import { serviceLocator } from "../misc/service-locator";
 import type { CharacterModel } from "./character";
@@ -68,6 +69,10 @@ export class GameMap {
       character.mapPositionY = positionY;
       character.direction = direction;
 
+      if (velocityX > CHAR_VELOCITY_X_Y || velocityY > CHAR_VELOCITY_X_Y) {
+        this.sendAlert(connection, AlertType.Error, "The character's speed is high! disconnecting...!", true);
+      }
+
       const charMoved = new CharMoved(character, action, positionX, positionY, direction, velocityX, velocityY);
       charMoved.sendToMapExcept(this.id, connection);
     } else {
@@ -98,5 +103,10 @@ export class GameMap {
     setInterval(async () => {
       //
     }, loopInterval);
+  }
+
+  private sendAlert(connection: Connection, type: AlertType, message: string, critical: boolean): void {
+    const alertDispatcher = new AlertDispatcher(type, message, critical);
+    alertDispatcher.sendTo(connection);
   }
 }

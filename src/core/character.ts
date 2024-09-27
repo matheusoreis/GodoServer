@@ -2,9 +2,9 @@ import { PrismaClient } from "@prisma/client";
 import type { Connection } from "./connection";
 import { serviceLocator } from "../misc/service-locator";
 import { AlertDispatcher, AlertType } from "../communication/outgoing/dispatcher/alert";
-import { CharDeleted } from "../communication/outgoing/dispatcher/char-deleted";
-import { CharCreated } from "../communication/outgoing/dispatcher/char-created";
-import { CharList } from "../communication/outgoing/dispatcher/char-list";
+import { CharacterDeleted } from "../communication/outgoing/dispatcher/character-deleted";
+import { CharacterCreated } from "../communication/outgoing/dispatcher/character-created";
+import { CharacterList } from "../communication/outgoing/dispatcher/character-list";
 import { Logger } from "../misc/logger";
 import type { GameMap } from "./game-map";
 import { Memory } from "./memory";
@@ -159,15 +159,9 @@ export class Character {
       });
 
       const characterModelList = characters.map(this.mapToCharacterModel);
-
-      characterModelList.forEach((element) => {
-        console.log("PosiçãoX do banco: ", element.mapPositionX);
-        console.log("PosiçãoY do banco: ", element.mapPositionY);
-      });
-
       this.connection.addCharacters(characterModelList);
 
-      const dispatcher: CharList = new CharList(characterModelList, 5);
+      const dispatcher: CharacterList = new CharacterList(characterModelList, 5);
       dispatcher.sendTo(this.connection);
     } catch (error) {
       const alertDispatcher: AlertDispatcher = new AlertDispatcher(
@@ -242,7 +236,7 @@ export class Character {
       );
       alertDispatcher.sendTo(this.connection);
 
-      const dispatcher: CharCreated = new CharCreated();
+      const dispatcher: CharacterCreated = new CharacterCreated();
       dispatcher.sendTo(this.connection);
     } catch (error) {
       const alertDispatcher: AlertDispatcher = new AlertDispatcher(
@@ -299,7 +293,7 @@ export class Character {
       );
       alertDispatcher.sendTo(this.connection);
 
-      const dispatcher: CharDeleted = new CharDeleted();
+      const dispatcher: CharacterDeleted = new CharacterDeleted();
       dispatcher.sendTo(this.connection);
     } catch (error) {
       const alertDispatcher: AlertDispatcher = new AlertDispatcher(

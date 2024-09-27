@@ -3,14 +3,17 @@ import { AlertDispatcher, AlertType } from "../../outgoing/dispatcher/alert";
 import type { ClientMessage } from "../../protocol/client-message";
 import type { Incoming } from "../incoming";
 
-export class MoveCharRequest implements Incoming {
+export class SelectCharacterRequest implements Incoming {
   public async handle(connection: Connection, message: ClientMessage): Promise<void> {
-    const action = message.getInt8();
-    const positionX = message.getInt32();
-    const positionY = message.getInt32();
-    const direction = message.getInt8();
-    const velocityX = message.getInt32();
-    const velocityY = message.getInt32();
+    const charId: number = message.getInt32();
+    const mapId: number = message.getInt32();
+
+    try {
+      connection.setCharacterInUseById(charId);
+    } catch (error) {
+      this.sendAlert(connection, AlertType.Error, "Character not found or could not be set as active!", true);
+      return;
+    }
 
     const charInUse = connection.getCharInUse();
     if (!charInUse) {
@@ -18,13 +21,13 @@ export class MoveCharRequest implements Incoming {
       return;
     }
 
-    const foundMap = charInUse.findMapById(charInUse.currentMap);
+    const foundMap = charInUse.findMapById(mapId);
     if (!foundMap) {
       this.sendAlert(connection, AlertType.Error, "Map not found!", false);
       return;
     }
 
-    foundMap.moveCharacter(connection, charInUse, action, positionX, positionY, direction, velocityX, velocityY);
+    foundMap?.addCharacter(connection, charInUse);
   }
 
   private sendAlert(connection: Connection, type: AlertType, message: string, critical: boolean): void {

@@ -1,8 +1,8 @@
 import { ServerHeaders } from "../../protocol/server-headers";
 import { ServerMessage } from "../../protocol/server-message";
 
-export class CharDeleted extends ServerMessage {
+export class CharacterCreated extends ServerMessage {
   constructor() {
-    super(ServerHeaders.CharDeleted);
+    super(ServerHeaders.CharCreated);
   }
 }

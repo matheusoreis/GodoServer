@@ -2,9 +2,9 @@ import type { CharacterModel } from "../../../core/character";
 import { ServerHeaders } from "../../protocol/server-headers";
 import { ServerMessage } from "../../protocol/server-message";
 
-export class CharMoved extends ServerMessage {
+export class CharacterMoved extends ServerMessage {
   constructor(
-    char: CharacterModel,
+    character: CharacterModel,
     action: number,
     positionX: number,
     positionY: number,
@@ -14,8 +14,8 @@ export class CharMoved extends ServerMessage {
   ) {
     super(ServerHeaders.CharMoved);
 
-    this.putInt32(char.id);
-    this.putInt32(char.currentMap);
+    this.putInt32(character.id);
+    this.putInt32(character.currentMap);
     this.putInt8(action);
     this.putInt32(positionX);
     this.putInt32(positionY);

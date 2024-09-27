@@ -1,15 +1,15 @@
 import type { Incoming } from "../communication/incoming/incoming";
 import { AccessAccountRequest } from "../communication/incoming/requests/access-account";
 import type { ChangePasswordRequest } from "../communication/incoming/requests/change-password";
-import { CharListRequest } from "../communication/incoming/requests/char-list";
+import { CharacterListRequest } from "../communication/incoming/requests/character-list";
 import { CreateAccountRequest } from "../communication/incoming/requests/create-account";
-import { CreateCharRequest } from "../communication/incoming/requests/create-char";
+import { CreateCharacterRequest } from "../communication/incoming/requests/create-character";
 import { DeleteAccountRequest } from "../communication/incoming/requests/delete-account";
-import { DeleteCharRequest } from "../communication/incoming/requests/delete-char";
-import { MoveCharRequest } from "../communication/incoming/requests/move-char";
+import { DeleteCharacterRequest } from "../communication/incoming/requests/delete-character";
+import { MoveCharacterRequest } from "../communication/incoming/requests/move-character";
 import { Pong } from "../communication/incoming/requests/ping";
 import { RecoverAccountRequest } from "../communication/incoming/requests/recover-account";
-import { SelectCharRequest } from "../communication/incoming/requests/select-char";
+import { SelectCharacterRequest } from "../communication/incoming/requests/select-character";
 import { ClientHeaders } from "../communication/protocol/client-headers";
 import type { ClientMessage } from "../communication/protocol/client-message";
 import type { Connection } from "../core/connection";
@@ -71,11 +71,11 @@ export class Handler {
     const deleteAccountRequest = serviceLocator.get<DeleteAccountRequest>(DeleteAccountRequest);
     const recoverAccountRequest = serviceLocator.get<RecoverAccountRequest>(RecoverAccountRequest);
     const changePasswordRequest = serviceLocator.get<ChangePasswordRequest>(DeleteAccountRequest);
-    const charListRequest = serviceLocator.get<CharListRequest>(CharListRequest);
-    const createCharRequest = serviceLocator.get<CreateCharRequest>(CreateCharRequest);
-    const deleteCharRequest = serviceLocator.get<DeleteCharRequest>(DeleteCharRequest);
-    const selectCharRequest = serviceLocator.get<SelectCharRequest>(SelectCharRequest);
-    const moveCharRequest = serviceLocator.get<MoveCharRequest>(MoveCharRequest);
+    const charListRequest = serviceLocator.get<CharacterListRequest>(CharacterListRequest);
+    const createCharRequest = serviceLocator.get<CreateCharacterRequest>(CreateCharacterRequest);
+    const deleteCharRequest = serviceLocator.get<DeleteCharacterRequest>(DeleteCharacterRequest);
+    const selectCharRequest = serviceLocator.get<SelectCharacterRequest>(SelectCharacterRequest);
+    const moveCharRequest = serviceLocator.get<MoveCharacterRequest>(MoveCharacterRequest);
 
     this.requestHandlers[ClientHeaders.Ping] = pingRequest;
     this.requestHandlers[ClientHeaders.AccessAccount] = accessAccountRequest;

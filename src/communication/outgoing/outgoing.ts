@@ -83,7 +83,6 @@ export abstract class Outgoing {
       const connection = this.memory.connections.get(index);
       if (connection?.getCharInUse()?.currentMap === mapId) {
         try {
-          console.log(message.getBuffer());
           this.dataTo(connection, message);
         } catch (error) {
           this.logger.error("Error sending data to the map clients! Error: " + error);

@@ -1,9 +1,9 @@
 import { AlertDispatcher, AlertType } from "../communication/outgoing/dispatcher/alert";
-import { CharDisconnected } from "../communication/outgoing/dispatcher/char-disconnected";
-import { CharMoved } from "../communication/outgoing/dispatcher/char-moved";
-import { CharSelected } from "../communication/outgoing/dispatcher/char-selected";
-import { MapCharsTo } from "../communication/outgoing/dispatcher/map-chars-to";
-import { NewCharToMap } from "../communication/outgoing/dispatcher/new-char-to-map";
+import { CharacterDisconnected } from "../communication/outgoing/dispatcher/character-disconnected";
+import { CharacterMoved } from "../communication/outgoing/dispatcher/character-moved";
+import { CharacterSelected } from "../communication/outgoing/dispatcher/character-selected";
+import { NotifyExistingCharacters } from "../communication/outgoing/dispatcher/map-characters-to";
+import { OthersOfNewCharacter } from "../communication/outgoing/dispatcher/others-of-new-character";
 import { CHAR_VELOCITY_X_Y, MAP_LOOP, MAX_MAP_CHARACTERS } from "../misc/constants";
 import { Logger } from "../misc/logger";
 import { serviceLocator } from "../misc/service-locator";
@@ -47,25 +47,25 @@ export class GameMap {
     this.notifyOthersOfNewCharacter(connection, character);
 
     // Notificar o novo personagem sobre os personagens já presentes
-    this.notifyNewCharacterOfExistingCharacters(connection);
+    this.notifyExistingCharacters(connection);
 
     // Adicionar o personagem ao array de personagens
     this._characters.add(character);
   }
 
   private notifyCharacterSelected(connection: Connection, character: CharacterModel): void {
-    const charSelected = new CharSelected(character);
+    const charSelected = new CharacterSelected(character);
     charSelected.sendTo(connection);
   }
 
   private notifyOthersOfNewCharacter(connection: Connection, character: CharacterModel): void {
-    const newChar = new NewCharToMap(character);
+    const newChar = new OthersOfNewCharacter(character);
     newChar.sendToMapExcept(this.id, connection);
   }
 
-  private notifyNewCharacterOfExistingCharacters(connection: Connection): void {
+  private notifyExistingCharacters(connection: Connection): void {
     const charactersArray = this._characters.filter((c) => c !== undefined) as CharacterModel[];
-    const mapCharsTo = new MapCharsTo(charactersArray);
+    const mapCharsTo = new NotifyExistingCharacters(charactersArray);
     mapCharsTo.sendTo(connection);
   }
 
@@ -97,16 +97,11 @@ export class GameMap {
       return;
     }
 
-    if (!this.isVelocityAllowed(velocityX, velocityY)) {
-      this.sendAlert(connection, AlertType.Error, "Your character is above the allowed speed!", true);
-      return;
-    }
-
     character.mapPositionX = positionX;
     character.mapPositionY = positionY;
     character.direction = direction;
 
-    const charMoved = new CharMoved(character, action, positionX, positionY, direction, velocityX, velocityY);
+    const charMoved = new CharacterMoved(character, action, positionX, positionY, direction, velocityX, velocityY);
     charMoved.sendToMapExcept(this.id, connection);
   }
 
@@ -120,7 +115,7 @@ export class GameMap {
         this._characters.remove(index);
         found = true;
 
-        const disconnect: CharDisconnected = new CharDisconnected(character);
+        const disconnect: CharacterDisconnected = new CharacterDisconnected(character);
         disconnect.sendToMap(character.currentMap);
         break;
       }
@@ -136,16 +131,12 @@ export class GameMap {
   }
 
   private sendAlert(connection: Connection, type: AlertType, message: string, critical: boolean): void {
-    const alertDispatcher: AlertDispatcher = new AlertDispatcher(type, message, critical);
+    const alertDispatcher = new AlertDispatcher(type, message, critical);
     alertDispatcher.sendTo(connection);
   }
 
   private isWithinMapBounds(x: number, y: number): boolean {
     return x >= 0 && x < this.sizeX && y >= 0 && y < this.sizeY;
-  }
-
-  private isVelocityAllowed(velocityX: number, velocityY: number): boolean {
-    return velocityX <= CHAR_VELOCITY_X_Y && velocityY <= CHAR_VELOCITY_X_Y;
   }
 
   private isCharacterInCurrentMap(character: CharacterModel): boolean {

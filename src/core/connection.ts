@@ -109,16 +109,16 @@ export class Connection {
   /**
    * Adiciona um personagem à lista de personagens e define como personagem ativo.
    *
-   * @param {CharacterModel} char - O personagem escolhido.
+   * @param {CharacterModel} character - O personagem escolhido.
    */
-  public addCharacter(char: CharacterModel): void {
-    const existingCharacter = this.chars?.find((c) => c.id === char.id);
+  public addCharacter(character: CharacterModel): void {
+    const existingCharacter = this.chars?.find((c) => c.id === character.id);
 
     if (existingCharacter) {
       return;
     }
 
-    this.chars?.push(char);
+    this.chars?.push(character);
   }
 
   /**

@@ -1,13 +1,13 @@
 import { AlertDispatcher, AlertType } from "../communication/outgoing/dispatcher/alert";
-import { CharDeleted } from "../communication/outgoing/dispatcher/char-deleted";
 import { CharDisconnected } from "../communication/outgoing/dispatcher/char-disconnected";
 import { CharMoved } from "../communication/outgoing/dispatcher/char-moved";
 import { CharSelected } from "../communication/outgoing/dispatcher/char-selected";
 import { MapCharsTo } from "../communication/outgoing/dispatcher/map-chars-to";
 import { NewCharToMap } from "../communication/outgoing/dispatcher/new-char-to-map";
-import { CHAR_VELOCITY_X_Y, MAP_LOOP } from "../misc/constants";
+import { CHAR_VELOCITY_X_Y, MAP_LOOP, MAX_MAP_CHARACTERS } from "../misc/constants";
 import { Logger } from "../misc/logger";
 import { serviceLocator } from "../misc/service-locator";
+import { Slots } from "../misc/slots";
 import type { CharacterModel } from "./character";
 import type { Connection } from "./connection";
 
@@ -23,38 +23,53 @@ export class GameMap {
     this.loop();
   }
 
-  logger: Logger;
-  id: number;
-  name: string;
-  sizeX: number;
-  sizeY: number;
-  private chars: Map<number, CharacterModel> = new Map();
+  public id: number;
+  public name: string;
+  public sizeX: number;
+  public sizeY: number;
+  private _characters: Slots<CharacterModel> = new Slots<CharacterModel>(MAX_MAP_CHARACTERS);
 
-  public enter(connection: Connection, character: CharacterModel): void {
+  public logger: Logger;
+
+  public addCharacter(connection: Connection, character: CharacterModel): void {
     character.loop();
 
     if (character.currentMap !== this.id) {
-      console.error(`Character ${character.id} is not supposed to enter this map.`);
+      this.sendAlert(connection, AlertType.Error, "Your character does not belong on this map!", true);
+
       return;
     }
 
-    // Notifica o novo personagem selecionado
-    const charSelected = new CharSelected(character);
-    charSelected.sendTo(connection);
+    // Notificar o novo personagem selecionado
+    this.notifyCharacterSelected(connection, character);
 
-    // Notifica todos os personagens no mapa sobre a entrada do novo personagem
-    const newCharTo = new NewCharToMap(character);
-    newCharTo.sendToMapExcept(this.id, connection);
+    // Notificar outros personagens sobre o novo personagem
+    this.notifyOthersOfNewCharacter(connection, character);
 
-    // Notifica o novo personagem sobre todos os personagens já presentes no mapa
-    const mapCharsTo = new MapCharsTo(Array.from(this.chars.values()));
-    mapCharsTo.sendTo(connection);
+    // Notificar o novo personagem sobre os personagens já presentes
+    this.notifyNewCharacterOfExistingCharacters(connection);
 
-    // Adiciona o personagem ao mapa
-    this.chars.set(character.id, character);
+    // Adicionar o personagem ao array de personagens
+    this._characters.add(character);
   }
 
-  public movePlayer(
+  private notifyCharacterSelected(connection: Connection, character: CharacterModel): void {
+    const charSelected = new CharSelected(character);
+    charSelected.sendTo(connection);
+  }
+
+  private notifyOthersOfNewCharacter(connection: Connection, character: CharacterModel): void {
+    const newChar = new NewCharToMap(character);
+    newChar.sendToMapExcept(this.id, connection);
+  }
+
+  private notifyNewCharacterOfExistingCharacters(connection: Connection): void {
+    const charactersArray = this._characters.filter((c) => c !== undefined) as CharacterModel[];
+    const mapCharsTo = new MapCharsTo(charactersArray);
+    mapCharsTo.sendTo(connection);
+  }
+
+  public moveCharacter(
     connection: Connection,
     character: CharacterModel,
     action: number,
@@ -64,49 +79,90 @@ export class GameMap {
     velocityX: number,
     velocityY: number,
   ): void {
-    if (this.chars.has(character.id)) {
-      character.mapPositionX = positionX;
-      character.mapPositionY = positionY;
-      character.direction = direction;
+    const existingCharacter = this.getCharacter(character.id);
 
-      if (velocityX > CHAR_VELOCITY_X_Y || velocityY > CHAR_VELOCITY_X_Y) {
-        this.sendAlert(connection, AlertType.Error, "The character's speed is high! disconnecting...!", true);
+    if (!existingCharacter) {
+      console.error(`Character ${character.id} is not in this map.`);
+
+      return;
+    }
+
+    if (!this.isCharacterInCurrentMap(character)) {
+      this.sendAlert(connection, AlertType.Error, "Your character does not belong on this map!", true);
+      return;
+    }
+
+    if (!this.isWithinMapBounds(positionX, positionY)) {
+      this.sendAlert(connection, AlertType.Error, "Your character is trying to leave the map's boundaries!", true);
+      return;
+    }
+
+    if (!this.isVelocityAllowed(velocityX, velocityY)) {
+      this.sendAlert(connection, AlertType.Error, "Your character is above the allowed speed!", true);
+      return;
+    }
+
+    character.mapPositionX = positionX;
+    character.mapPositionY = positionY;
+    character.direction = direction;
+
+    const charMoved = new CharMoved(character, action, positionX, positionY, direction, velocityX, velocityY);
+    charMoved.sendToMapExcept(this.id, connection);
+  }
+
+  public removeCharacter(character: CharacterModel): void {
+    let found = false;
+
+    for (const index of this._characters.getFilledSlots()) {
+      const existingCharacter = this._characters.get(index);
+
+      if (existingCharacter && existingCharacter.id === character.id) {
+        this._characters.remove(index);
+        found = true;
+
+        const disconnect: CharDisconnected = new CharDisconnected(character);
+        disconnect.sendToMap(character.currentMap);
+        break;
       }
+    }
 
-      const charMoved = new CharMoved(character, action, positionX, positionY, direction, velocityX, velocityY);
-      charMoved.sendToMapExcept(this.id, connection);
-    } else {
+    if (!found) {
       console.error(`Character ${character.id} is not in this map.`);
     }
   }
 
-  public removePlayer(char: CharacterModel): void {
-    if (this.chars.has(char.id)) {
-      this.chars.delete(char.id);
-
-      const disconnect: CharDisconnected = new CharDisconnected(char);
-      disconnect.sendToMap(char.currentMap);
-    } else {
-      console.error(`Character ${char.id} is not in this map.`);
-    }
+  public getCharacter(characterId: number): CharacterModel | undefined {
+    return this._characters.find((character) => character.id === characterId);
   }
 
-  public getPlayer(characterId: number): CharacterModel | undefined {
-    return this.chars.get(characterId);
+  private sendAlert(connection: Connection, type: AlertType, message: string, critical: boolean): void {
+    const alertDispatcher: AlertDispatcher = new AlertDispatcher(type, message, critical);
+    alertDispatcher.sendTo(connection);
   }
 
-  public async loop(): Promise<void> {
+  private isWithinMapBounds(x: number, y: number): boolean {
+    return x >= 0 && x < this.sizeX && y >= 0 && y < this.sizeY;
+  }
+
+  private isVelocityAllowed(velocityX: number, velocityY: number): boolean {
+    return velocityX <= CHAR_VELOCITY_X_Y && velocityY <= CHAR_VELOCITY_X_Y;
+  }
+
+  private isCharacterInCurrentMap(character: CharacterModel): boolean {
+    const existingCharacter: CharacterModel | undefined = this._characters.find(
+      (currentCharacter) => currentCharacter?.id === character.id,
+    );
+
+    return existingCharacter ? existingCharacter.currentMap === this.id : false;
+  }
+
+  private async loop(): Promise<void> {
     this.logger.info(`Initializing the Map ${this.id} loop`);
 
-    const loopInterval = MAP_LOOP;
+    const loopInterval: number = MAP_LOOP;
 
     setInterval(async () => {
       //
     }, loopInterval);
-  }
-
-  private sendAlert(connection: Connection, type: AlertType, message: string, critical: boolean): void {
-    const alertDispatcher = new AlertDispatcher(type, message, critical);
-    alertDispatcher.sendTo(connection);
   }
 }

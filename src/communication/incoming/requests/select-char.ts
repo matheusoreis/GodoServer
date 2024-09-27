@@ -27,7 +27,7 @@ export class SelectCharRequest implements Incoming {
       return;
     }
 
-    foundMap?.enter(connection, charInUse);
+    foundMap?.addCharacter(connection, charInUse);
   }
 
   private sendAlert(connection: Connection, type: AlertType, message: string, critical: boolean): void {

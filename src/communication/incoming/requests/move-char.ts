@@ -24,7 +24,7 @@ export class MoveCharRequest implements Incoming {
       return;
     }
 
-    foundMap.movePlayer(connection, charInUse, action, positionX, positionY, direction, velocityX, velocityY);
+    foundMap.moveCharacter(connection, charInUse, action, positionX, positionY, direction, velocityX, velocityY);
   }
 
   private sendAlert(connection: Connection, type: AlertType, message: string, critical: boolean): void {

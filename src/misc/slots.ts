@@ -113,4 +113,35 @@ export class Slots<T> {
     this._checkIndex(index);
     this._slots[index] = value;
   }
+
+  /**
+   * Encontra o primeiro elemento que corresponde ao critério fornecido.
+   *
+   * @param {(value: T) => boolean} predicate - Função de teste para encontrar o elemento.
+   * @returns {T | undefined} O valor que satisfaz a condição ou `undefined` se nenhum for encontrado.
+   */
+  public find(predicate: (value: T) => boolean): T | undefined {
+    for (const item of this._slots) {
+      if (item !== undefined && predicate(item)) {
+        return item;
+      }
+    }
+    return undefined;
+  }
+
+  /**
+   * Retorna todos os elementos que correspondem ao critério fornecido.
+   *
+   * @param {(value: T) => boolean} predicate - Função de teste para encontrar os elementos.
+   * @returns {T[]} Um array com todos os valores que satisfazem a condição.
+   */
+  public filter(predicate: (value: T) => boolean): T[] {
+    const result: T[] = [];
+    for (const item of this._slots) {
+      if (item !== undefined && predicate(item)) {
+        result.push(item);
+      }
+    }
+    return result;
+  }
 }

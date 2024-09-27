@@ -106,7 +106,7 @@ export class Manager {
       const currentMap = charInUse.findMapById(mapId);
 
       if (currentMap) {
-        currentMap.removePlayer(charInUse);
+        currentMap.removeCharacter(charInUse);
       } else {
         this.logger.warning(`Map with ID ${mapId} not found when removing character.`);
       }

@@ -3,7 +3,7 @@ import type { Connection } from "../../../core/connection";
 import type { ClientMessage } from "../../protocol/client-message";
 import type { Incoming } from "../incoming";
 
-export class DeleteCharacterRequest implements Incoming {
+export class DeleteCharacter implements Incoming {
   public async handle(connection: Connection, message: ClientMessage): Promise<void> {
     const charId: number = message.getInt32();
 

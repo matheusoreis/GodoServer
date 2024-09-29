@@ -3,7 +3,7 @@ import { Memory } from "../core/memory";
 import { Logger } from "../misc/logger";
 import { Connection } from "../core/connection";
 import { GetConnection } from "../misc/get-connection";
-import { AlertDispatcher, AlertType } from "../communication/outgoing/dispatcher/alert";
+import { Alert, AlertType } from "../communication/outgoing/dispatcher/alert";
 import { serviceLocator } from "../misc/service-locator";
 import type { CharacterModel } from "../core/character";
 
@@ -143,11 +143,7 @@ export class Manager {
   private handleFullServer(ws: ServerWebSocket): void {
     const connection: Connection = new Connection(ws, -1);
 
-    const alertDispatcher: AlertDispatcher = new AlertDispatcher(
-      AlertType.Error,
-      "Server is full! disconnecting...",
-      true,
-    );
+    const alertDispatcher: Alert = new Alert(AlertType.Error, "Server is full! disconnecting...", true);
 
     alertDispatcher.sendTo(connection);
 

@@ -2,9 +2,9 @@ import type { CharacterModel } from "../../../core/character";
 import { ServerHeaders } from "../../protocol/server-headers";
 import { ServerMessage } from "../../protocol/server-message";
 
-export class NotifyExistingCharacters extends ServerMessage {
+export class MapCharactersTo extends ServerMessage {
   constructor(characters: CharacterModel[]) {
-    super(ServerHeaders.NotifyExistingCharacters);
+    super(ServerHeaders.MapCharactersTo);
 
     this.putInt16(characters.length);
 

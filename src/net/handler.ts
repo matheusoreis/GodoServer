@@ -1,15 +1,15 @@
 import type { Incoming } from "../communication/incoming/incoming";
-import { AccessAccountRequest } from "../communication/incoming/requests/access-account";
-import type { ChangePasswordRequest } from "../communication/incoming/requests/change-password";
-import { CharacterListRequest } from "../communication/incoming/requests/character-list";
-import { CreateAccountRequest } from "../communication/incoming/requests/create-account";
-import { CreateCharacterRequest } from "../communication/incoming/requests/create-character";
-import { DeleteAccountRequest } from "../communication/incoming/requests/delete-account";
-import { DeleteCharacterRequest } from "../communication/incoming/requests/delete-character";
-import { MoveCharacterRequest } from "../communication/incoming/requests/move-character";
-import { Pong } from "../communication/incoming/requests/ping";
-import { RecoverAccountRequest } from "../communication/incoming/requests/recover-account";
-import { SelectCharacterRequest } from "../communication/incoming/requests/select-character";
+import { AccessAccount } from "../communication/incoming/requests/access-account";
+import type { ChangePassword } from "../communication/incoming/requests/change-password";
+import { RequestCharacters } from "../communication/incoming/requests/request-characters";
+import { CreateAccount } from "../communication/incoming/requests/create-account";
+import { CreateCharacter } from "../communication/incoming/requests/create-character";
+import { DeleteAccount } from "../communication/incoming/requests/delete-account";
+import { DeleteCharacter } from "../communication/incoming/requests/delete-character";
+import { MoveCharacter } from "../communication/incoming/requests/move-character";
+import { Ping } from "../communication/incoming/requests/ping";
+import { RecoverAccount } from "../communication/incoming/requests/recover-account";
+import { SelectCharacter } from "../communication/incoming/requests/select-character";
 import { ClientHeaders } from "../communication/protocol/client-headers";
 import type { ClientMessage } from "../communication/protocol/client-message";
 import type { Connection } from "../core/connection";
@@ -43,6 +43,10 @@ export class Handler {
    * @param {ClientMessage} message - A mensagem recebida do cliente.
    */
   public handleMessage(connection: Connection, message: ClientMessage): void {
+    if (!connection.isConnected()) {
+      return;
+    }
+
     const messageId = message.getId() as ClientHeaders;
 
     if (this.requestHandlers[messageId]) {
@@ -65,28 +69,28 @@ export class Handler {
    * Este método é responsável por preencher o mapeamento `requestHandlers`.
    */
   private registerRequests() {
-    const pingRequest = serviceLocator.get<Pong>(Pong);
-    const accessAccountRequest = serviceLocator.get<AccessAccountRequest>(AccessAccountRequest);
-    const createAccountRequest = serviceLocator.get<CreateAccountRequest>(CreateAccountRequest);
-    const deleteAccountRequest = serviceLocator.get<DeleteAccountRequest>(DeleteAccountRequest);
-    const recoverAccountRequest = serviceLocator.get<RecoverAccountRequest>(RecoverAccountRequest);
-    const changePasswordRequest = serviceLocator.get<ChangePasswordRequest>(DeleteAccountRequest);
-    const charListRequest = serviceLocator.get<CharacterListRequest>(CharacterListRequest);
-    const createCharRequest = serviceLocator.get<CreateCharacterRequest>(CreateCharacterRequest);
-    const deleteCharRequest = serviceLocator.get<DeleteCharacterRequest>(DeleteCharacterRequest);
-    const selectCharRequest = serviceLocator.get<SelectCharacterRequest>(SelectCharacterRequest);
-    const moveCharRequest = serviceLocator.get<MoveCharacterRequest>(MoveCharacterRequest);
+    const ping = serviceLocator.get<Ping>(Ping);
+    const accessAccount = serviceLocator.get<AccessAccount>(AccessAccount);
+    const createAccount = serviceLocator.get<CreateAccount>(CreateAccount);
+    const deleteAccount = serviceLocator.get<DeleteAccount>(DeleteAccount);
+    const recoverAccount = serviceLocator.get<RecoverAccount>(RecoverAccount);
+    const changePassword = serviceLocator.get<ChangePassword>(DeleteAccount);
+    const requestCharacters = serviceLocator.get<RequestCharacters>(RequestCharacters);
+    const createCharacter = serviceLocator.get<CreateCharacter>(CreateCharacter);
+    const deleteCharacter = serviceLocator.get<DeleteCharacter>(DeleteCharacter);
+    const selectCharacter = serviceLocator.get<SelectCharacter>(SelectCharacter);
+    const moveCharacter = serviceLocator.get<MoveCharacter>(MoveCharacter);
 
-    this.requestHandlers[ClientHeaders.Ping] = pingRequest;
-    this.requestHandlers[ClientHeaders.AccessAccount] = accessAccountRequest;
-    this.requestHandlers[ClientHeaders.CreateAccount] = createAccountRequest;
-    this.requestHandlers[ClientHeaders.DeleteAccount] = deleteAccountRequest;
-    this.requestHandlers[ClientHeaders.RecoverAccount] = recoverAccountRequest;
-    this.requestHandlers[ClientHeaders.ChangePassword] = changePasswordRequest;
-    this.requestHandlers[ClientHeaders.CharList] = charListRequest;
-    this.requestHandlers[ClientHeaders.CreateChar] = createCharRequest;
-    this.requestHandlers[ClientHeaders.DeleteChar] = deleteCharRequest;
-    this.requestHandlers[ClientHeaders.SelectChar] = selectCharRequest;
-    this.requestHandlers[ClientHeaders.MoveChar] = moveCharRequest;
+    this.requestHandlers[ClientHeaders.Ping] = ping;
+    this.requestHandlers[ClientHeaders.AccessAccount] = accessAccount;
+    this.requestHandlers[ClientHeaders.CreateAccount] = createAccount;
+    this.requestHandlers[ClientHeaders.DeleteAccount] = deleteAccount;
+    this.requestHandlers[ClientHeaders.RecoverAccount] = recoverAccount;
+    this.requestHandlers[ClientHeaders.ChangePassword] = changePassword;
+    this.requestHandlers[ClientHeaders.RequestCharacters] = requestCharacters;
+    this.requestHandlers[ClientHeaders.CreateCharacter] = createCharacter;
+    this.requestHandlers[ClientHeaders.DeleteCharacter] = deleteCharacter;
+    this.requestHandlers[ClientHeaders.SelectCharacter] = selectCharacter;
+    this.requestHandlers[ClientHeaders.MoveCharacter] = moveCharacter;
   }
 }

@@ -1,12 +1,11 @@
 import type { Connection } from "../../../core/connection";
-import { AlertDispatcher, AlertType } from "../../outgoing/dispatcher/alert";
+import { Alert, AlertType } from "../../outgoing/dispatcher/alert";
 import type { ClientMessage } from "../../protocol/client-message";
 import type { Incoming } from "../incoming";
 
-export class SelectCharacterRequest implements Incoming {
+export class SelectCharacter implements Incoming {
   public async handle(connection: Connection, message: ClientMessage): Promise<void> {
     const charId: number = message.getInt32();
-    const mapId: number = message.getInt32();
 
     try {
       connection.setCharacterInUseById(charId);
@@ -21,7 +20,7 @@ export class SelectCharacterRequest implements Incoming {
       return;
     }
 
-    const foundMap = charInUse.findMapById(mapId);
+    const foundMap = charInUse.findMapById(charInUse.currentMap);
     if (!foundMap) {
       this.sendAlert(connection, AlertType.Error, "Map not found!", false);
       return;
@@ -31,7 +30,7 @@ export class SelectCharacterRequest implements Incoming {
   }
 
   private sendAlert(connection: Connection, type: AlertType, message: string, critical: boolean): void {
-    const alertDispatcher = new AlertDispatcher(type, message, critical);
+    const alertDispatcher = new Alert(type, message, critical);
     alertDispatcher.sendTo(connection);
   }
 }

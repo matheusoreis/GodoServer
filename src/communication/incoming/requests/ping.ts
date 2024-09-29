@@ -1,11 +1,11 @@
 import type { Connection } from "../../../core/connection";
-import { Ping } from "../../outgoing/dispatcher/ping";
+import { Pong } from "../../outgoing/dispatcher/pong";
 import type { ClientMessage } from "../../protocol/client-message";
 import type { Incoming } from "../incoming";
 
-export class Pong implements Incoming {
+export class Ping implements Incoming {
   handle(connection: Connection, _message: ClientMessage): void {
-    const ping: Ping = new Ping();
+    const ping: Pong = new Pong();
 
     ping.sendTo(connection);
   }

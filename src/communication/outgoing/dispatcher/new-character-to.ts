@@ -2,9 +2,9 @@ import type { CharacterModel } from "../../../core/character";
 import { ServerHeaders } from "../../protocol/server-headers";
 import { ServerMessage } from "../../protocol/server-message";
 
-export class OthersOfNewCharacter extends ServerMessage {
+export class NewCharacterTo extends ServerMessage {
   constructor(character: CharacterModel) {
-    super(ServerHeaders.OthersOfNewCharacter);
+    super(ServerHeaders.NewCharacterTo);
 
     this.putInt32(character.id);
     this.putString(character.name);

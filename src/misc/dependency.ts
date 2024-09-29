@@ -1,15 +1,15 @@
 import { PrismaClient } from "@prisma/client";
-import { AccessAccountRequest } from "../communication/incoming/requests/access-account";
-import { ChangePasswordRequest } from "../communication/incoming/requests/change-password";
-import { CharacterListRequest } from "../communication/incoming/requests/character-list";
-import { CreateAccountRequest } from "../communication/incoming/requests/create-account";
-import { CreateCharacterRequest } from "../communication/incoming/requests/create-character";
-import { DeleteAccountRequest } from "../communication/incoming/requests/delete-account";
-import { DeleteCharacterRequest } from "../communication/incoming/requests/delete-character";
-import { MoveCharacterRequest } from "../communication/incoming/requests/move-character";
-import { Pong } from "../communication/incoming/requests/ping";
-import { RecoverAccountRequest } from "../communication/incoming/requests/recover-account";
-import { SelectCharacterRequest } from "../communication/incoming/requests/select-character";
+import { AccessAccount } from "../communication/incoming/requests/access-account";
+import { ChangePassword } from "../communication/incoming/requests/change-password";
+import { RequestCharacters } from "../communication/incoming/requests/request-characters";
+import { CreateAccount } from "../communication/incoming/requests/create-account";
+import { CreateCharacter } from "../communication/incoming/requests/create-character";
+import { DeleteAccount } from "../communication/incoming/requests/delete-account";
+import { DeleteCharacter } from "../communication/incoming/requests/delete-character";
+import { MoveCharacter } from "../communication/incoming/requests/move-character";
+import { Ping } from "../communication/incoming/requests/ping";
+import { RecoverAccount } from "../communication/incoming/requests/recover-account";
+import { SelectCharacter } from "../communication/incoming/requests/select-character";
 import { ByteBuffer } from "../communication/protocol/byte-buffer";
 import { ClientMessage } from "../communication/protocol/client-message";
 import { Memory } from "../core/memory";
@@ -32,16 +32,16 @@ export class Dependency {
     serviceLocator.registerFactory<ClientMessage>(ClientMessage, () => new ClientMessage());
     serviceLocator.registerFactory<PrismaClient>(PrismaClient, () => new PrismaClient());
 
-    serviceLocator.registerFactory<Pong>(Pong, () => new Pong());
-    serviceLocator.registerFactory<AccessAccountRequest>(AccessAccountRequest, () => new AccessAccountRequest());
-    serviceLocator.registerFactory<CreateAccountRequest>(CreateAccountRequest, () => new CreateAccountRequest());
-    serviceLocator.registerFactory<DeleteAccountRequest>(DeleteAccountRequest, () => new DeleteAccountRequest());
-    serviceLocator.registerFactory<RecoverAccountRequest>(RecoverAccountRequest, () => new RecoverAccountRequest());
-    serviceLocator.registerFactory<ChangePasswordRequest>(ChangePasswordRequest, () => new ChangePasswordRequest());
-    serviceLocator.registerFactory<CharacterListRequest>(CharacterListRequest, () => new CharacterListRequest());
-    serviceLocator.registerFactory<CreateCharacterRequest>(CreateCharacterRequest, () => new CreateCharacterRequest());
-    serviceLocator.registerFactory<DeleteCharacterRequest>(DeleteCharacterRequest, () => new DeleteCharacterRequest());
-    serviceLocator.registerFactory<SelectCharacterRequest>(SelectCharacterRequest, () => new SelectCharacterRequest());
-    serviceLocator.registerFactory<MoveCharacterRequest>(MoveCharacterRequest, () => new MoveCharacterRequest());
+    serviceLocator.registerFactory<Ping>(Ping, () => new Ping());
+    serviceLocator.registerFactory<AccessAccount>(AccessAccount, () => new AccessAccount());
+    serviceLocator.registerFactory<CreateAccount>(CreateAccount, () => new CreateAccount());
+    serviceLocator.registerFactory<DeleteAccount>(DeleteAccount, () => new DeleteAccount());
+    serviceLocator.registerFactory<RecoverAccount>(RecoverAccount, () => new RecoverAccount());
+    serviceLocator.registerFactory<ChangePassword>(ChangePassword, () => new ChangePassword());
+    serviceLocator.registerFactory<RequestCharacters>(RequestCharacters, () => new RequestCharacters());
+    serviceLocator.registerFactory<CreateCharacter>(CreateCharacter, () => new CreateCharacter());
+    serviceLocator.registerFactory<DeleteCharacter>(DeleteCharacter, () => new DeleteCharacter());
+    serviceLocator.registerFactory<SelectCharacter>(SelectCharacter, () => new SelectCharacter());
+    serviceLocator.registerFactory<MoveCharacter>(MoveCharacter, () => new MoveCharacter());
   }
 }

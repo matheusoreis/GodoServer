@@ -1,9 +1,9 @@
-import { AlertDispatcher, AlertType } from "../communication/outgoing/dispatcher/alert";
+import { Alert, AlertType } from "../communication/outgoing/dispatcher/alert";
 import { CharacterDisconnected } from "../communication/outgoing/dispatcher/character-disconnected";
 import { CharacterMoved } from "../communication/outgoing/dispatcher/character-moved";
 import { CharacterSelected } from "../communication/outgoing/dispatcher/character-selected";
-import { NotifyExistingCharacters } from "../communication/outgoing/dispatcher/notify-existing-characters";
-import { OthersOfNewCharacter } from "../communication/outgoing/dispatcher/others-of-new-character";
+import { MapCharactersTo } from "../communication/outgoing/dispatcher/map-characters-to";
+import { NewCharacterTo } from "../communication/outgoing/dispatcher/new-character-to";
 import { CHAR_VELOCITY_X_Y, MAP_LOOP, MAX_MAP_CHARACTERS } from "../misc/constants";
 import { Logger } from "../misc/logger";
 import { serviceLocator } from "../misc/service-locator";
@@ -59,13 +59,13 @@ export class GameMap {
   }
 
   private sendOthersOfNewCharacter(connection: Connection, character: CharacterModel): void {
-    const newChar = new OthersOfNewCharacter(character);
+    const newChar = new NewCharacterTo(character);
     newChar.sendToMapExcept(this.id, connection);
   }
 
   private sendExistingCharacters(connection: Connection): void {
     const charactersArray = this._characters.filter((c) => c !== undefined) as CharacterModel[];
-    const mapCharsTo = new NotifyExistingCharacters(charactersArray);
+    const mapCharsTo = new MapCharactersTo(charactersArray);
     mapCharsTo.sendTo(connection);
   }
 
@@ -131,7 +131,7 @@ export class GameMap {
   }
 
   private sendAlert(connection: Connection, type: AlertType, message: string, critical: boolean): void {
-    const alertDispatcher = new AlertDispatcher(type, message, critical);
+    const alertDispatcher = new Alert(type, message, critical);
     alertDispatcher.sendTo(connection);
   }
 

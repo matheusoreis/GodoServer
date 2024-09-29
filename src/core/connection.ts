@@ -3,7 +3,7 @@ import { Handler } from "../net/handler";
 import { Memory } from "./memory";
 import { ClientMessage } from "../communication/protocol/client-message";
 import { serviceLocator } from "../misc/service-locator";
-import { AlertDispatcher, AlertType } from "../communication/outgoing/dispatcher/alert";
+import { Alert, AlertType } from "../communication/outgoing/dispatcher/alert";
 import type { CharacterModel } from "./character";
 
 /**
@@ -38,6 +38,15 @@ export class Connection {
   private handler: Handler;
   private memory: Memory;
   private clientMessage: ClientMessage;
+
+  /**
+   * Verifica se o WebSocket está conectado.
+   *
+   * @returns {boolean} - Retorna `true` se o WebSocket está conectado, caso contrário, `false`.
+   */
+  public isConnected(): boolean {
+    return this.ws.readyState === 1;
+  }
 
   /**
    * Fecha a conexão, remove-a da memória e define seu status como inativa.
@@ -83,7 +92,7 @@ export class Connection {
 
   public getDatabaseId(): number | void {
     if (this.connectionDatabaseId == undefined) {
-      const alertDispatcher: AlertDispatcher = new AlertDispatcher(
+      const alertDispatcher: Alert = new Alert(
         AlertType.Error,
         "An error occurred while retrieving your data. Please try again later.",
         true,

@@ -2,8 +2,8 @@ import type { Connection } from "../../../core/connection";
 import { ServerHeaders } from "../../protocol/server-headers";
 import { ServerMessage } from "../../protocol/server-message";
 
-export class CreateAccountSuccess extends ServerMessage {
+export class AccountDeleted extends ServerMessage {
   constructor(_connection: Connection) {
-    super(ServerHeaders.CreateAccountSuccess);
+    super(ServerHeaders.AccountDeleted);
   }
 }

@@ -1,4 +1,4 @@
-import { AlertDispatcher, AlertType } from "../communication/outgoing/dispatcher/alert";
+import { Alert, AlertType } from "../communication/outgoing/dispatcher/alert";
 import type { Connection } from "../core/connection";
 import { MAJOR_VERSION, MINOR_VERSION, REVISION_VERSION } from "./constants";
 
@@ -14,7 +14,7 @@ export class VersionChecker {
    */
   public static checkAndAlert(major: number, minor: number, revision: number, connection: Connection): boolean {
     if (major !== MAJOR_VERSION || minor !== MINOR_VERSION || revision !== REVISION_VERSION) {
-      const alertDispatcher: AlertDispatcher = new AlertDispatcher(
+      const alertDispatcher: Alert = new Alert(
         AlertType.Error,
         "The client version is out of date, please update to continue playing.",
         true,

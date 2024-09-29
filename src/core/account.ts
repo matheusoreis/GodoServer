@@ -1,11 +1,11 @@
 import { PrismaClient } from "@prisma/client";
-import { AccessAccountSuccess } from "../communication/outgoing/dispatcher/access-account-success";
+import { AccessSuccessful } from "../communication/outgoing/dispatcher/access-successful";
 import { VersionChecker } from "../misc/check-version";
 import type { Connection } from "./connection";
-import { AlertDispatcher, AlertType } from "../communication/outgoing/dispatcher/alert";
+import { Alert, AlertType } from "../communication/outgoing/dispatcher/alert";
 import { Password } from "../misc/password";
 import { serviceLocator } from "../misc/service-locator";
-import { CreateAccountSuccess } from "../communication/outgoing/dispatcher/create-account-success";
+import { AccountCreated } from "../communication/outgoing/dispatcher/account-created";
 
 export class Account {
   constructor(connection: Connection, email: string, password: string, major: number, minor: number, revision: number) {
@@ -34,11 +34,7 @@ export class Account {
     }
 
     if (!this.email || !this.password) {
-      const alertDispatcher: AlertDispatcher = new AlertDispatcher(
-        AlertType.Warn,
-        "Email and password are mandatory.",
-        false,
-      );
+      const alertDispatcher: Alert = new Alert(AlertType.Warn, "Email and password are mandatory.", false);
       alertDispatcher.sendTo(this.connection);
     }
 
@@ -48,7 +44,7 @@ export class Account {
       });
 
       if (!account) {
-        const alertDispatcher: AlertDispatcher = new AlertDispatcher(AlertType.Warn, "Account not found.", false);
+        const alertDispatcher: Alert = new Alert(AlertType.Warn, "Account not found.", false);
         alertDispatcher.sendTo(this.connection);
 
         return;
@@ -57,7 +53,7 @@ export class Account {
       const isPasswordValid = await this.passwordHash.verify(this.password, account!.password);
 
       if (!isPasswordValid) {
-        const alertDispatcher: AlertDispatcher = new AlertDispatcher(AlertType.Warn, "Wrong password.", false);
+        const alertDispatcher: Alert = new Alert(AlertType.Warn, "Wrong password.", false);
         alertDispatcher.sendTo(this.connection);
 
         return;
@@ -65,10 +61,10 @@ export class Account {
 
       this.connection.addDatabaseId(account!.id);
 
-      const dispatcher: AccessAccountSuccess = new AccessAccountSuccess();
+      const dispatcher: AccessSuccessful = new AccessSuccessful();
       dispatcher.sendTo(this.connection);
     } catch (error) {
-      const alertDispatcher: AlertDispatcher = new AlertDispatcher(AlertType.Error, `Error: ${error}`, false);
+      const alertDispatcher: Alert = new Alert(AlertType.Error, `Error: ${error}`, false);
       alertDispatcher.sendTo(this.connection);
     }
   }
@@ -79,11 +75,7 @@ export class Account {
     }
 
     if (!this.email || !this.password) {
-      const alertDispatcher: AlertDispatcher = new AlertDispatcher(
-        AlertType.Warn,
-        "Email and password are mandatory.",
-        false,
-      );
+      const alertDispatcher: Alert = new Alert(AlertType.Warn, "Email and password are mandatory.", false);
       alertDispatcher.sendTo(this.connection);
 
       return;
@@ -95,11 +87,7 @@ export class Account {
       });
 
       if (existingAccount) {
-        const alertDispatcher: AlertDispatcher = new AlertDispatcher(
-          AlertType.Warn,
-          "Account with this email already exists.",
-          false,
-        );
+        const alertDispatcher: Alert = new Alert(AlertType.Warn, "Account with this email already exists.", false);
         alertDispatcher.sendTo(this.connection);
         return;
       }
@@ -116,22 +104,14 @@ export class Account {
         },
       });
 
-      const alertDispatcher = new AlertDispatcher(
-        AlertType.Info,
-        "Your account has been successfully registered!",
-        false,
-      );
+      const alertDispatcher = new Alert(AlertType.Info, "Your account has been successfully registered!", false);
 
       alertDispatcher.sendTo(this.connection);
 
-      const dispatcher: CreateAccountSuccess = new CreateAccountSuccess(this.connection);
+      const dispatcher: AccountCreated = new AccountCreated(this.connection);
       dispatcher.sendTo(this.connection);
     } catch (error) {
-      const alertDispatcher: AlertDispatcher = new AlertDispatcher(
-        AlertType.Error,
-        `Error creating account: ${error}`,
-        false,
-      );
+      const alertDispatcher: Alert = new Alert(AlertType.Error, `Error creating account: ${error}`, false);
 
       alertDispatcher.sendTo(this.connection);
     }

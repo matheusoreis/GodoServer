@@ -1,9 +1,9 @@
 import type { Connection } from "../../../core/connection";
-import { AlertDispatcher, AlertType } from "../../outgoing/dispatcher/alert";
+import { Alert, AlertType } from "../../outgoing/dispatcher/alert";
 import type { ClientMessage } from "../../protocol/client-message";
 import type { Incoming } from "../incoming";
 
-export class MoveCharacterRequest implements Incoming {
+export class MoveCharacter implements Incoming {
   public async handle(connection: Connection, message: ClientMessage): Promise<void> {
     const action = message.getInt8();
     const positionX = message.getInt32();
@@ -28,7 +28,7 @@ export class MoveCharacterRequest implements Incoming {
   }
 
   private sendAlert(connection: Connection, type: AlertType, message: string, critical: boolean): void {
-    const alertDispatcher = new AlertDispatcher(type, message, critical);
+    const alertDispatcher = new Alert(type, message, critical);
     alertDispatcher.sendTo(connection);
   }
 }

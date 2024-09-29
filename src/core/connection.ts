@@ -3,7 +3,7 @@ import { Handler } from "../net/handler";
 import { Memory } from "./memory";
 import { ClientMessage } from "../communication/protocol/client-message";
 import { serviceLocator } from "../misc/service-locator";
-import { Alert, AlertType } from "../communication/outgoing/dispatcher/alert";
+import { Alert } from "../communication/outgoing/dispatcher/alert";
 import type { CharacterModel } from "./character";
 
 /**
@@ -92,13 +92,7 @@ export class Connection {
 
   public getDatabaseId(): number | void {
     if (this.connectionDatabaseId == undefined) {
-      const alertDispatcher: Alert = new Alert(
-        AlertType.Error,
-        "An error occurred while retrieving your data. Please try again later.",
-        true,
-      );
-
-      alertDispatcher.sendTo(this);
+      new Alert("An error occurred while retrieving your data. Please try again later.", true).sendTo(this);
 
       return;
     }

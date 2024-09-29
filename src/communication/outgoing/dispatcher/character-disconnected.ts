@@ -7,5 +7,6 @@ export class CharacterDisconnected extends ServerMessage {
     super(ServerHeaders.CharacterDisconnected);
 
     this.putInt32(character.id);
+    this.putInt32(character.currentMap);
   }
 }

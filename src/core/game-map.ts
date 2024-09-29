@@ -1,4 +1,4 @@
-import { Alert, AlertType } from "../communication/outgoing/dispatcher/alert";
+import { Alert } from "../communication/outgoing/dispatcher/alert";
 import { CharacterDisconnected } from "../communication/outgoing/dispatcher/character-disconnected";
 import { CharacterMoved } from "../communication/outgoing/dispatcher/character-moved";
 import { CharacterSelected } from "../communication/outgoing/dispatcher/character-selected";
@@ -35,7 +35,7 @@ export class GameMap {
     character.loop();
 
     if (character.currentMap !== this.id) {
-      this.sendAlert(connection, AlertType.Error, "Your character does not belong on this map!", true);
+      this.sendAlert(connection, "Your character does not belong on this map!", true);
 
       return;
     }
@@ -88,14 +88,14 @@ export class GameMap {
     }
 
     if (!this.isCharacterInCurrentMap(character)) {
-      this.sendAlert(connection, AlertType.Error, "Your character does not belong on this map!", true);
+      this.sendAlert(connection, "Your character does not belong on this map!", true);
       return;
     }
 
-    if (!this.isWithinMapBounds(positionX, positionY)) {
-      this.sendAlert(connection, AlertType.Error, "Your character is trying to leave the map's boundaries!", true);
-      return;
-    }
+    // if (!this.isWithinMapBounds(positionX, positionY)) {
+    //   this.sendAlert(connection, "Your character is trying to leave the map's boundaries!", true);
+    //   return;
+    // }
 
     character.mapPositionX = positionX;
     character.mapPositionY = positionY;
@@ -130,9 +130,8 @@ export class GameMap {
     return this._characters.find((character) => character.id === characterId);
   }
 
-  private sendAlert(connection: Connection, type: AlertType, message: string, critical: boolean): void {
-    const alertDispatcher = new Alert(type, message, critical);
-    alertDispatcher.sendTo(connection);
+  private sendAlert(connection: Connection, message: string, critical: boolean): void {
+    new Alert(message, critical).sendTo(connection);
   }
 
   private isWithinMapBounds(x: number, y: number): boolean {

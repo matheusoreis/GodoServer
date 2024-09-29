@@ -16,7 +16,7 @@ export class CharacterList extends ServerMessage {
       this.putInt32(character.currentMap);
       this.putInt32(character.mapPositionX);
       this.putInt32(character.mapPositionY);
-      this.putInt32(character.direction);
+      this.putInt8(character.direction);
     }
   }
 }

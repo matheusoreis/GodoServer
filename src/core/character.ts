@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import type { Connection } from "./connection";
 import { serviceLocator } from "../misc/service-locator";
-import { Alert, AlertType } from "../communication/outgoing/dispatcher/alert";
+import { Alert } from "../communication/outgoing/dispatcher/alert";
 import { CharacterDeleted } from "../communication/outgoing/dispatcher/character-deleted";
 import { CharacterCreated } from "../communication/outgoing/dispatcher/character-created";
 import { CharacterList } from "../communication/outgoing/dispatcher/character-list";
@@ -142,8 +142,7 @@ export class Character {
     const accountId = this.connection.getDatabaseId();
 
     if (accountId === undefined) {
-      const alertDispatcher: Alert = new Alert(AlertType.Error, "No account associated with this connection.", true);
-      alertDispatcher.sendTo(this.connection);
+      new Alert("No account associated with this connection.", true).sendTo(this.connection);
 
       return;
     }
@@ -157,11 +156,11 @@ export class Character {
       const characterModelList = characters.map(this.mapToCharacterModel);
       this.connection.addCharacters(characterModelList);
 
-      const dispatcher: CharacterList = new CharacterList(characterModelList, 5);
+      // TODO: Adicionar dinamicamente a quantidade de personagens
+      const dispatcher: CharacterList = new CharacterList(characterModelList, 3);
       dispatcher.sendTo(this.connection);
     } catch (error) {
-      const alertDispatcher: Alert = new Alert(AlertType.Error, `Error fetching characters: ${error}`, false);
-      alertDispatcher.sendTo(this.connection);
+      new Alert(`Error fetching characters: ${error}`, false).sendTo(this.connection);
     }
   }
 
@@ -169,8 +168,7 @@ export class Character {
     const accountId = this.connection.getDatabaseId();
 
     if (accountId === undefined) {
-      const alertDispatcher: Alert = new Alert(AlertType.Error, "No account associated with this connection.", true);
-      alertDispatcher.sendTo(this.connection);
+      new Alert("No account associated with this connection.", true).sendTo(this.connection);
 
       return;
     }
@@ -181,12 +179,7 @@ export class Character {
       });
 
       if (existingCharacter) {
-        const alertDispatcher: Alert = new Alert(
-          AlertType.Warn,
-          "Character name already in use. Please choose another name.",
-          false,
-        );
-        alertDispatcher.sendTo(this.connection);
+        new Alert("Character name already in use. Please choose another name.", false).sendTo(this.connection);
 
         return;
       }
@@ -196,8 +189,7 @@ export class Character {
       });
 
       if (!gender) {
-        const alertDispatcher: Alert = new Alert(AlertType.Error, "Invalid gender provided.", false);
-        alertDispatcher.sendTo(this.connection);
+        new Alert("Invalid gender provided.", false).sendTo(this.connection);
 
         return;
       }
@@ -213,15 +205,12 @@ export class Character {
       const characterModel = this.mapToCharacterModel(newCharacter);
       this.connection.addCharacter(characterModel);
 
-      const alertDispatcher: Alert = new Alert(AlertType.Info, "Character successfully created!", false);
-      alertDispatcher.sendTo(this.connection);
+      new Alert("Character successfully created!", false).sendTo(this.connection);
 
       const dispatcher: CharacterCreated = new CharacterCreated();
       dispatcher.sendTo(this.connection);
     } catch (error) {
-      const alertDispatcher: Alert = new Alert(AlertType.Error, `Error creating character: ${error}`, false);
-
-      alertDispatcher.sendTo(this.connection);
+      new Alert(`Error creating character: ${error}`, false).sendTo(this.connection);
     }
   }
 
@@ -229,8 +218,7 @@ export class Character {
     const accountId = this.connection.getDatabaseId();
 
     if (accountId === undefined) {
-      const alertDispatcher: Alert = new Alert(AlertType.Error, "No account associated with this connection.", true);
-      alertDispatcher.sendTo(this.connection);
+      new Alert("No account associated with this connection.", true).sendTo(this.connection);
 
       return;
     }
@@ -242,12 +230,7 @@ export class Character {
       });
 
       if (!character || character.accountId !== accountId) {
-        const alertDispatcher: Alert = new Alert(
-          AlertType.Error,
-          "Character not found or does not belong to this account.",
-          false,
-        );
-        alertDispatcher.sendTo(this.connection);
+        new Alert("Character not found or does not belong to this account.", false).sendTo(this.connection);
 
         return;
       }
@@ -258,14 +241,12 @@ export class Character {
 
       this.connection.removeCharacter(characterId);
 
-      const alertDispatcher: Alert = new Alert(AlertType.Info, "Character successfully deleted!", false);
-      alertDispatcher.sendTo(this.connection);
+      new Alert("Character successfully deleted!", false).sendTo(this.connection);
 
       const dispatcher: CharacterDeleted = new CharacterDeleted();
       dispatcher.sendTo(this.connection);
     } catch (error) {
-      const alertDispatcher: Alert = new Alert(AlertType.Error, `Error deleting character: ${error}`, false);
-      alertDispatcher.sendTo(this.connection);
+      new Alert(`Error deleting character: ${error}`, false).sendTo(this.connection);
     }
   }
 

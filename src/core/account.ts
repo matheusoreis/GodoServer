@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { AccessSuccessful } from "../communication/outgoing/dispatcher/access-successful";
 import { VersionChecker } from "../misc/check-version";
 import type { Connection } from "./connection";
-import { Alert, AlertType } from "../communication/outgoing/dispatcher/alert";
+import { Alert } from "../communication/outgoing/dispatcher/alert";
 import { Password } from "../misc/password";
 import { serviceLocator } from "../misc/service-locator";
 import { AccountCreated } from "../communication/outgoing/dispatcher/account-created";
@@ -34,8 +34,7 @@ export class Account {
     }
 
     if (!this.email || !this.password) {
-      const alertDispatcher: Alert = new Alert(AlertType.Warn, "Email and password are mandatory.", false);
-      alertDispatcher.sendTo(this.connection);
+      new Alert("Email and password are mandatory.", false).sendTo(this.connection);
     }
 
     try {
@@ -44,8 +43,7 @@ export class Account {
       });
 
       if (!account) {
-        const alertDispatcher: Alert = new Alert(AlertType.Warn, "Account not found.", false);
-        alertDispatcher.sendTo(this.connection);
+        new Alert("Account not found.", false).sendTo(this.connection);
 
         return;
       }
@@ -53,8 +51,7 @@ export class Account {
       const isPasswordValid = await this.passwordHash.verify(this.password, account!.password);
 
       if (!isPasswordValid) {
-        const alertDispatcher: Alert = new Alert(AlertType.Warn, "Wrong password.", false);
-        alertDispatcher.sendTo(this.connection);
+        new Alert("Wrong password.", false).sendTo(this.connection);
 
         return;
       }
@@ -64,8 +61,7 @@ export class Account {
       const dispatcher: AccessSuccessful = new AccessSuccessful();
       dispatcher.sendTo(this.connection);
     } catch (error) {
-      const alertDispatcher: Alert = new Alert(AlertType.Error, `Error: ${error}`, false);
-      alertDispatcher.sendTo(this.connection);
+      new Alert(`Error: ${error}`, false).sendTo(this.connection);
     }
   }
 
@@ -75,8 +71,7 @@ export class Account {
     }
 
     if (!this.email || !this.password) {
-      const alertDispatcher: Alert = new Alert(AlertType.Warn, "Email and password are mandatory.", false);
-      alertDispatcher.sendTo(this.connection);
+      new Alert("Email and password are mandatory.", false).sendTo(this.connection);
 
       return;
     }
@@ -87,8 +82,8 @@ export class Account {
       });
 
       if (existingAccount) {
-        const alertDispatcher: Alert = new Alert(AlertType.Warn, "Account with this email already exists.", false);
-        alertDispatcher.sendTo(this.connection);
+        new Alert("Account with this email already exists.", false).sendTo(this.connection);
+
         return;
       }
 
@@ -104,16 +99,12 @@ export class Account {
         },
       });
 
-      const alertDispatcher = new Alert(AlertType.Info, "Your account has been successfully registered!", false);
-
-      alertDispatcher.sendTo(this.connection);
+      new Alert("Your account has been successfully registered!", false).sendTo(this.connection);
 
       const dispatcher: AccountCreated = new AccountCreated(this.connection);
       dispatcher.sendTo(this.connection);
     } catch (error) {
-      const alertDispatcher: Alert = new Alert(AlertType.Error, `Error creating account: ${error}`, false);
-
-      alertDispatcher.sendTo(this.connection);
+      new Alert(`Error creating account: ${error}`, false).sendTo(this.connection);
     }
   }
 }

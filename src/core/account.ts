@@ -61,6 +61,7 @@ export class Account {
       const dispatcher: AccessSuccessful = new AccessSuccessful();
       dispatcher.sendTo(this.connection);
     } catch (error) {
+      console.log(error);
       new Alert(`Error: ${error}`, false).sendTo(this.connection);
     }
   }
@@ -104,6 +105,7 @@ export class Account {
       const dispatcher: AccountCreated = new AccountCreated(this.connection);
       dispatcher.sendTo(this.connection);
     } catch (error) {
+      console.log(error);
       new Alert(`Error creating account: ${error}`, false).sendTo(this.connection);
     }
   }

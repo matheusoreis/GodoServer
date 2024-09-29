@@ -13,5 +13,7 @@ export class NewCharacterTo extends ServerMessage {
     this.putInt32(character.mapPositionX);
     this.putInt32(character.mapPositionY);
     this.putInt8(character.direction);
+    this.putString(character.defaultSprite);
+    this.putString(character.currentSprite);
   }
 }

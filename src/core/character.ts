@@ -22,6 +22,8 @@ export class CharacterModel {
     createdAt: Date,
     updatedAt: Date,
     gender: { id: number; name: string },
+    defaultSprite: string,
+    currentSprite: string,
   ) {
     this.id = id;
     this.name = name;
@@ -34,6 +36,8 @@ export class CharacterModel {
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.gender = gender;
+    this.defaultSprite = defaultSprite;
+    this.currentSprite = currentSprite;
 
     this.prisma = serviceLocator.get<PrismaClient>(PrismaClient);
     this.logger = serviceLocator.get<Logger>(Logger);
@@ -54,6 +58,8 @@ export class CharacterModel {
     id: number;
     name: string;
   };
+  defaultSprite: string;
+  currentSprite: string;
 
   prisma: PrismaClient;
   logger: Logger;
@@ -164,7 +170,7 @@ export class Character {
     }
   }
 
-  public async createChar(name: string, genderId: number): Promise<void> {
+  public async createChar(name: string, genderId: number, defaultSprite: string): Promise<void> {
     const accountId = this.connection.getDatabaseId();
 
     if (accountId === undefined) {
@@ -199,6 +205,8 @@ export class Character {
           name: name,
           gendersId: genderId,
           accountId: accountId!,
+          defaultSprite: defaultSprite,
+          currentSprite: defaultSprite,
         },
       });
 
@@ -263,6 +271,8 @@ export class Character {
       character.createdAt,
       character.updatedAt,
       character.gender,
+      character.defaultSprite,
+      character.currentSprite,
     );
   }
 }

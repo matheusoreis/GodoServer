@@ -21,6 +21,11 @@ Para instalar as dependências do BunJS, execute o comando abaixo:
 bun install
 ```
 
+Com a implementação do prisma é necessário digitar os comandos a seguir para iniciar o servidor:
+```bash
+bunx prisma generate
+```
+
 Para executar basta executar o comando
 ```bash
 bun start

@@ -1,5 +1,6 @@
-import { MAX_MAPS, MAX_PLAYERS } from "../misc/constants";
+import { MAX_CHAT_HISTORY, MAX_MAPS, MAX_PLAYERS } from "../misc/constants";
 import { Slots } from "../misc/slots";
+import type { Chat } from "./chat";
 import type { Connection } from "./connection";
 import type { GameMap } from "./game-map";
 
@@ -13,4 +14,5 @@ export class Memory {
    */
   public connections: Slots<Connection> = new Slots<Connection>(MAX_PLAYERS);
   public maps: Slots<GameMap> = new Slots<GameMap>(MAX_MAPS);
+  public chatHistory: Slots<Chat> = new Slots<Chat>(MAX_CHAT_HISTORY);
 }

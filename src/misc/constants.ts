@@ -10,4 +10,6 @@ export const MAX_MAPS: number = 100;
 export const MAX_MAP_CHARACTERS: number = MAX_PLAYERS;
 export const MAP_LOOP: number = 100;
 
+export const MAX_CHAT_HISTORY: number = 5000;
+
 export const CHAR_VELOCITY_X_Y: number = 100;

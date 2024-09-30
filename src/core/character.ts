@@ -86,11 +86,6 @@ export class CharacterModel {
     }
   }
 
-  /**
-   * Encontra um mapa na memória baseado no ID fornecido.
-   * @param {number} mapId - ID do mapa fornecido.
-   * @returns {GameMap | undefined} - O mapa encontrado ou undefined se não encontrado.
-   */
   public findMapById(mapId: number): GameMap | undefined {
     let foundMap: GameMap | undefined;
 

@@ -21,4 +21,7 @@ export enum ServerHeaders {
   CharacterMoved,
   CharacterDisconnected,
   CharacterTeleported,
+  ChatMessageMap,
+  ChatMessageGlobal,
+  ChatMessageBubble,
 }

@@ -19,6 +19,7 @@ import { Setup } from "../net/setup";
 import { Logger } from "./logger";
 import { Password } from "./password";
 import { serviceLocator } from "./service-locator";
+import { ChatMessage } from "../communication/incoming/requests/chat-message";
 
 export class Dependency {
   public setup() {
@@ -43,5 +44,6 @@ export class Dependency {
     serviceLocator.registerFactory<DeleteCharacter>(DeleteCharacter, () => new DeleteCharacter());
     serviceLocator.registerFactory<SelectCharacter>(SelectCharacter, () => new SelectCharacter());
     serviceLocator.registerFactory<MoveCharacter>(MoveCharacter, () => new MoveCharacter());
+    serviceLocator.registerFactory<ChatMessage>(ChatMessage, () => new ChatMessage());
   }
 }

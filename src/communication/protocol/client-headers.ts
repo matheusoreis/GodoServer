@@ -16,4 +16,5 @@ export enum ClientHeaders {
   DeleteCharacter,
   SelectCharacter,
   MoveCharacter,
+  ChatMessage,
 }

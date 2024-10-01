@@ -78,7 +78,7 @@ export abstract class Outgoing {
    * @param {number} mapId - O ID do mapa.
    * @param {ServerMessage} message - A mensagem a ser enviada aos clientes no mapa.
    */
-  public dataToMap(mapId: number, message: ServerMessage): void {
+  protected dataToMap(mapId: number, message: ServerMessage): void {
     for (const index of this.memory.connections.getFilledSlots()) {
       const connection = this.memory.connections.get(index);
       if (connection?.getCharInUse()?.currentMap === mapId) {
@@ -98,7 +98,7 @@ export abstract class Outgoing {
    * @param {Connection} exceptConnection - A conexão do cliente que não deve receber a mensagem.
    * @param {ServerMessage} message - A mensagem a ser enviada aos clientes no mapa.
    */
-  public dataToMapExcept(mapId: number, exceptConnection: Connection, message: ServerMessage): void {
+  protected dataToMapExcept(mapId: number, exceptConnection: Connection, message: ServerMessage): void {
     for (const index of this.memory.connections.getFilledSlots()) {
       const connection = this.memory.connections.get(index);
       if (connection?.ws && connection !== exceptConnection && connection.getCharInUse()?.currentMap === mapId) {

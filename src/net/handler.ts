@@ -14,6 +14,7 @@ import { ClientHeaders } from "../communication/protocol/client-headers";
 import type { ClientMessage } from "../communication/protocol/client-message";
 import type { Connection } from "../core/connection";
 import { serviceLocator } from "../misc/service-locator";
+import { ChatMessage } from "../communication/incoming/requests/chat-message";
 
 /**
  * A classe `Handler` é responsável por gerenciar e despachar mensagens recebidas
@@ -80,6 +81,7 @@ export class Handler {
     const deleteCharacter = serviceLocator.get<DeleteCharacter>(DeleteCharacter);
     const selectCharacter = serviceLocator.get<SelectCharacter>(SelectCharacter);
     const moveCharacter = serviceLocator.get<MoveCharacter>(MoveCharacter);
+    const chatMessage = serviceLocator.get<ChatMessage>(ChatMessage);
 
     this.requestHandlers[ClientHeaders.Ping] = ping;
     this.requestHandlers[ClientHeaders.AccessAccount] = accessAccount;
@@ -92,5 +94,6 @@ export class Handler {
     this.requestHandlers[ClientHeaders.DeleteCharacter] = deleteCharacter;
     this.requestHandlers[ClientHeaders.SelectCharacter] = selectCharacter;
     this.requestHandlers[ClientHeaders.MoveCharacter] = moveCharacter;
+    this.requestHandlers[ClientHeaders.ChatMessage] = chatMessage;
   }
 }

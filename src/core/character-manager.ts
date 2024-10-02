@@ -8,7 +8,7 @@ import { CharacterList } from "../communication/outgoing/dispatcher/character-li
 import { Logger } from "../misc/logger";
 import type { GameMap } from "./game-map";
 import { Memory } from "./memory";
-import { PlayerCharacter } from "./player-character";
+import { Character } from "./character";
 
 export class CharacterManager {
   constructor(connection: Connection) {
@@ -135,8 +135,8 @@ export class CharacterManager {
     }
   }
 
-  private mapToCharacterModel(character: any): PlayerCharacter {
-    return new PlayerCharacter(
+  private mapToCharacterModel(character: any): Character {
+    return new Character(
       character.id,
       character.name,
       character.gendersId,

@@ -5,7 +5,7 @@ import { Memory } from "./memory";
 import type { GameMap } from "./game-map";
 import type { Connection } from "./connection";
 
-export class PlayerCharacter {
+export class Character {
   constructor(
     id: number,
     name: string,
@@ -61,7 +61,7 @@ export class PlayerCharacter {
   logger: Logger;
   memory: Memory;
 
-  public async updateCharacter(characterModel: PlayerCharacter): Promise<void> {
+  public async updateCharacter(characterModel: Character): Promise<void> {
     try {
       await this.prisma.characters.update({
         where: { id: characterModel.id },
@@ -119,7 +119,7 @@ export class PlayerCharacter {
     }
   }
 
-  public getCharInUse(connection: Connection): PlayerCharacter | void {
+  public getCharInUse(connection: Connection): Character | void {
     return connection.getCharInUse();
   }
 }

@@ -8,7 +8,7 @@ import { CHAR_VELOCITY_X_Y, MAP_LOOP, MAX_MAP_CHARACTERS } from "../misc/constan
 import { Logger } from "../misc/logger";
 import { serviceLocator } from "../misc/service-locator";
 import { Slots } from "../misc/slots";
-import type { CharacterModel } from "./character";
+import type { CharacterModel } from "./character-manager";
 import type { Connection } from "./connection";
 
 export class GameMap {

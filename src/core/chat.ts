@@ -1,7 +1,7 @@
 import { ChatMessageBubble } from "../communication/outgoing/dispatcher/chat-message-bubble";
 import { ChatMessageGlobal } from "../communication/outgoing/dispatcher/chat-message-global";
 import { ChatMessageMap } from "../communication/outgoing/dispatcher/chat-message-map";
-import type { CharacterModel } from "./character";
+import type { CharacterModel } from "./character-manager";
 
 export class Chat {
   constructor(channel: number, sender: CharacterModel, message: string) {

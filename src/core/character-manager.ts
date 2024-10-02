@@ -8,127 +8,9 @@ import { CharacterList } from "../communication/outgoing/dispatcher/character-li
 import { Logger } from "../misc/logger";
 import type { GameMap } from "./game-map";
 import { Memory } from "./memory";
+import { PlayerCharacter } from "./player-character";
 
-export class CharacterModel {
-  constructor(
-    id: number,
-    name: string,
-    gendersId: number,
-    accountId: number | null,
-    currentMap: number,
-    mapPositionX: number,
-    mapPositionY: number,
-    direction: number,
-    createdAt: Date,
-    updatedAt: Date,
-    gender: { id: number; name: string },
-    defaultSprite: string,
-    currentSprite: string,
-  ) {
-    this.id = id;
-    this.name = name;
-    this.gendersId = gendersId;
-    this.accountId = accountId;
-    this.currentMap = currentMap;
-    this.mapPositionX = mapPositionX;
-    this.mapPositionY = mapPositionY;
-    this.direction = direction;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
-    this.gender = gender;
-    this.defaultSprite = defaultSprite;
-    this.currentSprite = currentSprite;
-
-    this.prisma = serviceLocator.get<PrismaClient>(PrismaClient);
-    this.logger = serviceLocator.get<Logger>(Logger);
-    this.memory = serviceLocator.get<Memory>(Memory);
-  }
-
-  id: number;
-  name: string;
-  gendersId: number;
-  accountId: number | null;
-  currentMap: number;
-  mapPositionX: number;
-  mapPositionY: number;
-  direction: number;
-  createdAt: Date;
-  updatedAt: Date;
-  gender: {
-    id: number;
-    name: string;
-  };
-  defaultSprite: string;
-  currentSprite: string;
-
-  prisma: PrismaClient;
-  logger: Logger;
-  memory: Memory;
-
-  public async updateCharacter(characterModel: CharacterModel): Promise<void> {
-    try {
-      await this.prisma.characters.update({
-        where: { id: characterModel.id },
-        data: {
-          name: characterModel.name,
-          gendersId: characterModel.gendersId,
-          accountId: characterModel.accountId,
-          currentMap: characterModel.currentMap,
-          mapPositionX: characterModel.mapPositionX,
-          mapPositionY: characterModel.mapPositionY,
-          updatedAt: new Date(),
-        },
-      });
-
-      this.logger.info("Character successfully updated!" + characterModel);
-    } catch (error) {
-      this.logger.info(`Error updating character: ${error}`);
-    }
-  }
-
-  public findMapById(mapId: number): GameMap | undefined {
-    let foundMap: GameMap | undefined;
-
-    for (const index of this.memory.maps.getFilledSlots()) {
-      const gameMap: GameMap | undefined = this.memory.maps.get(index);
-      if (gameMap && gameMap.id === mapId) {
-        foundMap = gameMap;
-        break;
-      }
-    }
-
-    return foundMap;
-  }
-
-  private updateIntervalId: Timer | null = null;
-
-  public async loop(): Promise<void> {
-    // Inicia o loop do personagem
-    this.updateIntervalId = setInterval(
-      async () => {
-        try {
-          await this.updateCharacter(this);
-        } catch (error) {
-          console.error("Error syncing character: ", error);
-        }
-      },
-      1 * 60 * 1000, // 1 minuto
-    );
-  }
-
-  public stopLoop(): void {
-    if (this.updateIntervalId !== null) {
-      clearInterval(this.updateIntervalId);
-      this.updateIntervalId = null;
-    }
-  }
-
-  public getCharInUse(connection: Connection): CharacterModel | void {
-    return connection.getCharInUse();
-  }
-}
-
-export class Character {
+export class CharacterManager {
   constructor(connection: Connection) {
     this.connection = connection;
     this.prisma = serviceLocator.get<PrismaClient>(PrismaClient);
@@ -253,8 +135,8 @@ export class Character {
     }
   }
 
-  private mapToCharacterModel(character: any): CharacterModel {
-    return new CharacterModel(
+  private mapToCharacterModel(character: any): PlayerCharacter {
+    return new PlayerCharacter(
       character.id,
       character.name,
       character.gendersId,

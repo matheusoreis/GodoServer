@@ -5,7 +5,7 @@ import { Connection } from "../core/connection";
 import { GetConnection } from "../misc/get-connection";
 import { Alert } from "../communication/outgoing/dispatcher/alert";
 import { serviceLocator } from "../misc/service-locator";
-import type { CharacterModel } from "../core/character";
+import type { CharacterModel } from "../core/character-manager";
 
 /**
  * A classe `Manager` gerencia as conexões WebSocket ativas, lida com a abertura, fechamento,

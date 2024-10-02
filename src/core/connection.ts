@@ -4,7 +4,7 @@ import { Memory } from "./memory";
 import { ClientMessage } from "../communication/protocol/client-message";
 import { serviceLocator } from "../misc/service-locator";
 import { Alert } from "../communication/outgoing/dispatcher/alert";
-import type { CharacterModel } from "./character";
+import type { CharacterModel } from "./character-manager";
 
 /**
  * A classe `Connection` gerencia uma conexão WebSocket, incluindo o fechamento

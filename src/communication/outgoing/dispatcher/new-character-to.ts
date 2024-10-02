@@ -1,4 +1,4 @@
-import type { CharacterModel } from "../../../core/character";
+import type { CharacterModel } from "../../../core/character-manager";
 import { ServerHeaders } from "../../protocol/server-headers";
 import { ServerMessage } from "../../protocol/server-message";
 

@@ -1,10 +1,10 @@
-import type { CharacterModel } from "../../../core/character-manager";
+import type { Character } from "../../../core/character";
 import { ServerHeaders } from "../../protocol/server-headers";
 import { ServerMessage } from "../../protocol/server-message";
 
 export class CharacterMoved extends ServerMessage {
   constructor(
-    character: CharacterModel,
+    character: Character,
     action: number,
     positionX: number,
     positionY: number,

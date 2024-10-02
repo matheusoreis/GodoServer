@@ -1,9 +1,9 @@
-import type { CharacterModel } from "../../../core/character-manager";
+import type { Character } from "../../../core/character";
 import { ServerHeaders } from "../../protocol/server-headers";
 import { ServerMessage } from "../../protocol/server-message";
 
 export class MapCharactersTo extends ServerMessage {
-  constructor(characters: CharacterModel[]) {
+  constructor(characters: Character[]) {
     super(ServerHeaders.MapCharactersTo);
 
     this.putInt16(characters.length);

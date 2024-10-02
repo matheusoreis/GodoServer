@@ -8,7 +8,7 @@ import { CHAR_VELOCITY_X_Y, MAP_LOOP, MAX_MAP_CHARACTERS } from "../misc/constan
 import { Logger } from "../misc/logger";
 import { serviceLocator } from "../misc/service-locator";
 import { Slots } from "../misc/slots";
-import type { CharacterModel } from "./character-manager";
+import type { Character } from "./character";
 import type { Connection } from "./connection";
 
 export class GameMap {
@@ -27,11 +27,11 @@ export class GameMap {
   public name: string;
   public sizeX: number;
   public sizeY: number;
-  private _characters: Slots<CharacterModel> = new Slots<CharacterModel>(MAX_MAP_CHARACTERS);
+  private _characters: Slots<Character> = new Slots<Character>(MAX_MAP_CHARACTERS);
 
   public logger: Logger;
 
-  public addCharacter(connection: Connection, character: CharacterModel): void {
+  public addCharacter(connection: Connection, character: Character): void {
     character.loop();
 
     if (character.currentMap !== this.id) {
@@ -53,25 +53,25 @@ export class GameMap {
     this._characters.add(character);
   }
 
-  private sendCharacterSelected(connection: Connection, character: CharacterModel): void {
+  private sendCharacterSelected(connection: Connection, character: Character): void {
     const charSelected = new CharacterSelected(character);
     charSelected.sendTo(connection);
   }
 
-  private sendOthersOfNewCharacter(connection: Connection, character: CharacterModel): void {
+  private sendOthersOfNewCharacter(connection: Connection, character: Character): void {
     const newChar = new NewCharacterTo(character);
     newChar.sendToMapExcept(this.id, connection);
   }
 
   private sendExistingCharacters(connection: Connection): void {
-    const charactersArray = this._characters.filter((c) => c !== undefined) as CharacterModel[];
+    const charactersArray = this._characters.filter((c) => c !== undefined) as Character[];
     const mapCharsTo = new MapCharactersTo(charactersArray);
     mapCharsTo.sendTo(connection);
   }
 
   public moveCharacter(
     connection: Connection,
-    character: CharacterModel,
+    character: Character,
     action: number,
     positionX: number,
     positionY: number,
@@ -105,7 +105,7 @@ export class GameMap {
     charMoved.sendToMapExcept(this.id, connection);
   }
 
-  public removeCharacter(character: CharacterModel): void {
+  public removeCharacter(character: Character): void {
     let found = false;
 
     for (const index of this._characters.getFilledSlots()) {
@@ -126,7 +126,7 @@ export class GameMap {
     }
   }
 
-  public getCharacter(characterId: number): CharacterModel | undefined {
+  public getCharacter(characterId: number): Character | undefined {
     return this._characters.find((character) => character.id === characterId);
   }
 
@@ -138,8 +138,8 @@ export class GameMap {
     return x >= 0 && x < this.sizeX && y >= 0 && y < this.sizeY;
   }
 
-  private isCharacterInCurrentMap(character: CharacterModel): boolean {
-    const existingCharacter: CharacterModel | undefined = this._characters.find(
+  private isCharacterInCurrentMap(character: Character): boolean {
+    const existingCharacter: Character | undefined = this._characters.find(
       (currentCharacter) => currentCharacter?.id === character.id,
     );
 

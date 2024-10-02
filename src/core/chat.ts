@@ -1,17 +1,17 @@
 import { ChatMessageBubble } from "../communication/outgoing/dispatcher/chat-message-bubble";
 import { ChatMessageGlobal } from "../communication/outgoing/dispatcher/chat-message-global";
 import { ChatMessageMap } from "../communication/outgoing/dispatcher/chat-message-map";
-import type { CharacterModel } from "./character-manager";
+import type { Character } from "./character";
 
 export class Chat {
-  constructor(channel: number, sender: CharacterModel, message: string) {
+  constructor(channel: number, sender: Character, message: string) {
     this.channel = channel;
     this.sender = sender;
     this.message = message;
   }
 
   public readonly channel: number;
-  public readonly sender: CharacterModel;
+  public readonly sender: Character;
   public readonly message: string;
 
   public sendMessageToMap() {

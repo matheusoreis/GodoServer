@@ -5,7 +5,7 @@ import { Connection } from "../core/connection";
 import { GetConnection } from "../misc/get-connection";
 import { Alert } from "../communication/outgoing/dispatcher/alert";
 import { serviceLocator } from "../misc/service-locator";
-import type { CharacterModel } from "../core/character-manager";
+import type { Character } from "../core/character";
 
 /**
  * A classe `Manager` gerencia as conexões WebSocket ativas, lida com a abertura, fechamento,
@@ -59,7 +59,7 @@ export class Manager {
     }
 
     try {
-      const charInUse: CharacterModel | void = connection.getCharInUse();
+      const charInUse: Character | void = connection.getCharInUse();
 
       if (!charInUse) {
         return;
@@ -85,9 +85,9 @@ export class Manager {
   /**
    * Atualiza o personagem antes da desconexão.
    *
-   * @param {CharacterModel} charInUse - O personagem que está sendo desconectado.
+   * @param {Character} charInUse - O personagem que está sendo desconectado.
    */
-  private async updateCharacterBeforeDisconnect(charInUse: CharacterModel): Promise<void> {
+  private async updateCharacterBeforeDisconnect(charInUse: Character): Promise<void> {
     try {
       await charInUse.updateCharacter(charInUse);
     } catch (error) {
@@ -98,9 +98,9 @@ export class Manager {
   /**
    * Remove o personagem do mapa atual.
    *
-   * @param {CharacterModel} charInUse - O personagem que está sendo desconectado.
+   * @param {Character} charInUse - O personagem que está sendo desconectado.
    */
-  private async removeCharacterFromCurrentMap(charInUse: CharacterModel): Promise<void> {
+  private async removeCharacterFromCurrentMap(charInUse: Character): Promise<void> {
     try {
       const mapId = charInUse.currentMap;
       const currentMap = charInUse.findMapById(mapId);

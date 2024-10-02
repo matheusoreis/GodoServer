@@ -1,9 +1,9 @@
-import type { CharacterModel } from "../../../core/character-manager";
+import type { Character } from "../../../core/character";
 import { ServerHeaders } from "../../protocol/server-headers";
 import { ServerMessage } from "../../protocol/server-message";
 
 export class CharacterList extends ServerMessage {
-  constructor(characters: CharacterModel[], accountCharSize: number) {
+  constructor(characters: Character[], accountCharSize: number) {
     super(ServerHeaders.CharacterList);
 
     this.putInt8(characters.length);

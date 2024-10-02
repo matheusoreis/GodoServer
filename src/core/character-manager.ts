@@ -87,8 +87,8 @@ export class CharacterManager {
         },
       });
 
-      const characterModel = this.mapToCharacterModel(newCharacter);
-      this.connection.addCharacter(characterModel);
+      const character = this.mapToCharacterModel(newCharacter);
+      this.connection.addCharacter(character);
 
       new Alert("Character successfully created!", false).sendTo(this.connection);
 

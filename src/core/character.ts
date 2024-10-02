@@ -61,22 +61,22 @@ export class Character {
   logger: Logger;
   memory: Memory;
 
-  public async updateCharacter(characterModel: Character): Promise<void> {
+  public async updateCharacter(character: Character): Promise<void> {
     try {
       await this.prisma.characters.update({
-        where: { id: characterModel.id },
+        where: { id: character.id },
         data: {
-          name: characterModel.name,
-          gendersId: characterModel.gendersId,
-          accountId: characterModel.accountId,
-          currentMap: characterModel.currentMap,
-          mapPositionX: characterModel.mapPositionX,
-          mapPositionY: characterModel.mapPositionY,
+          name: character.name,
+          gendersId: character.gendersId,
+          accountId: character.accountId,
+          currentMap: character.currentMap,
+          mapPositionX: character.mapPositionX,
+          mapPositionY: character.mapPositionY,
           updatedAt: new Date(),
         },
       });
 
-      this.logger.info("Character successfully updated!" + characterModel);
+      this.logger.info("Character successfully updated!" + character);
     } catch (error) {
       this.logger.info(`Error updating character: ${error}`);
     }

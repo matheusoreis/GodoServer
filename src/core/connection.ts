@@ -4,7 +4,7 @@ import { Memory } from "./memory";
 import { ClientMessage } from "../communication/protocol/client-message";
 import { serviceLocator } from "../misc/service-locator";
 import { Alert } from "../communication/outgoing/dispatcher/alert";
-import type { CharacterModel } from "./character-manager";
+import type { Character } from "./character";
 
 /**
  * A classe `Connection` gerencia uma conexão WebSocket, incluindo o fechamento
@@ -30,8 +30,8 @@ export class Connection {
   public readonly ws: ServerWebSocket;
   public readonly id: number;
   private connectionDatabaseId?: number;
-  private chars?: CharacterModel[];
-  private charInUse?: CharacterModel;
+  private chars?: Character[];
+  private charInUse?: Character;
 
   private active: boolean;
 
@@ -103,18 +103,18 @@ export class Connection {
   /**
    * Adiciona os personagens a connection
    *
-   * @param {CharacterModel[]} chars - A lista de personagens da connection
+   * @param {Character[]} chars - A lista de personagens da connection
    */
-  public addCharacters(chars: CharacterModel[]): void {
+  public addCharacters(chars: Character[]): void {
     this.chars = chars;
   }
 
   /**
    * Adiciona um personagem à lista de personagens e define como personagem ativo.
    *
-   * @param {CharacterModel} character - O personagem escolhido.
+   * @param {Character} character - O personagem escolhido.
    */
-  public addCharacter(character: CharacterModel): void {
+  public addCharacter(character: Character): void {
     const existingCharacter = this.chars?.find((c) => c.id === character.id);
 
     if (existingCharacter) {
@@ -159,7 +159,7 @@ export class Connection {
     }
   }
 
-  public getCharInUse(): CharacterModel | void {
+  public getCharInUse(): Character | void {
     return this.charInUse;
   }
 }

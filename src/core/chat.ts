@@ -1,6 +1,7 @@
-import { ChatMessageBubble } from "../communication/outgoing/dispatcher/chat-message-bubble";
+import { EmoteSent } from "../communication/outgoing/dispatcher/emote-sent";
 import { ChatMessageGlobal } from "../communication/outgoing/dispatcher/chat-message-global";
 import { ChatMessageMap } from "../communication/outgoing/dispatcher/chat-message-map";
+import { Emotes } from "../misc/globals";
 import type { Character } from "./character";
 
 export class Chat {
@@ -18,7 +19,7 @@ export class Chat {
     const chatMessageMap: ChatMessageMap = new ChatMessageMap(this.sender, this.message);
     chatMessageMap.sendToMap(this.sender.currentMap);
 
-    this.sendChatBubble();
+    this.sendEmoteMessage(Emotes.TALKING);
   }
 
   public sendMessageToGlobal() {
@@ -26,8 +27,8 @@ export class Chat {
     chatMessageGlobal.sendToAll();
   }
 
-  public sendChatBubble() {
-    const chatMessageBubble: ChatMessageBubble = new ChatMessageBubble(this.channel, this.sender, this.message);
-    chatMessageBubble.sendToMap(this.sender.currentMap);
+  public sendEmoteMessage(emote: number) {
+    const emoteMessage: EmoteSent = new EmoteSent(emote, this.sender);
+    emoteMessage.sendToMap(this.sender.currentMap);
   }
 }

@@ -23,5 +23,5 @@ export enum ServerHeaders {
   CharacterTeleported,
   ChatMessageMap,
   ChatMessageGlobal,
-  ChatMessageBubble,
+  EmoteSent,
 }

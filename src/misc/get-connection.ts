@@ -1,6 +1,6 @@
 import type { ServerWebSocket } from "bun";
 import type { Connection } from "../core/shared/connection";
-import { Memory } from "../core/memory";
+import type { Memory } from "../core/shared/memory";
 
 /**
  * A classe `GetConnection` fornece métodos utilitários para recuperar uma conexão WebSocket.

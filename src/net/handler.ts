@@ -1,20 +1,20 @@
 import type { Incoming } from "../communication/incoming/incoming";
+import { ChatMessage } from "../communication/incoming/requests/game/chat-message";
+import { MoveCharacter } from "../communication/incoming/requests/game/move-character";
 import { AccessAccount } from "../communication/incoming/requests/menu/access-account";
-import type { ChangePassword } from "../communication/incoming/requests/change-password";
-import { RequestCharacters } from "../communication/incoming/requests/request-characters";
-import { CreateAccount } from "../communication/incoming/requests/create-account";
-import { CreateCharacter } from "../communication/incoming/requests/create-character";
-import { DeleteAccount } from "../communication/incoming/requests/delete-account";
-import { DeleteCharacter } from "../communication/incoming/requests/delete-character";
-import { MoveCharacter } from "../communication/incoming/requests/move-character";
-import { Ping } from "../communication/incoming/requests/ping";
-import { RecoverAccount } from "../communication/incoming/requests/recover-account";
-import { SelectCharacter } from "../communication/incoming/requests/select-character";
+import type { ChangePassword } from "../communication/incoming/requests/menu/change-password";
+import { CreateAccount } from "../communication/incoming/requests/menu/create-account";
+import { CreateCharacter } from "../communication/incoming/requests/menu/create-character";
+import { DeleteAccount } from "../communication/incoming/requests/menu/delete-account";
+import { DeleteCharacter } from "../communication/incoming/requests/menu/delete-character";
+import { RecoverAccount } from "../communication/incoming/requests/menu/recover-account";
+import { RequestCharacters } from "../communication/incoming/requests/menu/request-characters";
+import { SelectCharacter } from "../communication/incoming/requests/menu/select-character";
+import { Ping } from "../communication/incoming/requests/shared/ping";
 import { ClientHeaders } from "../communication/protocol/client-headers";
 import type { ClientMessage } from "../communication/protocol/client-message";
 import type { Connection } from "../core/shared/connection";
 import { serviceLocator } from "../misc/service-locator";
-import { ChatMessage } from "../communication/incoming/requests/chat-message";
 
 /**
  * A classe `Handler` é responsável por gerenciar e despachar mensagens recebidas

@@ -1,4 +1,4 @@
-import { Alert } from "../communication/outgoing/dispatcher/alert";
+import { Alert } from "../communication/outgoing/dispatcher/shared/alert";
 import type { Connection } from "../core/shared/connection";
 import { MAJOR_VERSION, MINOR_VERSION, REVISION_VERSION } from "./constants";
 

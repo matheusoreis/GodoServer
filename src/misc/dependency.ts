@@ -1,25 +1,25 @@
 import { PrismaClient } from "@prisma/client";
 import { AccessAccount } from "../communication/incoming/requests/menu/access-account";
-import { ChangePassword } from "../communication/incoming/requests/change-password";
-import { RequestCharacters } from "../communication/incoming/requests/request-characters";
-import { CreateAccount } from "../communication/incoming/requests/create-account";
-import { CreateCharacter } from "../communication/incoming/requests/create-character";
-import { DeleteAccount } from "../communication/incoming/requests/delete-account";
-import { DeleteCharacter } from "../communication/incoming/requests/delete-character";
-import { MoveCharacter } from "../communication/incoming/requests/move-character";
-import { Ping } from "../communication/incoming/requests/ping";
-import { RecoverAccount } from "../communication/incoming/requests/recover-account";
-import { SelectCharacter } from "../communication/incoming/requests/select-character";
-import { ByteBuffer } from "../communication/protocol/byte-buffer";
 import { ClientMessage } from "../communication/protocol/client-message";
-import { Memory } from "../core/memory";
 import { Handler } from "../net/handler";
 import { Manager } from "../net/manager";
 import { Setup } from "../net/setup";
 import { Logger } from "./logger";
 import { Password } from "./password";
 import { serviceLocator } from "./service-locator";
-import { ChatMessage } from "../communication/incoming/requests/chat-message";
+import { Memory } from "../core/shared/memory";
+import { ByteBuffer } from "../communication/protocol/byte-buffer";
+import { Ping } from "../communication/incoming/requests/shared/ping";
+import { CreateAccount } from "../communication/incoming/requests/menu/create-account";
+import { DeleteAccount } from "../communication/incoming/requests/menu/delete-account";
+import { RecoverAccount } from "../communication/incoming/requests/menu/recover-account";
+import { ChangePassword } from "../communication/incoming/requests/menu/change-password";
+import { RequestCharacters } from "../communication/incoming/requests/menu/request-characters";
+import { CreateCharacter } from "../communication/incoming/requests/menu/create-character";
+import { DeleteCharacter } from "../communication/incoming/requests/menu/delete-character";
+import { SelectCharacter } from "../communication/incoming/requests/menu/select-character";
+import { MoveCharacter } from "../communication/incoming/requests/game/move-character";
+import { ChatMessage } from "../communication/incoming/requests/game/chat-message";
 
 export class Dependency {
   public setup() {

@@ -1,5 +1,5 @@
 import type { Incoming } from "../communication/incoming/incoming";
-import { AccessAccount } from "../communication/incoming/requests/access-account";
+import { AccessAccount } from "../communication/incoming/requests/menu/access-account";
 import type { ChangePassword } from "../communication/incoming/requests/change-password";
 import { RequestCharacters } from "../communication/incoming/requests/request-characters";
 import { CreateAccount } from "../communication/incoming/requests/create-account";
@@ -12,7 +12,7 @@ import { RecoverAccount } from "../communication/incoming/requests/recover-accou
 import { SelectCharacter } from "../communication/incoming/requests/select-character";
 import { ClientHeaders } from "../communication/protocol/client-headers";
 import type { ClientMessage } from "../communication/protocol/client-message";
-import type { Connection } from "../core/connection";
+import type { Connection } from "../core/shared/connection";
 import { serviceLocator } from "../misc/service-locator";
 import { ChatMessage } from "../communication/incoming/requests/chat-message";
 

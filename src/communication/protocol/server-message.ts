@@ -1,4 +1,4 @@
-import type { Connection } from "../../core/connection";
+import type { Connection } from "../../core/shared/connection";
 import { serviceLocator } from "../../misc/service-locator";
 import { Outgoing } from "../outgoing/outgoing";
 import { ByteBuffer } from "./byte-buffer";

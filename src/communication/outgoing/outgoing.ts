@@ -1,8 +1,8 @@
-import { Memory } from "../../core/memory";
 import { Logger } from "../../misc/logger";
-import type { Connection } from "../../core/connection";
+import type { Connection } from "../../core/shared/connection";
 import type { ServerMessage } from "../protocol/server-message";
 import { serviceLocator } from "../../misc/service-locator";
+import { Memory } from "../../core/shared/memory";
 
 /**
  * A classe abstrata `Outgoing` gerencia o envio de mensagens para clientes conectados.

@@ -1,5 +1,5 @@
 import type { ServerWebSocket } from "bun";
-import type { Connection } from "../core/connection";
+import type { Connection } from "../core/shared/connection";
 import { Memory } from "../core/memory";
 
 /**

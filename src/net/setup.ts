@@ -5,7 +5,7 @@ import { SERVER_HOST, SERVER_PORT } from "../misc/constants";
 import { serviceLocator } from "../misc/service-locator";
 import { PrismaClient } from "@prisma/client";
 import { Memory } from "../core/memory";
-import { GameMap } from "../core/game-map";
+import { GameMap } from "../core/game/game-map";
 
 /**
  * A classe `Setup` é responsável por iniciar e configurar o servidor, gerenciar conexões WebSocket

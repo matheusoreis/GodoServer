@@ -1,7 +1,7 @@
 import type { ServerWebSocket } from "bun";
 import { Memory } from "../core/memory";
 import { Logger } from "../misc/logger";
-import { Connection } from "../core/connection";
+import { Connection } from "../core/shared/connection";
 import { GetConnection } from "../misc/get-connection";
 import { Alert } from "../communication/outgoing/dispatcher/alert";
 import { serviceLocator } from "../misc/service-locator";

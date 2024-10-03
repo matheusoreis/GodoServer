@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { AccessAccount } from "../communication/incoming/requests/access-account";
+import { AccessAccount } from "../communication/incoming/requests/menu/access-account";
 import { ChangePassword } from "../communication/incoming/requests/change-password";
 import { RequestCharacters } from "../communication/incoming/requests/request-characters";
 import { CreateAccount } from "../communication/incoming/requests/create-account";

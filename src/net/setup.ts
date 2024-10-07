@@ -1,21 +1,14 @@
-import type { Server, ServerWebSocket } from "bun";
-import { Logger } from "../misc/logger";
-import { Manager } from "./manager";
-import { SERVER_HOST, SERVER_PORT } from "../misc/constants";
-import { serviceLocator } from "../misc/service-locator";
-import { PrismaClient } from "@prisma/client";
-import { GameMap } from "../core/game/game-map";
-import { Memory } from "../core/shared/memory";
+import type { Server, ServerWebSocket } from 'bun';
+import { Logger } from '../misc/logger';
+import { Manager } from './manager';
+import { SERVER_HOST, SERVER_PORT } from '../misc/constants';
+import { serviceLocator } from '../misc/service-locator';
+import { Memory } from '../core/memory';
+import { WorldCore } from '../core/game/world/world.core';
+import { Vector2 } from '../misc/vector2';
+import { PrismaClient } from '@prisma/client';
 
-/**
- * A classe `Setup` é responsável por iniciar e configurar o servidor, gerenciar conexões WebSocket
- * e lidar com requests HTTP.
- */
 export class Setup {
-  /**
-   * Cria uma instância da classe `Setup`.
-   * Inicializa o logger, o manager e define os manipuladores de WebSocket.
-   */
   constructor() {
     this.logger = serviceLocator.get<Logger>(Logger);
     this.manager = serviceLocator.get<Manager>(Manager);
@@ -29,21 +22,17 @@ export class Setup {
     };
   }
 
-  private logger: Logger;
-  private manager: Manager;
-  private prisma: PrismaClient;
-  private memory: Memory;
+  private readonly logger: Logger;
+  private readonly manager: Manager;
+  private readonly prisma: PrismaClient;
+  private readonly memory: Memory;
 
-  /** Manipuladores de eventos WebSocket (abertura, fechamento, e mensagens). */
-  private websocketHandlers: {
+  private readonly websocketHandlers: {
     open: (ws: ServerWebSocket) => void;
     close: (ws: ServerWebSocket, code: number, message: string) => void;
     message: (ws: ServerWebSocket, message: Buffer) => void;
   };
 
-  /**
-   * Inicia o servidor, configura os manipuladores de WebSocket e inicializa a memória.
-   */
   public async start(): Promise<void> {
     try {
       Bun.serve({
@@ -53,94 +42,66 @@ export class Setup {
         websocket: this.websocketHandlers,
       });
 
-      this.logger.info("Server started successfully");
-      this.logger.info("Server listening on: " + SERVER_PORT);
+      this.logger.info('Server started successfully');
+      this.logger.info('Server listening on: ' + SERVER_PORT);
 
-      this.logger.info("Initializing server memory...");
+      this.logger.info('Initializing server memory...');
       await this.loadMemory();
 
-      this.logger.info("Waiting for connections...");
+      this.logger.info('Waiting for connections...');
     } catch (error) {
-      this.logger.error("Failed to start the server: " + error);
+      this.logger.error('Failed to start the server: ' + error);
     }
   }
 
-  /**
-   * Manipulador para requests HTTP.
-   * Lida com requests regulares e requests de upgrade para WebSocket.
-   *
-   * @param {Request} req - O request HTTP recebido.
-   * @param {Server} server - A instância do servidor.
-   * @returns {Promise<Response>} Resposta HTTP ou WebSocket upgrade.
-   */
   private async fetchHandler(req: Request, server: Server): Promise<Response> {
-    if (req.headers.get("upgrade")?.toLowerCase() === "websocket") {
+    if (req.headers.get('upgrade')?.toLowerCase() === 'websocket') {
       const success: boolean = server.upgrade(req);
 
       if (!success) {
-        return new Response("Upgrade to WebSocket failed", { status: 400 });
+        return new Response('Upgrade to WebSocket failed', { status: 400 });
       }
     }
 
-    return new Response("HTTP access is not allowed", { status: 403 });
+    return new Response('HTTP access is not allowed', { status: 403 });
   }
 
-  /**
-   * Manipulador para a abertura de uma nova conexão WebSocket.
-   *
-   * * @param {ServerWebSocket} ws - O WebSocket conectado.
-   */
   private websocketOpen(ws: ServerWebSocket): void {
-    this.logger.info("New connection from: " + ws.remoteAddress);
+    this.logger.info('New connection from: ' + ws.remoteAddress);
     this.manager.websocketOpen(ws);
   }
 
-  /**
-   * Manipulador para o fechamento de uma conexão WebSocket.
-   *
-   * @param {ServerWebSocket} ws - O WebSocket que foi desconectado.
-   * @param {number} code - Código de status de fechamento.
-   * @param {string} message - Mensagem informativa sobre o fechamento.
-   */
-  private websocketClose(ws: ServerWebSocket, code: number, message: string): void {
-    this.logger.info("Connection closed, address: " + ws.remoteAddress);
-    this.manager.websocketClose(ws, code, message);
+  private websocketClose(ws: ServerWebSocket): void {
+    this.logger.info('Connection closed, address: ' + ws.remoteAddress);
+    this.manager.websocketClose(ws);
   }
 
-  /**
-   * Manipulador para mensagens recebidas em uma conexão WebSocket.
-   *
-   * @param {ServerWebSocket} ws - O WebSocket que enviou a mensagem.
-   * @param {Buffer} message - A mensagem recebida.
-   */
   private websocketMessage(ws: ServerWebSocket, message: Buffer): void {
-    this.manager.websocketMessage(ws, message);
+    const uint8Message = new Uint8Array(message);
+    this.manager.websocketMessage(ws, uint8Message);
   }
 
-  /**
-   * Carrega a memória do servidor.
-   */
   private async loadMemory(): Promise<void> {
     await this.loadMaps();
   }
 
-  public async loadMaps(): Promise<void> {
+  private async loadMaps(): Promise<void> {
     try {
-      const maps = await this.prisma.gameMaps.findMany();
+      const maps = await this.prisma.worlds.findMany();
 
       if (maps.length === 0) {
-        console.log("No maps found in the database.");
+        console.log('No maps found in the database.');
         return;
       }
 
       for (const map of maps) {
-        const gameMap = new GameMap(map.id, map.name, map.sizeX, map.sizeY);
-        this.memory.maps.add(gameMap);
+        const gameMap = new WorldCore(map.id, map.name, new Vector2(map.sizeX, map.sizeY));
+        this.memory.worlds.add(gameMap);
       }
 
       this.logger.info(`Loaded ${maps.length} maps into memory.`);
     } catch (error) {
-      this.logger.error("Failed to load maps from database: " + error);
+      this.logger.error('Failed to load maps from database: ' + error);
     }
   }
 }

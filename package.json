@@ -3,22 +3,25 @@
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
+    "@eslint/js": "^9.12.0",
     "@types/bun": "latest",
-    "eslint": "latest",
-    "eslint-config-prettier": "latest",
-    "prettier": "latest",
-    "prisma": "^5.20.0"
+    "eslint": "^9.12.0",
+    "globals": "^15.10.0",
+    "prisma": "^5.20.0",
+    "typescript-eslint": "^8.8.0"
   },
   "peerDependencies": {
-    "typescript": "latest"
+    "typescript": "^5.0.0"
   },
   "scripts": {
+    "fix": "bun prettier . --write",
     "start": "bun index.ts",
     "dev": "bun --watch index.ts",
     "build": "bun build index.ts --outdir ./build",
     "release": "bun build/index.js"
   },
   "dependencies": {
-    "@prisma/client": "^5.20.0'"
+    "@prisma/client": "^5.20.0",
+    "prettier": "3.3.3"
   }
 }

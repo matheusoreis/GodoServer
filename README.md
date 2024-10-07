@@ -14,26 +14,32 @@ O **Bun Game Server (BGS)** foi projetado para ser um servidor de **MMO** e **OR
 
 Para utilizar este projeto, é necessário conhecimento no BunJS e Typescript
 
-
 ## Início
+
 Para instalar as dependências do BunJS, execute o comando abaixo:
+
 ```bash
 bun install
 ```
 
 Com a implementação do prisma é necessário digitar os comandos a seguir para iniciar o servidor:
+
 ```bash
 bunx prisma generate
 ```
 
 Para executar basta executar o comando
+
 ```bash
 bun start
 ```
+
 ou o comando
+
 ```bash
 bun start dev
 ```
+
 para executar em ambiente de desenvolvimento
 
 ## Licença

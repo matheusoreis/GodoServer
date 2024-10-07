@@ -10,54 +10,51 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Account {
+model Accounts {
   id            Int          @id @default(autoincrement())
-  email         String       @unique()
+  email         String       @unique
   password      String
-  characters    Characters[]
   characterSize Int          @default(2)
   coins         Int          @default(0)
-  roles         Roles[]
   createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt()
+  updatedAt     DateTime     @updatedAt
+  characters    Characters[]
+  roles         Roles[]
 }
 
 model Roles {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   name      String
-  Account   Account? @relation(fields: [accountId], references: [id])
   accountId Int?
+  Account   Accounts? @relation(fields: [accountId], references: [id])
 }
 
 model Characters {
-  id            Int    @id @default(autoincrement())
-  name          String @unique()
+  id            Int       @id @default(autoincrement())
+  name          String    @unique
   gendersId     Int
   accountId     Int?
-  currentMap    Int    @default(1)
-  mapPositionX  Int    @default(1)
-  mapPositionY  Int    @default(1)
-  direction     Int    @default(4)
+  currentMap    Int       @default(1)
+  mapPositionX  Int       @default(1)
+  mapPositionY  Int       @default(1)
+  direction     Int       @default(4)
   defaultSprite String
   currentSprite String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt()
-
-  gender  Genders  @relation(fields: [gendersId], references: [id])
-  Account Account? @relation(fields: [accountId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  gender        Genders   @relation(fields: [gendersId], references: [id])
+  Account       Accounts? @relation(fields: [accountId], references: [id])
 }
 
 model Genders {
-  id   Int    @id @default(autoincrement())
-  name String
-
+  id         Int          @id @default(autoincrement())
+  name       String
   Characters Characters[]
 }
 
-model GameMaps {
+model Worlds {
   id    Int    @id @default(autoincrement())
   name  String
-  sizeX Int    @default(50)
-  sizeY Int    @default(33)
+  sizeX Int    @default(100)
+  sizeY Int    @default(100)
 }

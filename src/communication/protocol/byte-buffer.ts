@@ -1,31 +1,31 @@
 /**
  * A classe `ByteBuffer` fornece uma interface para manipular buffers binários, permitindo
- * a leitura e escrita de dados de diferentes tipos.
+ * a leitura e escrita de dados de diferentes tipos utilizando `Uint8Array`.
  */
 export class ByteBuffer {
-  private byteBuffer: Buffer;
+  private byteBuffer: Uint8Array;
   private offset: number;
 
   /**
    * Cria uma nova instância de `ByteBuffer`.
    *
-   * @param {Buffer} [initialBuffer=Buffer.alloc(0)] - O buffer inicial a ser usado. Se não fornecido, será um buffer vazio.
+   * @param {Uint8Array} [initialBuffer=new Uint8Array(0)] - O buffer inicial a ser usado. Se não fornecido, será um buffer vazio.
    */
-  constructor(initialBuffer: Buffer = Buffer.alloc(0)) {
+  constructor(initialBuffer: Uint8Array = new Uint8Array(0)) {
     this.byteBuffer = initialBuffer;
     this.offset = 0;
   }
 
   /**
-   * Adiciona um buffer de bytes ao final do buffer existente.
+   * Adiciona um `Uint8Array` ao final do buffer existente.
    *
-   * @param {Buffer} bytes - O buffer de bytes a ser adicionado.
+   * @param {Uint8Array} bytes - O buffer de bytes a ser adicionado.
    */
-  public putBytes(bytes: Buffer): void {
+  public putBytes(bytes: Uint8Array): void {
     const newSize = this.byteBuffer.length + bytes.length;
-    const newBuffer = Buffer.alloc(newSize);
-    this.byteBuffer.copy(newBuffer);
-    bytes.copy(newBuffer, this.byteBuffer.length);
+    const newBuffer = new Uint8Array(newSize);
+    newBuffer.set(this.byteBuffer);
+    newBuffer.set(bytes, this.byteBuffer.length);
     this.byteBuffer = newBuffer;
   }
 
@@ -35,8 +35,9 @@ export class ByteBuffer {
    * @param {number} value - O valor de 8 bits a ser adicionado.
    */
   public putInt8(value: number): void {
-    const buffer = Buffer.alloc(1);
-    buffer.writeInt8(value, 0);
+    const buffer = new Uint8Array(1);
+    const dataView = new DataView(buffer.buffer);
+    dataView.setInt8(0, value);
     this.putBytes(buffer);
   }
 
@@ -46,8 +47,9 @@ export class ByteBuffer {
    * @param {number} value - O valor de 16 bits a ser adicionado.
    */
   public putInt16(value: number): void {
-    const buffer = Buffer.alloc(2);
-    buffer.writeInt16LE(value, 0);
+    const buffer = new Uint8Array(2);
+    const dataView = new DataView(buffer.buffer);
+    dataView.setInt16(0, value, true);
     this.putBytes(buffer);
   }
 
@@ -57,8 +59,9 @@ export class ByteBuffer {
    * @param {number} value - O valor de 32 bits a ser adicionado.
    */
   public putInt32(value: number): void {
-    const buffer = Buffer.alloc(4);
-    buffer.writeInt32LE(value, 0);
+    const buffer = new Uint8Array(4);
+    const dataView = new DataView(buffer.buffer);
+    dataView.setInt32(0, value, true);
     this.putBytes(buffer);
   }
 
@@ -68,7 +71,7 @@ export class ByteBuffer {
    * @param {string} value - A string a ser adicionada.
    */
   public putString(value: string): void {
-    const encoded = Buffer.from(value, "utf8");
+    const encoded = new TextEncoder().encode(value);
     this.putInt32(encoded.length);
     this.putBytes(encoded);
   }
@@ -79,7 +82,7 @@ export class ByteBuffer {
    * @returns {number} - O valor de 8 bits lido.
    */
   public getInt8(): number {
-    const value = this.byteBuffer.readInt8(this.offset);
+    const value = new DataView(this.byteBuffer.buffer).getInt8(this.offset);
     this.offset += 1;
     return value;
   }
@@ -90,7 +93,7 @@ export class ByteBuffer {
    * @returns {number} - O valor de 16 bits lido.
    */
   public getInt16(): number {
-    const value = this.byteBuffer.readInt16LE(this.offset);
+    const value = new DataView(this.byteBuffer.buffer).getInt16(this.offset, true);
     this.offset += 2;
     return value;
   }
@@ -101,7 +104,7 @@ export class ByteBuffer {
    * @returns {number} - O valor de 32 bits lido.
    */
   public getInt32(): number {
-    const value = this.byteBuffer.readInt32LE(this.offset);
+    const value = new DataView(this.byteBuffer.buffer).getInt32(this.offset, true);
     this.offset += 4;
     return value;
   }
@@ -115,16 +118,16 @@ export class ByteBuffer {
     const length = this.getInt32();
     const value = this.byteBuffer.subarray(this.offset, this.offset + length);
     this.offset += length;
-    return value.toString("utf8");
+    return new TextDecoder().decode(value);
   }
 
   /**
    * Lê um número específico de bytes do buffer.
    *
    * @param {number} length - O número de bytes a serem lidos.
-   * @returns {Buffer} - O buffer contendo os bytes lidos.
+   * @returns {Uint8Array} - O buffer contendo os bytes lidos.
    */
-  public getBytes(length: number): Buffer {
+  public getBytes(length: number): Uint8Array {
     const value = this.byteBuffer.subarray(this.offset, this.offset + length);
     this.offset += length;
     return value;
@@ -133,9 +136,9 @@ export class ByteBuffer {
   /**
    * Obtém o buffer interno atual.
    *
-   * @returns {Buffer} - O buffer interno.
+   * @returns {Uint8Array} - O buffer interno.
    */
-  public getBuffer(): Buffer {
+  public getBuffer(): Uint8Array {
     return this.byteBuffer;
   }
 

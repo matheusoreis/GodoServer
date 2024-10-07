@@ -1,6 +1,6 @@
-import { Dependency } from "./src/misc/dependency";
-import { serviceLocator } from "./src/misc/service-locator";
-import { Setup } from "./src/net/setup";
+import { Dependency } from './src/misc/dependency';
+import { serviceLocator } from './src/misc/service-locator';
+import { Setup } from './src/net/setup';
 
 /**
  * Função principal que inicializa a aplicação.

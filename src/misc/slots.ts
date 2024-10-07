@@ -90,7 +90,7 @@ export class Slots<T> {
         return i;
       }
     }
-    throw new Error("No empty slots available");
+    throw new Error('No empty slots available');
   }
 
   /**

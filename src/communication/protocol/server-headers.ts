@@ -1,27 +1,18 @@
-/**
- * Enumeração `ServerHeaders` define os tipos de cabeçalhos de servidor suportados.
- *
- * Os valores deste enum representam diferentes tipos de mensagens que o servidor pode enviar
- * para os clientes, facilitando a identificação e o tratamento dessas mensagens no cliente.
- */
 export enum ServerHeaders {
-  Pong,
+  Ping,
   Alert,
-  AccessSuccessful,
-  AccountCreated,
-  AccountDeleted,
-  AccountRecovered,
-  PasswordChanged,
+  AccessAccount,
+  CreateAccount,
+  DeleteAccount,
+  RecoverAccount,
+  ChangePassword,
   CharacterList,
-  CharacterCreated,
-  CharacterDeleted,
-  CharacterSelected,
+  CreateCharacter,
+  DeleteCharacter,
+  SelectCharacter,
   MapCharactersTo,
   NewCharacterTo,
-  CharacterMoved,
-  CharacterDisconnected,
-  CharacterTeleported,
-  ChatMessageMap,
-  ChatMessageGlobal,
-  EmoteSent,
+  MoveCharacter,
+  DisconnectCharacter,
+  TeleportCharacter,
 }

@@ -1,49 +1,104 @@
-import { PrismaClient } from "@prisma/client";
-import { AccessAccount } from "../communication/incoming/requests/menu/access-account";
-import { ClientMessage } from "../communication/protocol/client-message";
-import { Handler } from "../net/handler";
-import { Manager } from "../net/manager";
-import { Setup } from "../net/setup";
-import { Logger } from "./logger";
-import { Password } from "./password";
-import { serviceLocator } from "./service-locator";
-import { Memory } from "../core/shared/memory";
-import { ByteBuffer } from "../communication/protocol/byte-buffer";
-import { Ping } from "../communication/incoming/requests/shared/ping";
-import { CreateAccount } from "../communication/incoming/requests/menu/create-account";
-import { DeleteAccount } from "../communication/incoming/requests/menu/delete-account";
-import { RecoverAccount } from "../communication/incoming/requests/menu/recover-account";
-import { ChangePassword } from "../communication/incoming/requests/menu/change-password";
-import { RequestCharacters } from "../communication/incoming/requests/menu/request-characters";
-import { CreateCharacter } from "../communication/incoming/requests/menu/create-character";
-import { DeleteCharacter } from "../communication/incoming/requests/menu/delete-character";
-import { SelectCharacter } from "../communication/incoming/requests/menu/select-character";
-import { MoveCharacter } from "../communication/incoming/requests/game/move-character";
-import { ChatMessage } from "../communication/incoming/requests/game/chat-message";
+import { PrismaClient } from '@prisma/client';
+import { ClientMessage } from '../communication/protocol/client-message';
+import { Handler } from '../net/handler';
+import { Manager } from '../net/manager';
+import { Setup } from '../net/setup';
+import { Logger } from './logger';
+import { Password } from './password';
+import { serviceLocator } from './service-locator';
+import { Memory } from '../core/memory';
+import { ByteBuffer } from '../communication/protocol/byte-buffer';
+
+import { PingIncoming } from '../core/ping/ping.incoming';
+import { AccessAccountIncoming } from '../core/menu/access-account/access-account.incoming';
+import { CreateAccountIncoming } from '../core/menu/create-account/create-account.incoming';
+import { DeleteAccountIncoming } from '../core/menu/delete-account/delete-account.incoming';
+import { RecoverAccountIncoming } from '../core/menu/recover-account/recover-account.incoming';
+import { ChangePasswordIncoming } from '../core/menu/change-password/change-password.incoming';
+import { CharacterListIncoming } from '../core/menu/character-list/character-list.incoming';
+import { CreateCharacterIncoming } from '../core/menu/create-character/create-character.incoming';
+import { DeleteCharacterIncoming } from '../core/menu/delete-character/delete-character.incoming';
+import { SelectCharacterIncoming } from '../core/menu/select-character/select-character.incoming';
+import { MoveCharacterIncoming } from '../core/game/move-character/move-character.incoming';
 
 export class Dependency {
   public setup() {
-    serviceLocator.registerFactory<Setup>(Setup, () => new Setup());
-    serviceLocator.registerFactory<Manager>(Manager, () => new Manager());
-    serviceLocator.registerFactory<Handler>(Handler, () => new Handler());
-    serviceLocator.registerFactory<Logger>(Logger, () => new Logger());
-    serviceLocator.registerSingleton<Memory>(Memory, new Memory());
-    serviceLocator.registerFactory<Password>(Password, () => new Password());
-    serviceLocator.registerFactory<ByteBuffer>(ByteBuffer, () => new ByteBuffer());
-    serviceLocator.registerFactory<ClientMessage>(ClientMessage, () => new ClientMessage());
-    serviceLocator.registerFactory<PrismaClient>(PrismaClient, () => new PrismaClient());
+    serviceLocator.registerFactory<Logger>(Logger, function () {
+      return new Logger();
+    });
 
-    serviceLocator.registerFactory<Ping>(Ping, () => new Ping());
-    serviceLocator.registerFactory<AccessAccount>(AccessAccount, () => new AccessAccount());
-    serviceLocator.registerFactory<CreateAccount>(CreateAccount, () => new CreateAccount());
-    serviceLocator.registerFactory<DeleteAccount>(DeleteAccount, () => new DeleteAccount());
-    serviceLocator.registerFactory<RecoverAccount>(RecoverAccount, () => new RecoverAccount());
-    serviceLocator.registerFactory<ChangePassword>(ChangePassword, () => new ChangePassword());
-    serviceLocator.registerFactory<RequestCharacters>(RequestCharacters, () => new RequestCharacters());
-    serviceLocator.registerFactory<CreateCharacter>(CreateCharacter, () => new CreateCharacter());
-    serviceLocator.registerFactory<DeleteCharacter>(DeleteCharacter, () => new DeleteCharacter());
-    serviceLocator.registerFactory<SelectCharacter>(SelectCharacter, () => new SelectCharacter());
-    serviceLocator.registerFactory<MoveCharacter>(MoveCharacter, () => new MoveCharacter());
-    serviceLocator.registerFactory<ChatMessage>(ChatMessage, () => new ChatMessage());
+    serviceLocator.registerSingleton<Memory>(Memory, new Memory());
+
+    serviceLocator.registerFactory<ByteBuffer>(ByteBuffer, () => {
+      return new ByteBuffer();
+    });
+
+    serviceLocator.registerFactory<Setup>(Setup, function () {
+      return new Setup();
+    });
+
+    serviceLocator.registerFactory<Manager>(Manager, function () {
+      return new Manager();
+    });
+
+    serviceLocator.registerFactory<Handler>(Handler, function () {
+      return new Handler();
+    });
+
+    serviceLocator.registerFactory<PrismaClient>(PrismaClient, () => {
+      return new PrismaClient();
+    });
+
+    serviceLocator.registerFactory<ClientMessage>(ClientMessage, () => {
+      return new ClientMessage();
+    });
+
+    serviceLocator.registerFactory<Password>(Password, () => {
+      return new Password();
+    });
+
+    serviceLocator.registerFactory<PingIncoming>(PingIncoming, () => {
+      return new PingIncoming();
+    });
+
+    serviceLocator.registerFactory<AccessAccountIncoming>(AccessAccountIncoming, () => {
+      return new AccessAccountIncoming();
+    });
+
+    serviceLocator.registerFactory<CreateAccountIncoming>(CreateAccountIncoming, () => {
+      return new CreateAccountIncoming();
+    });
+
+    serviceLocator.registerFactory<DeleteAccountIncoming>(DeleteAccountIncoming, () => {
+      return new DeleteAccountIncoming();
+    });
+
+    serviceLocator.registerFactory<RecoverAccountIncoming>(RecoverAccountIncoming, () => {
+      return new RecoverAccountIncoming();
+    });
+
+    serviceLocator.registerFactory<ChangePasswordIncoming>(ChangePasswordIncoming, () => {
+      return new ChangePasswordIncoming();
+    });
+
+    serviceLocator.registerFactory<CharacterListIncoming>(CharacterListIncoming, () => {
+      return new CharacterListIncoming();
+    });
+
+    serviceLocator.registerFactory<CreateCharacterIncoming>(CreateCharacterIncoming, () => {
+      return new CreateCharacterIncoming();
+    });
+
+    serviceLocator.registerFactory<DeleteCharacterIncoming>(DeleteCharacterIncoming, () => {
+      return new DeleteCharacterIncoming();
+    });
+
+    serviceLocator.registerFactory<SelectCharacterIncoming>(SelectCharacterIncoming, () => {
+      return new SelectCharacterIncoming();
+    });
+
+    serviceLocator.registerFactory<MoveCharacterIncoming>(MoveCharacterIncoming, () => {
+      return new MoveCharacterIncoming();
+    });
   }
 }

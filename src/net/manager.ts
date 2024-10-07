@@ -1,34 +1,20 @@
-import type { ServerWebSocket } from "bun";
-import { Logger } from "../misc/logger";
-import { Connection } from "../core/shared/connection";
-import { GetConnection } from "../misc/get-connection";
-import { serviceLocator } from "../misc/service-locator";
-import { Memory } from "../core/shared/memory";
-import type { Character } from "../core/game/character";
-import { Alert } from "../communication/outgoing/dispatcher/shared/alert";
+import type { ServerWebSocket } from 'bun';
+import { Logger } from '../misc/logger';
+import { serviceLocator } from '../misc/service-locator';
+import { Memory } from '../core/memory';
+import type { Character } from '../core/game/character';
+import { Connection } from '../core/connection';
+import { AlertCore } from '../core/alert/alert.core';
 
-/**
- * A classe `Manager` gerencia as conexões WebSocket ativas, lida com a abertura, fechamento,
- * e mensagens de WebSocket, além de coordenar o armazenamento dessas conexões em slots de memória.
- */
 export class Manager {
-  /**
-   * Cria uma instância da classe `Manager`.
-   * Inicializa o logger e a estrutura de armazenamento de conexões.
-   */
   constructor() {
     this.logger = serviceLocator.get<Logger>(Logger);
     this.memory = serviceLocator.get<Memory>(Memory);
   }
 
-  private logger: Logger;
-  private memory: Memory;
+  private readonly logger: Logger;
+  private readonly memory: Memory;
 
-  /**
-   * Manipulador chamado quando uma nova conexão WebSocket é aberta.
-   *
-   * @param {ServerWebSocket} ws - O WebSocket que foi conectado.
-   */
   public websocketOpen(ws: ServerWebSocket): void {
     const firstAvailableId: number | undefined = this.memory.connections.getFirstEmptySlot();
 
@@ -42,16 +28,8 @@ export class Manager {
     connectionModel.addToMemory();
   }
 
-  /**
-   * Manipulador chamado quando uma conexão WebSocket é fechada.
-   * Remove a conexão dos slots de memória e atualiza o estado do personagem.
-   *
-   * @param {ServerWebSocket} ws - O WebSocket que foi desconectado.
-   * @param {number} _code - Código de status de fechamento (não utilizado).
-   * @param {string} _message - Mensagem de fechamento (não utilizada).
-   */
-  public async websocketClose(ws: ServerWebSocket, _code: number, _message: string): Promise<void> {
-    const connection: Connection | undefined = GetConnection.bySocket(ws, this.memory);
+  public async websocketClose(ws: ServerWebSocket): Promise<void> {
+    const connection: Connection | undefined = this.GetSocket(ws, this.memory);
 
     if (!connection) {
       this.logger.error(`Connection not found for WebSocket.`);
@@ -69,7 +47,7 @@ export class Manager {
       await this.updateCharacterBeforeDisconnect(charInUse);
 
       // Remova o personagem do mapa atual
-      await this.removeCharacterFromCurrentMap(charInUse);
+      await this.removeCharacterFromCurrentMap(connection, charInUse);
 
       charInUse.stopLoop();
 
@@ -82,11 +60,6 @@ export class Manager {
     }
   }
 
-  /**
-   * Atualiza o personagem antes da desconexão.
-   *
-   * @param {Character} charInUse - O personagem que está sendo desconectado.
-   */
   private async updateCharacterBeforeDisconnect(charInUse: Character): Promise<void> {
     try {
       await charInUse.updateCharacter(charInUse);
@@ -95,18 +68,16 @@ export class Manager {
     }
   }
 
-  /**
-   * Remove o personagem do mapa atual.
-   *
-   * @param {Character} charInUse - O personagem que está sendo desconectado.
-   */
-  private async removeCharacterFromCurrentMap(charInUse: Character): Promise<void> {
+  private async removeCharacterFromCurrentMap(
+    connection: Connection,
+    charInUse: Character,
+  ): Promise<void> {
     try {
       const mapId = charInUse.currentMap;
       const currentMap = charInUse.findMapById(mapId);
 
       if (currentMap) {
-        currentMap.removeCharacter(charInUse);
+        currentMap.remove(connection, charInUse);
       } else {
         this.logger.warning(`Map with ID ${mapId} not found when removing character.`);
       }
@@ -115,15 +86,8 @@ export class Manager {
     }
   }
 
-  /**
-   * Manipulador chamado quando uma mensagem é recebida por um WebSocket.
-   * Envia a mensagem recebida para a conexão correspondente.
-   *
-   * @param {ServerWebSocket} ws - O WebSocket que enviou a mensagem.
-   * @param {Buffer} message - A mensagem recebida.
-   */
-  public websocketMessage(ws: ServerWebSocket, message: Buffer): void {
-    const connection: Connection | undefined = GetConnection.bySocket(ws, this.memory);
+  public websocketMessage(ws: ServerWebSocket, message: Uint8Array): void {
+    const connection: Connection | undefined = this.GetSocket(ws, this.memory);
 
     if (!connection) {
       this.logger.error(`Connection not found for WebSocket.`);
@@ -134,33 +98,31 @@ export class Manager {
     connection.handleMessage(message);
   }
 
-  /**
-   * Manipula o caso em que o servidor está cheio e não pode aceitar novas conexões.
-   * Fecha o WebSocket do cliente que tentou se conectar.
-   *
-   * @param {ServerWebSocket} ws - O WebSocket que tentou se conectar.
-   */
   private handleFullServer(ws: ServerWebSocket): void {
     const connection: Connection = new Connection(ws, -1);
 
-    new Alert("Server is full! disconnecting...", true).sendTo(connection);
-
+    new AlertCore(connection, 'Server is full! disconnecting...', true).send();
     this.logger.info(`Server is full, disconnecting client: ${ws.remoteAddress}`);
   }
 
-  /**
-   * Limpa a conexão de um WebSocket específico, removendo-o da lista de conexões
-   * e fechando a conexão.
-   *
-   * @param {ServerWebSocket} ws - O WebSocket que está sendo limpo.
-   */
   private cleanupConnection(ws: ServerWebSocket): void {
-    const connection: Connection | undefined = GetConnection.bySocket(ws, this.memory);
+    const connection: Connection | undefined = this.GetSocket(ws, this.memory);
 
     if (connection) {
       this.memory.connections.remove(connection.id);
       this.logger.info(`Connection removed, address: ${ws.remoteAddress}`);
       connection.close();
     }
+  }
+
+  private GetSocket(ws: ServerWebSocket, memory: Memory): Connection | undefined {
+    for (const index of memory.connections.getFilledSlots()) {
+      const connection = memory.connections.get(index);
+
+      if (connection && connection.ws === ws) {
+        return connection;
+      }
+    }
+    return undefined;
   }
 }

@@ -35,7 +35,9 @@ export class Logger {
    * @param {string} message - A mensagem a ser registrada.
    */
   public info(message: string): void {
-    console.log(`${colorText("[INFO]", GREEN)} ${this._getTimestamp()} - ${colorText(message, GREEN)}`);
+    console.log(
+      `${colorText('[INFO]', GREEN)} ${this._getTimestamp()} - ${colorText(message, GREEN)}`,
+    );
   }
 
   /**
@@ -44,7 +46,9 @@ export class Logger {
    * @param {string} message - A mensagem a ser registrada.
    */
   public warning(message: string): void {
-    console.log(`${colorText("[WARN]", YELLOW)} ${this._getTimestamp()} - ${colorText(message, YELLOW)}`);
+    console.log(
+      `${colorText('[WARN]', YELLOW)} ${this._getTimestamp()} - ${colorText(message, YELLOW)}`,
+    );
   }
 
   /**
@@ -53,7 +57,9 @@ export class Logger {
    * @param {string} message - A mensagem a ser registrada.
    */
   public player(message: string): void {
-    console.log(`${colorText("[PLAYER]", BLUE)} ${this._getTimestamp()} - ${colorText(message, BLUE)}`);
+    console.log(
+      `${colorText('[PLAYER]', BLUE)} ${this._getTimestamp()} - ${colorText(message, BLUE)}`,
+    );
   }
 
   /**
@@ -62,6 +68,6 @@ export class Logger {
    * @param {string} message - A mensagem a ser registrada.
    */
   public error(message: string): void {
-    console.log(`${colorText("[ERRO]", RED)} ${this._getTimestamp()} - ${colorText(message, RED)}`);
+    console.log(`${colorText('[ERRO]', RED)} ${this._getTimestamp()} - ${colorText(message, RED)}`);
   }
 }

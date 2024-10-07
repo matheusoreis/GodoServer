@@ -1,48 +1,31 @@
-import type { Incoming } from "../communication/incoming/incoming";
-import { ChatMessage } from "../communication/incoming/requests/game/chat-message";
-import { MoveCharacter } from "../communication/incoming/requests/game/move-character";
-import { AccessAccount } from "../communication/incoming/requests/menu/access-account";
-import type { ChangePassword } from "../communication/incoming/requests/menu/change-password";
-import { CreateAccount } from "../communication/incoming/requests/menu/create-account";
-import { CreateCharacter } from "../communication/incoming/requests/menu/create-character";
-import { DeleteAccount } from "../communication/incoming/requests/menu/delete-account";
-import { DeleteCharacter } from "../communication/incoming/requests/menu/delete-character";
-import { RecoverAccount } from "../communication/incoming/requests/menu/recover-account";
-import { RequestCharacters } from "../communication/incoming/requests/menu/request-characters";
-import { SelectCharacter } from "../communication/incoming/requests/menu/select-character";
-import { Ping } from "../communication/incoming/requests/shared/ping";
-import { ClientHeaders } from "../communication/protocol/client-headers";
-import type { ClientMessage } from "../communication/protocol/client-message";
-import type { Connection } from "../core/shared/connection";
-import { serviceLocator } from "../misc/service-locator";
+import { ClientHeaders } from '../communication/protocol/client-headers';
+import type { ClientMessage } from '../communication/protocol/client-message';
+import type { Connection } from '../core/connection';
+import { AccessAccountIncoming } from '../core/menu/access-account/access-account.incoming';
+import { ChangePasswordIncoming } from '../core/menu/change-password/change-password.incoming';
+import { CharacterListIncoming } from '../core/menu/character-list/character-list.incoming';
+import { CreateAccountIncoming } from '../core/menu/create-account/create-account.incoming';
+import { CreateCharacterIncoming } from '../core/menu/create-character/create-character.incoming';
+import { DeleteAccountIncoming } from '../core/menu/delete-account/delete-account.incoming';
+import { DeleteCharacterIncoming } from '../core/menu/delete-character/delete-character.incoming';
+import { MoveCharacterIncoming } from '../core/game/move-character/move-character.incoming';
+import { RecoverAccountIncoming } from '../core/menu/recover-account/recover-account.incoming';
+import { SelectCharacterIncoming } from '../core/menu/select-character/select-character.incoming';
+import { PingIncoming } from '../core/ping/ping.incoming';
+import { serviceLocator } from '../misc/service-locator';
+import type { Incoming } from '../communication/incoming';
+import { Logger } from '../misc/logger';
 
-/**
- * A classe `Handler` é responsável por gerenciar e despachar mensagens recebidas
- * para seus respectivos handlers com base nos cabeçalhos das mensagens de cliente.
- */
 export class Handler {
-  /**
-   * Cria uma instância da classe `Handler`.
-   * Inicializa o registro de handlers e registra os requests.
-   */
   constructor() {
+    this.logger = serviceLocator.get<Logger>(Logger);
     this.requestHandlers = {};
     this.registerRequests();
   }
 
-  /**
-   * Mapeia cabeçalhos de mensagens de cliente para handlers específicos.
-   * Cada cabeçalho (`ClientHeaders`) pode ter um handler associado que implementa a interface `Incoming`.
-   */
-  private requestHandlers: Partial<Record<ClientHeaders, Incoming>>;
+  private readonly logger: Logger;
+  private readonly requestHandlers: Partial<Record<ClientHeaders, Incoming>>;
 
-  /**
-   * Despacha a mensagem recebida para o handler apropriado com base no ID da mensagem.
-   * Se não houver handler registrado para o ID da mensagem, a conexão é fechada.
-   *
-   * @param {Connection} connection - A conexão WebSocket associada ao cliente.
-   * @param {ClientMessage} message - A mensagem recebida do cliente.
-   */
   public handleMessage(connection: Connection, message: ClientMessage): void {
     if (!connection.isConnected()) {
       return;
@@ -53,47 +36,45 @@ export class Handler {
     if (this.requestHandlers[messageId]) {
       const handler = this.requestHandlers[messageId];
 
-      try {
-        handler?.handle(connection, message);
-      } catch (error) {
-        console.error(`Error handling ${handler?.constructor.name}:`, error);
-        connection.close();
-      }
+      handler?.handle(connection, message);
     } else {
-      console.debug(`No handler for id: ${messageId}`);
+      this.logger.error(`No handler for id: ${messageId}`);
       connection.close();
     }
   }
 
-  /**
-   * Registra os handlers de requests associando os cabeçalhos de cliente a suas implementações específicas.
-   * Este método é responsável por preencher o mapeamento `requestHandlers`.
-   */
   private registerRequests() {
-    const ping = serviceLocator.get<Ping>(Ping);
-    const accessAccount = serviceLocator.get<AccessAccount>(AccessAccount);
-    const createAccount = serviceLocator.get<CreateAccount>(CreateAccount);
-    const deleteAccount = serviceLocator.get<DeleteAccount>(DeleteAccount);
-    const recoverAccount = serviceLocator.get<RecoverAccount>(RecoverAccount);
-    const changePassword = serviceLocator.get<ChangePassword>(DeleteAccount);
-    const requestCharacters = serviceLocator.get<RequestCharacters>(RequestCharacters);
-    const createCharacter = serviceLocator.get<CreateCharacter>(CreateCharacter);
-    const deleteCharacter = serviceLocator.get<DeleteCharacter>(DeleteCharacter);
-    const selectCharacter = serviceLocator.get<SelectCharacter>(SelectCharacter);
-    const moveCharacter = serviceLocator.get<MoveCharacter>(MoveCharacter);
-    const chatMessage = serviceLocator.get<ChatMessage>(ChatMessage);
-
+    const ping = serviceLocator.get<PingIncoming>(PingIncoming);
     this.requestHandlers[ClientHeaders.Ping] = ping;
+
+    const accessAccount = serviceLocator.get<AccessAccountIncoming>(AccessAccountIncoming);
     this.requestHandlers[ClientHeaders.AccessAccount] = accessAccount;
+
+    const createAccount = serviceLocator.get<CreateAccountIncoming>(CreateAccountIncoming);
     this.requestHandlers[ClientHeaders.CreateAccount] = createAccount;
+
+    const deleteAccount = serviceLocator.get<DeleteAccountIncoming>(DeleteAccountIncoming);
     this.requestHandlers[ClientHeaders.DeleteAccount] = deleteAccount;
+
+    const recoverAccount = serviceLocator.get<RecoverAccountIncoming>(RecoverAccountIncoming);
     this.requestHandlers[ClientHeaders.RecoverAccount] = recoverAccount;
+
+    const changePassword = serviceLocator.get<ChangePasswordIncoming>(ChangePasswordIncoming);
     this.requestHandlers[ClientHeaders.ChangePassword] = changePassword;
-    this.requestHandlers[ClientHeaders.RequestCharacters] = requestCharacters;
+
+    const characterList = serviceLocator.get<CharacterListIncoming>(CharacterListIncoming);
+    this.requestHandlers[ClientHeaders.CharacterList] = characterList;
+
+    const createCharacter = serviceLocator.get<CreateCharacterIncoming>(CreateCharacterIncoming);
     this.requestHandlers[ClientHeaders.CreateCharacter] = createCharacter;
+
+    const deleteCharacter = serviceLocator.get<DeleteCharacterIncoming>(DeleteCharacterIncoming);
     this.requestHandlers[ClientHeaders.DeleteCharacter] = deleteCharacter;
+
+    const selectCharacter = serviceLocator.get<SelectCharacterIncoming>(SelectCharacterIncoming);
     this.requestHandlers[ClientHeaders.SelectCharacter] = selectCharacter;
+
+    const moveCharacter = serviceLocator.get<MoveCharacterIncoming>(MoveCharacterIncoming);
     this.requestHandlers[ClientHeaders.MoveCharacter] = moveCharacter;
-    this.requestHandlers[ClientHeaders.ChatMessage] = chatMessage;
   }
 }

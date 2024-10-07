@@ -20,10 +20,7 @@ export class Password {
    * @param {string} hashedPassword - O hash da senha a ser comparado.
    * @returns {Promise<boolean>} Uma promise que resolve para `true` se a senha corresponder ao hash, `false` caso contrário.
    */
-  public async verify(
-    password: string,
-    hashedPassword: string,
-  ): Promise<boolean> {
+  public async verify(password: string, hashedPassword: string): Promise<boolean> {
     return await Bun.password.verify(password, hashedPassword);
   }
 }

@@ -1,137 +1,159 @@
-import { MAP_LOOP } from '../../../misc/constants';
-import { Logger } from '../../../misc/logger';
-import { Memory } from '../../memory';
-import { Vector2 } from '../../../misc/vector2';
-import { serviceLocator } from '../../../misc/service-locator';
-import type { Connection } from '../../connection';
-import { AlertCore } from '../../alert/alert.core';
-import { WorldOutgoing } from './world.outgoing';
-import { Character } from '../../character';
-import { CharacterDisconnectedCore } from '../character-disconnected/character-disconnected.core';
-import { MoveCharacterOutgoing } from '../move-character/move-character.outgoing';
+import { WORLD_LOOP } from "../../../misc/constants";
+import { Logger } from "../../../misc/logger";
+import { serviceLocator } from "../../../misc/service-locator";
+import type { Vector2 } from "../../../misc/vector2";
+import { AlertCore } from "../../alert/alert.core";
+import type { Character } from "../character/character";
+import type { Connection } from "../../connection";
+import { Memory } from "../../memory";
+import { CharacterDisconnectedCore } from "../character-disconnected/character-disconnected.core";
+import { MoveCharacterOutgoing } from "../move-character/move-character.outgoing";
+import { WorldOutgoing } from "./world.outgoing";
 
 export class WorldCore {
-  constructor(id: number, name: string, size: Vector2) {
-    this.logger = serviceLocator.get<Logger>(Logger);
-    this.memory = serviceLocator.get<Memory>(Memory);
+	constructor(id: number, name: string, size: Vector2) {
+		this.logger = serviceLocator.get<Logger>(Logger);
+		this.memory = serviceLocator.get<Memory>(Memory);
 
-    this.id = id;
-    this.name = name;
-    this.size = size;
+		this.id = id;
+		this.name = name;
+		this.size = size;
 
-    this.loop();
-  }
+		this.loop();
+	}
 
-  public id: number;
-  public name: string;
-  public size: Vector2;
+	public id: number;
+	public name: string;
+	public size: Vector2;
 
-  public logger: Logger;
-  public memory: Memory;
+	public logger: Logger;
+	public memory: Memory;
 
-  public add(connection: Connection, character: Character): void {
-    character.loop();
+	public add(connection: Connection, character: Character): void {
+		character.loop();
 
-    if (character.currentMap !== this.id) {
-      new AlertCore(connection, 'Seu personagem não pertence a este mapa!', true).send();
-      return;
-    }
+		if (character.worldId !== this.id) {
+			new AlertCore(
+				connection,
+				"Seu personagem não pertence a este mundo!",
+				true,
+			).send();
+			return;
+		}
 
-    const outgoing: WorldOutgoing = new WorldOutgoing();
+		const outgoing: WorldOutgoing = new WorldOutgoing();
 
-    // Notificar o novo personagem selecionado
-    outgoing.sendCharacterSelected(connection, character);
+		// Notificar o novo personagem selecionado
+		outgoing.sendCharacterSelected(connection, character);
 
-    // Notificar outros personagens sobre o novo personagem
-    outgoing.sendOthersOfNewCharacter(connection, this.id, character);
+		// Notificar outros personagens sobre o novo personagem
+		outgoing.sendOthersOfNewCharacter(connection, this.id, character);
 
-    // Notificar o novo personagem sobre os personagens já presentes
-    outgoing.sendExistingCharacters(connection, this.memory);
+		// Notificar o novo personagem sobre os personagens já presentes
+		outgoing.sendExistingCharacters(connection, this.memory);
 
-    // Adicionar o personagem ao array de personagens
-    this.memory.worldsCharacters.add(character);
-  }
+		// Adicionar o personagem ao array de personagens
+		this.memory.worldsCharacters.add(character);
+	}
 
-  public move(
-    connection: Connection,
-    character: Character,
-    action: number,
-    position: Vector2,
-    direction: number,
-    velocity: Vector2,
-  ): void {
-    const existingCharacter = this.get(character.id);
+	public move(
+		connection: Connection,
+		character: Character,
+		action: number,
+		position: Vector2,
+		direction: number,
+		velocity: Vector2,
+	): void {
+		const existingCharacter = this.get(character.id);
 
-    if (!existingCharacter) {
-      new AlertCore(connection, 'Você não deveria estar fazendo isso!', true).send();
-      return;
-    }
+		if (!existingCharacter) {
+			new AlertCore(
+				connection,
+				"Você não deveria estar fazendo isso!",
+				true,
+			).send();
+			return;
+		}
 
-    if (!this.inCurrentMap(character)) {
-      new AlertCore(connection, 'Seu personagem não pertence a este mapa!', true).send();
-      return;
-    }
+		if (!this.inCurrentWorld(character)) {
+			new AlertCore(
+				connection,
+				"Seu personagem não pertence a este mundo!",
+				true,
+			).send();
+			return;
+		}
 
-    character.position = position;
-    character.direction = direction;
+		character.position = position;
+		character.direction = direction;
 
-    new MoveCharacterOutgoing(character, action, position, direction, velocity).sendToMapExcept(
-      this.id,
-      connection,
-    );
-  }
+		new MoveCharacterOutgoing(
+			character,
+			action,
+			position,
+			direction,
+			velocity,
+		).sendToWorldExcept(this.id, connection);
+	}
 
-  public remove(connection: Connection, character: Character): void {
-    let found = false;
+	public remove(connection: Connection, character: Character): void {
+		let found = false;
 
-    for (const index of this.memory.worldsCharacters.getFilledSlots()) {
-      const existingCharacter = this.memory.worldsCharacters.get(index);
+		for (const index of this.memory.worldsCharacters.getFilledSlots()) {
+			const existingCharacter = this.memory.worldsCharacters.get(index);
 
-      if (existingCharacter && existingCharacter.id === character.id) {
-        this.memory.worldsCharacters.remove(index);
-        found = true;
+			if (existingCharacter && existingCharacter.id === character.id) {
+				this.memory.worldsCharacters.remove(index);
+				found = true;
 
-        new CharacterDisconnectedCore(
-          existingCharacter.id,
-          existingCharacter.currentMap,
-        ).disconnect();
-        break;
-      }
-    }
+				new CharacterDisconnectedCore(
+					existingCharacter.id,
+					existingCharacter.worldId,
+				).disconnect();
+				break;
+			}
+		}
 
-    if (!found) {
-      new AlertCore(connection, 'Seu personagem não pertence a este mapa!', true).send();
-      return;
-    }
-  }
+		if (!found) {
+			new AlertCore(
+				connection,
+				"Seu personagem não pertence a este mundo!",
+				true,
+			).send();
+			return;
+		}
+	}
 
-  private get(characterId: number): Character | undefined {
-    return this.memory.worldsCharacters.find((character) => character.id === characterId);
-  }
+	private get(characterId: number): Character | undefined {
+		return this.memory.worldsCharacters.find(
+			(character) => character.id === characterId,
+		);
+	}
 
-  private inCurrentMap(character: Character): boolean {
-    const existingCharacter: Character | undefined = this.memory.worldsCharacters.find(
-      (currentCharacter) => currentCharacter?.id === character.id,
-    );
+	private inCurrentWorld(character: Character): boolean {
+		const existingCharacter: Character | undefined =
+			this.memory.worldsCharacters.find(
+				(currentCharacter) => currentCharacter?.id === character.id,
+			);
 
-    return existingCharacter ? existingCharacter.currentMap === this.id : false;
-  }
+		return existingCharacter ? existingCharacter.worldId === this.id : false;
+	}
 
-  private updateIntervalId: Timer | null = null;
+	private updateIntervalId: Timer | null = null;
 
-  public async loop(): Promise<void> {
-    this.updateIntervalId = setInterval(
-      async () => {
-        //
-      },
-      MAP_LOOP * 60 * 1000,
-    );
-  }
+	public async loop(): Promise<void> {
+		this.updateIntervalId = setInterval(
+			async () => {
+				//
+			},
+			WORLD_LOOP * 60 * 1000,
+		);
+	}
 
-  public stopLoop(): void {
-    if (this.updateIntervalId !== null) {
-      clearInterval(this.updateIntervalId);
-      this.updateIntervalId = null;
-    }
-  }
+	public stopLoop(): void {
+		if (this.updateIntervalId !== null) {
+			clearInterval(this.updateIntervalId);
+			this.updateIntervalId = null;
+		}
+	}
 }

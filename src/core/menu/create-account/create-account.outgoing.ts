@@ -1,8 +1,8 @@
-import { ServerHeaders } from '../../../communication/protocol/server-headers';
-import { ServerMessage } from '../../../communication/protocol/server-message';
+import { ServerHeaders } from "../../../communication/protocol/server-headers";
+import { ServerMessage } from "../../../communication/protocol/server-message";
 
 export class CreateAccountOutgoing extends ServerMessage {
-  constructor() {
-    super(ServerHeaders.CreateAccount);
-  }
+	constructor() {
+		super(ServerHeaders.CreateAccount);
+	}
 }

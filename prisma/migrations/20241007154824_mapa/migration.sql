@@ -4,7 +4,6 @@ CREATE TABLE "Accounts" (
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "characterSize" INTEGER NOT NULL DEFAULT 2,
-    "coins" INTEGER NOT NULL DEFAULT 0,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL
 );
@@ -23,14 +22,14 @@ CREATE TABLE "Characters" (
     "name" TEXT NOT NULL,
     "gendersId" INTEGER NOT NULL,
     "accountId" INTEGER,
-    "currentMap" INTEGER NOT NULL DEFAULT 1,
-    "mapPositionX" INTEGER NOT NULL DEFAULT 1,
-    "mapPositionY" INTEGER NOT NULL DEFAULT 1,
+    "positionX" INTEGER NOT NULL DEFAULT 1,
+    "positionY" INTEGER NOT NULL DEFAULT 1,
     "direction" INTEGER NOT NULL DEFAULT 4,
     "defaultSprite" TEXT NOT NULL,
-    "currentSprite" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
+    "worldsId" INTEGER NOT NULL,
+    CONSTRAINT "Characters_worldsId_fkey" FOREIGN KEY ("worldsId") REFERENCES "Worlds" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Characters_gendersId_fkey" FOREIGN KEY ("gendersId") REFERENCES "Genders" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Characters_accountId_fkey" FOREIGN KEY ("accountId") REFERENCES "Accounts" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );

@@ -15,7 +15,6 @@ model Accounts {
   email         String       @unique
   password      String
   characterSize Int          @default(2)
-  coins         Int          @default(0)
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
   characters    Characters[]
@@ -34,16 +33,16 @@ model Characters {
   name          String    @unique
   gendersId     Int
   accountId     Int?
-  currentMap    Int       @default(1)
-  mapPositionX  Int       @default(1)
-  mapPositionY  Int       @default(1)
+  world         Worlds    @relation(fields: [worldsId], references: [id])
+  positionX     Int       @default(1)
+  positionY     Int       @default(1)
   direction     Int       @default(4)
   defaultSprite String
-  currentSprite String
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   gender        Genders   @relation(fields: [gendersId], references: [id])
   Account       Accounts? @relation(fields: [accountId], references: [id])
+  worldsId      Int
 }
 
 model Genders {
@@ -53,8 +52,9 @@ model Genders {
 }
 
 model Worlds {
-  id    Int    @id @default(autoincrement())
-  name  String
-  sizeX Int    @default(100)
-  sizeY Int    @default(100)
+  id         Int          @id @default(autoincrement())
+  name       String
+  sizeX      Int          @default(100)
+  sizeY      Int          @default(100)
+  Characters Characters[]
 }

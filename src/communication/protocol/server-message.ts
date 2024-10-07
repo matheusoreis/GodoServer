@@ -1,58 +1,61 @@
-import type { Connection } from '../../core/connection';
-import { serviceLocator } from '../../misc/service-locator';
-import { Outgoing } from '../outgoing';
-import { ByteBuffer } from './byte-buffer';
+import type { Connection } from "../../core/connection";
+import { serviceLocator } from "../../misc/service-locator";
+import { Outgoing } from "../outgoing";
+import { ByteBuffer } from "./byte-buffer";
 
 export abstract class ServerMessage extends Outgoing {
-  constructor(id: number) {
-    super();
-    this.byteBuffer = serviceLocator.get<ByteBuffer>(ByteBuffer);
-    this.byteBuffer.putInt16(id);
-  }
+	constructor(id: number) {
+		super();
+		this.byteBuffer = serviceLocator.get<ByteBuffer>(ByteBuffer);
+		this.byteBuffer.putInt16(id);
+	}
 
-  private byteBuffer: ByteBuffer;
+	private byteBuffer: ByteBuffer;
 
-  protected putBytes(value: Uint8Array): void {
-    this.byteBuffer.putBytes(value);
-  }
+	protected putBytes(value: Uint8Array): void {
+		this.byteBuffer.putBytes(value);
+	}
 
-  protected putInt8(value: number) {
-    this.byteBuffer.putInt8(value);
-  }
+	protected putInt8(value: number) {
+		this.byteBuffer.putInt8(value);
+	}
 
-  protected putInt16(value: number) {
-    this.byteBuffer.putInt16(value);
-  }
+	protected putInt16(value: number) {
+		this.byteBuffer.putInt16(value);
+	}
 
-  protected putInt32(value: number): void {
-    this.byteBuffer.putInt32(value);
-  }
+	protected putInt32(value: number): void {
+		this.byteBuffer.putInt32(value);
+	}
 
-  protected putString(value: string): void {
-    this.byteBuffer.putString(value);
-  }
+	protected putString(value: string): void {
+		this.byteBuffer.putString(value);
+	}
 
-  public getBuffer(): Uint8Array {
-    return this.byteBuffer.getBuffer();
-  }
+	public getBuffer(): Uint8Array {
+		return this.byteBuffer.getBuffer();
+	}
 
-  public sendTo(connection: Connection): void {
-    this.dataTo(connection, this);
-  }
+	public sendTo(connection: Connection): void {
+		this.dataTo(connection, this);
+	}
 
-  public sendToAll(): void {
-    this.dataToAll(this);
-  }
+	public sendToAll(): void {
+		this.dataToAll(this);
+	}
 
-  public sendToAllExcept(exceptConnection: Connection): void {
-    this.dataToAllExcept(exceptConnection, this);
-  }
+	public sendToAllExcept(exceptConnection: Connection): void {
+		this.dataToAllExcept(exceptConnection, this);
+	}
 
-  public sendToMap(mapId: number): void {
-    this.dataToMap(mapId, this);
-  }
+	public sendToWorld(worldId: number): void {
+		this.dataToWorld(worldId, this);
+	}
 
-  public sendToMapExcept(mapId: number, exceptConnection: Connection): void {
-    this.dataToMapExcept(mapId, exceptConnection, this);
-  }
+	public sendToWorldExcept(
+		worldId: number,
+		exceptConnection: Connection,
+	): void {
+		this.dataToWorldExcept(worldId, exceptConnection, this);
+	}
 }

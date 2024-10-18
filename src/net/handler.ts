@@ -2,6 +2,7 @@ import type { Incoming } from "../communication/incoming";
 import { ClientHeaders } from "../communication/protocol/client-headers";
 import type { ClientMessage } from "../communication/protocol/client-message";
 import type { Connection } from "../core/connection";
+import { ChatIncoming } from "../core/game/chat/chat.incoming";
 import { MoveCharacterIncoming } from "../core/game/move-character/move-character.incoming";
 import { AccessAccountIncoming } from "../core/menu/access-account/access-account.incoming";
 import { ChangePasswordIncoming } from "../core/menu/change-password/change-password.incoming";
@@ -96,5 +97,8 @@ export class Handler {
 			MoveCharacterIncoming,
 		);
 		this.requestHandlers[ClientHeaders.MoveCharacter] = moveCharacter;
+
+		const chatMessage = serviceLocator.get<ChatIncoming>(ChatIncoming);
+		this.requestHandlers[ClientHeaders.ChatMessage] = chatMessage;
 	}
 }

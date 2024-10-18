@@ -15,4 +15,5 @@ export enum ServerHeaders {
 	MoveCharacter = 13,
 	DisconnectCharacter = 14,
 	TeleportCharacter = 15,
+	ChatMessage = 16,
 }

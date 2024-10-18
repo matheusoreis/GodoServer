@@ -13,3 +13,21 @@ export const WORLD_LOOP: number = 100;
 export const MAX_CHAT_HISTORY: number = 5000;
 
 export const CHAR_VELOCITY_X_Y: number = 100;
+
+export const PROFANITY_LIST: string[] = [
+	"bosta",
+	"caralho",
+	"cu",
+	"merda",
+	"porra",
+	"filha da puta",
+	"vaca",
+	"idiota",
+	"buceta",
+	"safado",
+	"desgraça",
+	"puto",
+	"foda",
+	"viado",
+	"seu trouxa",
+];

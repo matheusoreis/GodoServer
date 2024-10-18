@@ -20,6 +20,7 @@ import { DeleteCharacterIncoming } from "../core/menu/delete-character/delete-ch
 import { RecoverAccountIncoming } from "../core/menu/recover-account/recover-account.incoming";
 import { SelectCharacterIncoming } from "../core/menu/select-character/select-character.incoming";
 import { PingIncoming } from "../core/ping/ping.incoming";
+import { ChatIncoming } from "../core/game/chat/chat.incoming";
 
 export class Dependency {
 	public setup() {
@@ -130,5 +131,9 @@ export class Dependency {
 				return new MoveCharacterIncoming();
 			},
 		);
+
+		serviceLocator.registerFactory<ChatIncoming>(ChatIncoming, () => {
+			return new ChatIncoming();
+		});
 	}
 }

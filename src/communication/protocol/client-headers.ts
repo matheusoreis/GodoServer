@@ -10,4 +10,6 @@ export enum ClientHeaders {
 	DeleteCharacter = 8,
 	SelectCharacter = 9,
 	MoveCharacter = 10,
+	TeleportCharacter = 11,
+	ChatMessage = 12,
 }

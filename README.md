@@ -6,7 +6,7 @@
 
 ## Objetivo
 
-O **Bun Game Server (BGS)** foi projetado para ser um servidor de **MMO** e **ORPG**. O BGS oferece um template flexível e escalável que pode ser facilmente adaptado para qualquer jogo que necessite de funcionalidades multiplayer. Com o BGS, desenvolvedores podem rapidamente implementar e personalizar recursos essenciais para jogos online, facilitando a criação e implementação de funcionalidades novas de acordo com o jogo a ser desenvolvido.
+O **Bun Game Server (BGS)** foi projetado para ser um servidor de **MMO** e **ORPG**. para a Godot Engine, porém pode ser facilmente integrado a outras como Unreal, Unity, Phaser etc...
 
 ## Requisitos
 

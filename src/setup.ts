@@ -1,13 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import type { Server, ServerWebSocket } from "bun";
-import { WorldCore } from "../core/game/world/world.core";
-import { Memory } from "../core/memory";
-import { SERVER_HOST, SERVER_PORT } from "../misc/constants";
-import { Logger } from "../misc/logger";
-import type { PrismaCharacter, PrismaWorld } from "../misc/prisma-types";
-import { serviceLocator } from "../misc/service-locator";
-import { Vector2 } from "../misc/vector2";
-import { Manager } from "./manager";
+import { serviceLocator } from "./misc/service-locator";
+import { Logger } from "./misc/logger";
+import { Manager } from "./net/manager";
+import { Memory } from "./misc/memory";
+import { SERVER_HOST, SERVER_PORT } from "./misc/constants";
+import type { PrismaWorld } from "./misc/prisma-types";
+import { WorldCore } from "./core/world/world.core";
+import { Vector2 } from "./misc/vector2";
 
 export class Setup {
 	constructor() {

@@ -1,26 +1,25 @@
 import { PrismaClient } from "@prisma/client";
-import { ByteBuffer } from "../communication/byte-buffer";
-import { ClientMessage } from "../communication/messages/client-message";
-import { Memory } from "../core/memory";
-import { Handler } from "../net/handler";
-import { Manager } from "../net/manager";
-import { Setup } from "../net/setup";
-import { Logger } from "./logger";
-import { Password } from "./password";
 import { serviceLocator } from "./service-locator";
-
+import { Logger } from "./logger";
+import { Memory } from "./memory";
+import { ByteBuffer } from "./byte-buffer";
+import { Setup } from "../setup";
+import { Manager } from "../net/manager";
+import { Handler } from "../net/handler";
+import { ClientMessage } from "../net/protocol/client-message";
+import { Password } from "./password";
+import { PingIncoming } from "../core/ping/ping.incoming";
 import { AccessAccountIncoming } from "../core/access-account/access-account.incoming";
+import { CreateAccountIncoming } from "../core/create-account/create-account.incoming";
+import { DeleteAccountIncoming } from "../core/delete-account/delete-account.incoming";
+import { RecoverAccountIncoming } from "../core/recover-account/recover-account.incoming";
 import { ChangePasswordIncoming } from "../core/change-password/change-password.incoming";
 import { CharacterListIncoming } from "../core/character-list/character-list.incoming";
-import { ChatIncoming } from "../core/chat/chat.incoming";
-import { CreateAccountIncoming } from "../core/create-account/create-account.incoming";
 import { CreateCharacterIncoming } from "../core/create-character/create-character.incoming";
-import { DeleteAccountIncoming } from "../core/delete-account/delete-account.incoming";
 import { DeleteCharacterIncoming } from "../core/delete-character/delete-character.incoming";
-import { MoveCharacterIncoming } from "../core/move-character/move-character.incoming";
-import { PingIncoming } from "../core/ping/ping.incoming";
-import { RecoverAccountIncoming } from "../core/recover-account/recover-account.incoming";
 import { SelectCharacterIncoming } from "../core/select-character/select-character.incoming";
+import { MoveCharacterIncoming } from "../core/move-character/move-character.incoming";
+import { ChatIncoming } from "../core/chat/chat.incoming";
 
 export class Dependency {
 	public setup() {
@@ -64,72 +63,52 @@ export class Dependency {
 
 		serviceLocator.registerFactory<AccessAccountIncoming>(
 			AccessAccountIncoming,
-			() => {
-				return new AccessAccountIncoming();
-			},
+			() => new AccessAccountIncoming(),
 		);
 
 		serviceLocator.registerFactory<CreateAccountIncoming>(
 			CreateAccountIncoming,
-			() => {
-				return new CreateAccountIncoming();
-			},
+			() => new CreateAccountIncoming(),
 		);
 
 		serviceLocator.registerFactory<DeleteAccountIncoming>(
 			DeleteAccountIncoming,
-			() => {
-				return new DeleteAccountIncoming();
-			},
+			() => new DeleteAccountIncoming(),
 		);
 
 		serviceLocator.registerFactory<RecoverAccountIncoming>(
 			RecoverAccountIncoming,
-			() => {
-				return new RecoverAccountIncoming();
-			},
+			() => new RecoverAccountIncoming(),
 		);
 
 		serviceLocator.registerFactory<ChangePasswordIncoming>(
 			ChangePasswordIncoming,
-			() => {
-				return new ChangePasswordIncoming();
-			},
+			() => new ChangePasswordIncoming(),
 		);
 
 		serviceLocator.registerFactory<CharacterListIncoming>(
 			CharacterListIncoming,
-			() => {
-				return new CharacterListIncoming();
-			},
+			() => new CharacterListIncoming(),
 		);
 
 		serviceLocator.registerFactory<CreateCharacterIncoming>(
 			CreateCharacterIncoming,
-			() => {
-				return new CreateCharacterIncoming();
-			},
+			() => new CreateCharacterIncoming(),
 		);
 
 		serviceLocator.registerFactory<DeleteCharacterIncoming>(
 			DeleteCharacterIncoming,
-			() => {
-				return new DeleteCharacterIncoming();
-			},
+			() => new DeleteCharacterIncoming(),
 		);
 
 		serviceLocator.registerFactory<SelectCharacterIncoming>(
 			SelectCharacterIncoming,
-			() => {
-				return new SelectCharacterIncoming();
-			},
+			() => new SelectCharacterIncoming(),
 		);
 
 		serviceLocator.registerFactory<MoveCharacterIncoming>(
 			MoveCharacterIncoming,
-			() => {
-				return new MoveCharacterIncoming();
-			},
+			() => new MoveCharacterIncoming(),
 		);
 
 		serviceLocator.registerFactory<ChatIncoming>(ChatIncoming, () => {

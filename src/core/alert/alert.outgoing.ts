@@ -1,5 +1,5 @@
-import { ServerHeaders } from "../../communication/protocol/server-headers";
-import { ServerMessage } from "../../communication/protocol/server-message";
+import { ServerHeaders } from "../../net/protocol/server-headers";
+import { ServerMessage } from "../../net/protocol/server-message";
 
 export class AlertOutgoing extends ServerMessage {
 	constructor(message: string, disconnect: boolean) {

@@ -1,4 +1,4 @@
-import type { Connection } from "../connection";
+import type { Connection } from "../../net/connection";
 import { AlertOutgoing } from "./alert.outgoing";
 
 export class AlertCore {

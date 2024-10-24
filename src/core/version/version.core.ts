@@ -3,8 +3,8 @@ import {
 	MINOR_VERSION,
 	REVISION_VERSION,
 } from "../../misc/constants";
+import type { Connection } from "../../net/connection";
 import { AlertCore } from "../alert/alert.core";
-import type { Connection } from "../connection";
 
 export class VersionCore {
 	constructor(

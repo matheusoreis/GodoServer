@@ -1,8 +1,8 @@
 import { ServerHeaders } from "../../net/protocol/server-headers";
 import { ServerMessage } from "../../net/protocol/server-message";
 
-export class PingOutgoing extends ServerMessage {
+export class DeleteCharacterOutgoing extends ServerMessage {
 	constructor() {
-		super(ServerHeaders.Ping);
+		super(ServerHeaders.DeleteCharacter);
 	}
 }

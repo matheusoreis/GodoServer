@@ -1,10 +1,10 @@
 import type { ServerWebSocket } from "bun";
 import { AlertCore } from "../core/alert/alert.core";
-import type { Character } from "../core/game/character/character";
-import { Connection } from "../core/connection";
+import type { Character } from "../core/character/character";
 import { Memory } from "../core/memory";
 import { Logger } from "../misc/logger";
 import { serviceLocator } from "../misc/service-locator";
+import { Connection } from "./connection";
 
 export class Manager {
 	constructor() {

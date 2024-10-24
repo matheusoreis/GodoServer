@@ -1,21 +1,21 @@
-import type { Incoming } from "../communication/incoming";
-import { ClientHeaders } from "../communication/protocol/client-headers";
-import type { ClientMessage } from "../communication/protocol/client-message";
-import type { Connection } from "../core/connection";
-import { ChatIncoming } from "../core/game/chat/chat.incoming";
-import { MoveCharacterIncoming } from "../core/game/move-character/move-character.incoming";
-import { AccessAccountIncoming } from "../core/menu/access-account/access-account.incoming";
-import { ChangePasswordIncoming } from "../core/menu/change-password/change-password.incoming";
-import { CharacterListIncoming } from "../core/menu/character-list/character-list.incoming";
-import { CreateAccountIncoming } from "../core/menu/create-account/create-account.incoming";
-import { CreateCharacterIncoming } from "../core/menu/create-character/create-character.incoming";
-import { DeleteAccountIncoming } from "../core/menu/delete-account/delete-account.incoming";
-import { DeleteCharacterIncoming } from "../core/menu/delete-character/delete-character.incoming";
-import { RecoverAccountIncoming } from "../core/menu/recover-account/recover-account.incoming";
-import { SelectCharacterIncoming } from "../core/menu/select-character/select-character.incoming";
+import { AccessAccountIncoming } from "../core/access-account/access-account.incoming";
+import { ChangePasswordIncoming } from "../core/change-password/change-password.incoming";
+import { CharacterListIncoming } from "../core/character-list/character-list.incoming";
+import { ChatIncoming } from "../core/chat/chat.incoming";
+import { CreateAccountIncoming } from "../core/create-account/create-account.incoming";
+import { CreateCharacterIncoming } from "../core/create-character/create-character.incoming";
+import { DeleteAccountIncoming } from "../core/delete-account/delete-account.incoming";
+import { DeleteCharacterIncoming } from "../core/delete-character/delete-character.incoming";
+import { MoveCharacterIncoming } from "../core/move-character/move-character.incoming";
 import { PingIncoming } from "../core/ping/ping.incoming";
+import { RecoverAccountIncoming } from "../core/recover-account/recover-account.incoming";
+import { SelectCharacterIncoming } from "../core/select-character/select-character.incoming";
 import { Logger } from "../misc/logger";
 import { serviceLocator } from "../misc/service-locator";
+import type { Connection } from "./connection";
+import type { Incoming } from "./messages/incoming";
+import { ClientHeaders } from "./protocol/client-headers";
+import type { ClientMessage } from "./protocol/client-message";
 
 export class Handler {
 	constructor() {

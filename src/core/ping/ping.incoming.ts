@@ -1,5 +1,5 @@
-import type { Incoming } from "../../communication/incoming";
-import type { Connection } from "../connection";
+import type { Connection } from "../../net/connection";
+import type { Incoming } from "../../net/messages/incoming";
 import { PingCore } from "./ping.core";
 
 export class PingIncoming implements Incoming {
